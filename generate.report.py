@@ -4,14 +4,14 @@ import os
 import subprocess
 from sys import platform
 
-repos = ''
-
 
 def dep_check(dir):
     if platform == "linux":
+        print("is linux")
         subprocess.run(
             "/home/danny/Documents/dependency-check/bin/dependency-check.sh --enableExperimental --scan . ", shell=True, cwd=dir)
     elif platform == "darwin":
+        print("is mac")
         subprocess.run(
             "dependency-check --enableExperimental --scan .", shell=True, cwd=dir)
 
@@ -36,3 +36,9 @@ def make_report(repos):
             print(
                 f'Found a requirements.txt file at directory: {root}. creating report...')
             dep_check(root)
+
+
+if __name__ == "__main__":
+    repos = ''
+
+    make_report(repos)
