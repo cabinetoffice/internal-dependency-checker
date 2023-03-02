@@ -2,8 +2,6 @@
 
 import os
 
-all_repo_names = []
-
 def create_project_directory(repo):
 
     # create 'repo' root directory if it doesn't exitst. This houses all project directories

@@ -4,10 +4,11 @@ import os
 import requests
 from pprint import pprint
 
-USERNAME='cabinetoffice'
+USERNAME = 'cabinetoffice'
 GITHUB_KEY = os.environ["GITHUB_KEY"]
 
 # TODO Requests error handling
+
 
 def get_json(url, headers):
     r = requests.get(url, headers=headers)
@@ -28,9 +29,12 @@ def get_repo_names(username):
         print("")
         print(f"while_count - {while_count}")
 
-        headers, data = get_json(current_url, {'Authorisation': f'token {GITHUB_KEY}'})
+        headers, data = get_json(
+            current_url, {'Authorisation': f'token {GITHUB_KEY}'})
         # breakpoint()
         # Loop through data JSON object to extract all repo names
+
+        # print (data)
 
         all_repo_names += [item['name'] for item in data]
 
@@ -57,4 +61,3 @@ def get_repo_names(username):
 
 if __name__ == "__main__":
     get_repo_names(USERNAME)
-
