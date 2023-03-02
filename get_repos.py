@@ -3,7 +3,7 @@
 import os
 import requests
 from pprint import pprint
-from get_json import get_json
+from utils import get_json
 
 USERNAME = 'cabinetoffice'
 

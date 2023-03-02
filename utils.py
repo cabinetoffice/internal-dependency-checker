@@ -7,6 +7,5 @@ def get_json(url):
     headers = {}
     if GITHUB_KEY:
         headers["Authorization"] = f"token {GITHUB_KEY}"
-
     r = requests.get(url, headers=headers)
     return r.headers, r.json()

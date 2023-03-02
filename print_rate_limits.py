@@ -1,6 +1,6 @@
 import requests
 import os
-from get_json import get_json
+from utils import get_json
 
 def print_rate_limits(url):
 
