@@ -1,6 +1,8 @@
 import requests
 import base64
 import os
+import time
+from print_rate_limits import print_rate_limits
 
 GITHUB_KEY = os.environ["GITHUB_KEY"]
 
@@ -47,9 +49,12 @@ def create_dependency_subdirectory(dependency_path, repo_name):
     return full_path
 
 
-def write_dependencies_to_file(all_dependencies, repo_name):
+def write_dependencies_to_file(all_dependencies, repo_name, time_sleep):
 
     for dependency in all_dependencies:
+
+        time.sleep(time_sleep)
+        print("Slept 1.5 seconds...")
 
         dependency_name = dependency["name"]
         dependency_path = dependency["path"]
@@ -77,4 +82,5 @@ def write_dependencies_to_file(all_dependencies, repo_name):
             full_path = f"{subdir_path}/{dependency_name}"
             write_dependency_file(content_url, full_path)
 
-# write_dependencies_to_file()
+        print_rate_limits(dependency["url"])
+

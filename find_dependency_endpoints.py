@@ -1,13 +1,10 @@
 import requests
 import os
+from get_json import get_json
 
 GITHUB_KEY = os.environ["GITHUB_KEY"]
 USERNAME = 'cabinetoffice'
 DEPENDENCY_FILE = 'package.json'
-
-def get_json(url, headers):
-    r = requests.get(url, headers=headers)
-    return r.headers, r.json()
 
 def find_all_dependencies(username, repository_name, dependency_file):
 
@@ -18,7 +15,7 @@ def find_all_dependencies(username, repository_name, dependency_file):
 
     url = f"https://api.github.com/search/code?q=filename:{dependency_file}+org:{username}+repo:{username}/{repository_name}&page=1&per_page=100"
 
-    data = get_json(url, {'Authorisation': f'token {GITHUB_KEY}'})
+    data = get_json(url)
 
     all_dependencies = data[1]["items"]
 
