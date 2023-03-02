@@ -4,10 +4,8 @@ import os
 import requests
 from pprint import pprint
 
-
 USERNAME='cabinetoffice'
 GITHUB_KEY = os.environ["GITHUB_KEY"]
-
 
 # TODO Requests error handling
 

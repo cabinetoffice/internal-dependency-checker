@@ -2,7 +2,7 @@
 
 import os
 
-# all_repo_names = 
+all_repo_names = []
 
 def create_project_directory(repo):
 
@@ -19,7 +19,4 @@ def create_project_directory(repo):
 
     if not os.path.exists(path):
         os.mkdir(path)
-
-if __name__ == '__main__':
-    create_project_directory(all_repo_names[0])
 
