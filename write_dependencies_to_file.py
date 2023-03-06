@@ -2,7 +2,7 @@ import requests
 import base64
 import os
 import time
-from get_json import get_json
+from utils import get_json
 from print_rate_limits import print_rate_limits
 
 GITHUB_KEY = os.environ["GITHUB_KEY"]
