@@ -6,10 +6,9 @@ from write_dependencies_to_file import write_dependencies_to_file
 def main():
     USERNAME = 'cabinetoffice'
     DEPENDENCY_FILE = 'package.json'
-    TIME_SLEEP = 1.5
+    TIME_SLEEP = 20
 
-    single_repo = 'gender-pay-gap'
-
+    single_repo = 'co-papt-prototype'
 
     all_repo_names = get_repo_names(USERNAME)
 
@@ -17,7 +16,7 @@ def main():
 
     all_dependencies = find_all_dependencies(USERNAME, single_repo, DEPENDENCY_FILE)
 
-    write_dependencies_to_file(all_dependencies, single_repo, TIME_SLEEP)
+    write_dependencies_to_file(all_dependencies, single_repo)
 
 
 if __name__ == '__main__':

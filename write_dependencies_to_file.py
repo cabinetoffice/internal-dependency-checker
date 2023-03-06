@@ -2,6 +2,7 @@ import requests
 import base64
 import os
 import time
+from get_json import get_json
 from print_rate_limits import print_rate_limits
 
 GITHUB_KEY = os.environ["GITHUB_KEY"]
@@ -9,13 +10,8 @@ GITHUB_KEY = os.environ["GITHUB_KEY"]
 # TODO import get_json using modules
 
 
-def get_json(url, headers):
-    r = requests.get(url, headers=headers)
-    return r.headers, r.json()
-
-
 def write_dependency_file(url, absolute_path):
-    data = get_json(url, {'Authorisation': f'token {GITHUB_KEY}'})
+    data = get_json(url)
     print(data)
 
     file_content = data[1]["content"]
@@ -49,12 +45,9 @@ def create_dependency_subdirectory(dependency_path, repo_name):
     return full_path
 
 
-def write_dependencies_to_file(all_dependencies, repo_name, time_sleep):
+def write_dependencies_to_file(all_dependencies, repo_name):
 
     for dependency in all_dependencies:
-
-        time.sleep(time_sleep)
-        print("Slept 1.5 seconds...")
 
         dependency_name = dependency["name"]
         dependency_path = dependency["path"]
@@ -81,6 +74,7 @@ def write_dependencies_to_file(all_dependencies, repo_name, time_sleep):
             content_url = dependency["url"]
             full_path = f"{subdir_path}/{dependency_name}"
             write_dependency_file(content_url, full_path)
-
+         
+        print("Rate limit for files is 5000 requests repos per hour")
         print_rate_limits(dependency["url"])
 
