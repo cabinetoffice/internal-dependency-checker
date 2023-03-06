@@ -4,6 +4,8 @@ import os
 import requests
 from pprint import pprint
 from utils import get_json
+# from get_json import get_json
+from print_rate_limits import print_rate_limits
 
 USERNAME = 'cabinetoffice'
 
@@ -24,6 +26,7 @@ def get_repo_names(username):
         print(f"while_count - {while_count}")
 
         headers, data = get_json(current_url)
+        print_rate_limits(headers)
         # breakpoint()
         # Loop through data JSON object to extract all repo names
 
@@ -31,7 +34,7 @@ def get_repo_names(username):
 
         all_repo_names += [item['name'] for item in data]
 
-        print(all_repo_names)
+        # print(all_repo_names)
 
         # nextPattern = 'rel="next"'
         # link = get_next_page_link_request(current_url) # get string
@@ -47,7 +50,7 @@ def get_repo_names(username):
             print("Can't find next pattern, must be last page")
             pages_remaining = False
 
-    pprint(all_repo_names)
+    # pprint(all_repo_names)
 
     return all_repo_names
 
