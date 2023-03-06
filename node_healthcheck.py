@@ -11,12 +11,10 @@ def find_node_modules(username, repository_name):
 
     url = f"https://api.github.com/search/code?q=path:node_modules+org:{username}+repo:{username}/{repository_name}&page=1&per_page=100"
 
-    print("Rate limit is 30 repos per minute")
-    print_rate_limits(url)
+    headers, data = get_json(url)
+    print_rate_limits(headers)
 
-    data = get_json(url)
-
-    if data[1]["total_count"] > 1:
+    if data["total_count"] > 1:
         print("node_modules has been pushed. Healthcheck failed")
     else:
         print("Healthcheck passed")

@@ -11,11 +11,12 @@ GITHUB_KEY = os.environ["GITHUB_KEY"]
 
 
 def write_dependency_file(url, absolute_path):
-    data = get_json(url)
+    headers, data = get_json(url)
+    print_rate_limits(headers)
     print(data)
 
-    file_content = data[1]["content"]
-    file_content_encoding = data[1]["encoding"]
+    file_content = data["content"]
+    file_content_encoding = data["encoding"]
     if file_content_encoding == "base64":
         file_content = base64.b64decode(file_content).decode()
     f = open(absolute_path, "w")
@@ -74,7 +75,4 @@ def write_dependencies_to_file(all_dependencies, repo_name):
             content_url = dependency["url"]
             full_path = f"{subdir_path}/{dependency_name}"
             write_dependency_file(content_url, full_path)
-         
-        print("Rate limit for files is 5000 requests repos per hour")
-        print_rate_limits(dependency["url"])
 

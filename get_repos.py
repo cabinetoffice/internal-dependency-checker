@@ -23,9 +23,9 @@ def get_repo_names(username):
         current_url = f"https://api.github.com/users/{username}/repos?page={page_number}&per_page={per_page}"
         print("")
         print(f"while_count - {while_count}")
-        print_rate_limits(current_url)
 
         headers, data = get_json(current_url)
+        print_rate_limits(headers)
         # breakpoint()
         # Loop through data JSON object to extract all repo names
 

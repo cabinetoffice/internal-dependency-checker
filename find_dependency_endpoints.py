@@ -19,15 +19,16 @@ def find_all_dependencies(username, repository_name, dependency_file):
     url = f"https://api.github.com/search/code?q=filename:{dependency_file}+org:{username}+repo:{username}/{repository_name}&page=1&per_page=100"
 
     print("Rate limit is 30 repos per minute")
-    print_rate_limits(url)
 
-    data = get_json(url)
 
-    all_dependencies = data[1]["items"]
+    headers, data = get_json(url)
+    print_rate_limits(headers)
+
+    all_dependencies = data["items"]
 
     # Warning if there are more than 100 dep files at endpoint (only 100 can be loaded at a max)
 
-    if data[1]["total_count"] > 100: 
+    if data["total_count"] > 100: 
         print("WARNING:  More than 100 dependency files detected in repo. Only 100 can be loaded at this endpoint")
 
     return all_dependencies

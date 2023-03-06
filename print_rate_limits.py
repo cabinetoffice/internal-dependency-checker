@@ -4,9 +4,7 @@ from get_json import get_json
 from datetime import datetime
 import humanfriendly 
 
-def print_rate_limits(url):
-
-    headers, data = get_json(url)
+def print_rate_limits(headers):
 
     rate_limit = headers["X-RateLimit-Limit"]
     print(f'Requests allowed in current period: {rate_limit}')
