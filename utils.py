@@ -1,11 +1,9 @@
 import requests
 import os
 
-def get_json(url):
-
-    GITHUB_KEY = os.environ["GITHUB_KEY"]
+def get_json(url, github_key):
     headers = {}
-    if GITHUB_KEY:
-        headers["Authorization"] = f"token {GITHUB_KEY}"
+    if github_key:
+        headers["Authorization"] = f"token {github_key}"
     r = requests.get(url, headers=headers)
     return r.headers, r.json()
