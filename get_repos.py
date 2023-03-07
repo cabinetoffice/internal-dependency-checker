@@ -50,14 +50,15 @@ def get_repo_names(username, github_key, page_number=None, all_repo_names=None):
 
     headers, data = get_json(url, github_key)
 
-    if (link := headers.get('link')) and 'rel="next"' in link:
-        repo_names = get_repo_names(username, github_key, page_number=page_number + 1, all_repo_names=all_repo_names)
-
-
     all_repo_names += [item['name'] for item in data]
-    return all_repo_names
+    print(len(all_repo_names))
 
-
+    if (link := headers.get('link')) and 'rel="next"' in link:
+        get_repo_names(username, github_key, page_number=page_number + 1, all_repo_names=all_repo_names)
+    else:
+        print('End')
+        print(all_repo_names)
+        return all_repo_names
 
 
 if __name__ == "__main__":
