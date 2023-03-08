@@ -1,12 +1,5 @@
-import os
 from utils import get_json
 import time
-from print_rate_limits import print_rate_limits
-from pprint import pprint
-
-GITHUB_KEY = os.environ["GITHUB_KEY"]
-USERNAME = 'cabinetoffice'
-DEPENDENCY_FILE = 'package.json'
 
 def find_all_dependencies(username, github_key, repository_name, page_number=None, all_dependencies=None):
 
