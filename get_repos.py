@@ -53,11 +53,11 @@ def get_repo_names(username, github_key, page_number=None, all_repo_names=None):
     all_repo_names += [item['name'] for item in data]
     print(len(all_repo_names))
 
-    if not (link := headers.get('link')) or 'rel="next"' not in link:
-        pass
-    else:
-        get_repo_names(username, github_key, page_number=page_number + 1, all_repo_names=all_repo_names)
+
+    if (link := headers.get('link')) and 'rel="next"' in link:
+        return get_repo_names(username, github_key, page_number=page_number + 1, all_repo_names=all_repo_names)
     return all_repo_names
+
 
     # if (link := headers.get('link')) and 'rel="next"' in link:
     #     get_repo_names(username, github_key, page_number=page_number + 1, all_repo_names=all_repo_names)
