@@ -1,39 +1,34 @@
-import requests
 import os
 from utils import get_json
-# from get_json import get_json
+import time
 from print_rate_limits import print_rate_limits
+from pprint import pprint
 
 GITHUB_KEY = os.environ["GITHUB_KEY"]
 USERNAME = 'cabinetoffice'
 DEPENDENCY_FILE = 'package.json'
 
-def find_all_dependencies(username, repository_name, dependency_file):
+def find_all_dependencies(username, github_key, repository_name, page_number=None, all_dependencies=None):
 
-    print(f'Searching {repository_name} for {dependency_file}...')
-    # Retrieve all dependency file locations within root and all subdirectories of repo
+    dependency_file = 'package.json'
+    page_number = page_number if page_number else 1
+    all_dependencies = all_dependencies if all_dependencies else list()
 
-    # https://api.github.com/search/code?q=filename:package.json+org:harrisman05+repo:harrisman05/React&page=1&per_page=100
+    url = f"https://api.github.com/search/code?q=filename:{dependency_file}+org:{username}+repo:{username}/{repository_name}&page={page_number}&per_page=3"
 
-    # https://api.github.com/search/code?q=filename:package.json+org:cabinetoffice+repo:cabinetoffice/co-papt-prototype&page=1&per_page=100
+    headers, data = get_json(url, github_key)
 
-    url = f"https://api.github.com/search/code?q=filename:{dependency_file}+org:{username}+repo:{username}/{repository_name}&page=1&per_page=100"
+    all_dependencies += [{'name': file['name'], 'path': file['path'], 'url': file['url']} for file in data['items']]
 
-    print("Rate limit is 30 repos per minute")
-
-
-    headers, data = get_json(url)
-    print_rate_limits(headers)
-
-    all_dependencies = data["items"]
-
-    # Warning if there are more than 100 dep files at endpoint (only 100 can be loaded at a max)
-
-    if data["total_count"] > 100:
-        print("WARNING:  More than 100 dependency files detected in repo. Only 100 can be loaded at this endpoint")
+    if (link := headers.get('link')) and 'rel="next"' in link:
+        time.sleep(1)
+        return find_all_dependencies(username, github_key, repository_name, page_number=page_number + 1, all_dependencies=all_dependencies)
 
     return all_dependencies
 
-# find_all_dependencies()
+
 # find_all_dependencies('cabinetoffice', 'co-papt-prototype', 'package.json')
 
+# https://api.github.com/search/code?q=filename:package.json+org:harrisman05+repo:harrisman05/React&page=1&per_page=100
+
+# https://api.github.com/search/code?q=filename:package.json+org:cabinetoffice+repo:cabinetoffice/co-papt-prototype&page=1&per_page=100

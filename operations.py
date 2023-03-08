@@ -10,9 +10,8 @@ def _get_repos(cli_args):
     pprint(rn)
 
 def _check_single_repo(cli_args):
-    all_deps = find_dependency_files.find_all_dependencies(cli_args['github-username'], cli_args['repo-name'], cli_args['dep-file'])
-    pprint(all_deps)
-
+    all_deps = find_dependency_files.find_all_dependencies(cli_args['github-username'], cli_args['github_key'], cli_args['repo-name'])
+    pprint(len(all_deps))
 
 # Parameters
 github_username = {
@@ -44,9 +43,9 @@ subcommands = {
                 },
 
     'check-repo' : {
-                    'params': [github_username, repo_name, dep_file],
+                    'params': [github_username, repo_name],
                     'options': [github_key],
                     'runner': _check_single_repo,
                     'help': ''
-                }
+                },
 }
