@@ -54,8 +54,7 @@ def get_repo_names(username, github_key, page_number=None, all_repo_names=None):
     print(len(all_repo_names))
 
     if not (link := headers.get('link')) or 'rel="next"' not in link:
-        breakpoint()
-        return
+        pass
     else:
         get_repo_names(username, github_key, page_number=page_number + 1, all_repo_names=all_repo_names)
     return all_repo_names
