@@ -55,11 +55,14 @@ def get_repo_names(username, github_key, page_number=None, all_repo_names=None):
 
     if (link := headers.get('link')) and 'rel="next"' in link:
         get_repo_names(username, github_key, page_number=page_number + 1, all_repo_names=all_repo_names)
+        # return
     else:
         print('End')
         print(all_repo_names)
-        return all_repo_names
-
+        breakpoint()
+    breakpoint()
+    return all_repo_names
+    # return True
 
 if __name__ == "__main__":
     pass
