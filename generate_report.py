@@ -9,7 +9,7 @@ def dep_check(dir):
     if platform == "linux":
         print("is linux")
         subprocess.run(
-            "/home/danny/Documents/dependency-check/bin/dependency-check.sh --enableExperimental --scan . ", shell=True, cwd=dir)
+            "/home/danny/Documents/dependency-check/bin/dependency-check.sh -f CSV --enableExperimental --scan . ", shell=True, cwd=dir)
     elif platform == "darwin":
         print("is mac")
         subprocess.run(
@@ -39,6 +39,6 @@ def make_report(repos):
 
 
 if __name__ == "__main__":
-    repos = ''
+    repos = 'repos/'
 
     make_report(repos)
