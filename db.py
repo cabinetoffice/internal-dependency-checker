@@ -1,15 +1,7 @@
 from numpy import genfromtxt
-from sqlalchemy import create_engine, Column, String, Integer, Float
-# from sqlalchemy.ext.declarative import DeclarativeBase
-from sqlalchemy.orm import sessionmaker, DeclarativeBase, Mapped, mapped_column
-import csv
+from sqlalchemy import create_engine, String, Integer, Float
+from sqlalchemy.orm import DeclarativeBase, Mapped, mapped_column
 import pandas as pd
-
-
-# def load_csv(file_name):
-#     data = genfromtxt(file_name, delimiter=',', skiprows=1,
-#                       converters={0: lambda s: str(s)})
-#     return data.tolist()
 
 
 class Base(DeclarativeBase):
