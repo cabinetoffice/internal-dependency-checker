@@ -1,3 +1,4 @@
+*.db
 *.csv
 repos
 node_modules

@@ -1,7 +1,7 @@
 from numpy import genfromtxt
 from sqlalchemy import create_engine, Column, String, Integer, Float
-from sqlalchemy.ext.declarative import declarative_base
-from sqlalchemy.orm import sessionmaker
+# from sqlalchemy.ext.declarative import DeclarativeBase
+from sqlalchemy.orm import sessionmaker, DeclarativeBase
 import csv
 import pandas as pd
 
@@ -12,7 +12,8 @@ import pandas as pd
 #     return data.tolist()
 
 
-Base = declarative_base()
+class Base(DeclarativeBase):
+    pass
 
 
 class Report(Base):
@@ -25,21 +26,19 @@ class Report(Base):
     severity_description = Column(String)
     severity_score = Column(Float)
 
-    # def __init__(self, report_id, dependency_name, description, vulnerability, severity_description, severity_score):
-    #     self.report_id = report_id
-    #     self.dependency_name = dependency_name
-    #     self.description = description
-    #     self.vulnerability = vulnerability
-    #     self.severity_description = severity_description
-    #     self.severity_score = severity_score
-
 
 if __name__ == '__main__':
     engine = create_engine('sqlite:///csv_report.db', echo=True)
-    Base.metadata.create_all(bind=engine)
+    # Base.metadata.create_all(bind=engine)
 
     file_name = 'dependency-check-report.csv'
-    df = pd.read_csv(file_name)
-    specific_df = df[["DependencyName", "Description", "Vulnerability"]]
-    specific_df.to_sql(con=engine, index_label='id',
-                       name=Report.__tablename__, if_exists='replace')
+    df = pd.read_csv(file_name, usecols=[
+                     2, 4, 12, 17, 18], skiprows=1, header=None)
+
+    # specific_df = df[["DependencyName", "Description", "Vulnerability"]]
+
+    print(df)
+    # print(specific_df)
+
+    # df.to_sql(con=engine, index_label='id',
+    #           name=Report.__tablename__, if_exists='append')
