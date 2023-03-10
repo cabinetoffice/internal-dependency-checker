@@ -1,6 +1,5 @@
 import requests
 import os
-from utils import get_json
 # from get_json import get_json
 from datetime import datetime
 import humanfriendly

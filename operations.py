@@ -11,6 +11,7 @@ def _get_repos(cli_args):
 
 def _check_single_repo(cli_args):
     all_deps = find_dependency_files.find_all_dependencies(cli_args['github-username'], cli_args['github_key'], cli_args['repo-name'])
+    pprint(all_deps)
     pprint(len(all_deps))
 
 # Parameters
