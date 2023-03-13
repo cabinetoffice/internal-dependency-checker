@@ -20,15 +20,17 @@ class Report(Base):
     severity_score: Mapped[float] = mapped_column(Float, nullable=True)
 
 
-if __name__ == '__main__':
-
+def database_creation(file_dir):
     engine = create_engine('sqlite:///csv_report.db', echo=True)
     Base.metadata.create_all(bind=engine)
 
-    file_name = 'dependency-check-report.csv'
-
-    df = pd.read_csv(file_name, usecols=[
+    df = pd.read_csv(file_dir, usecols=[
                      2, 4, 12, 17, 18], names=['dependency_name', 'description', 'vulnerability', 'severity_description', 'severity_score'], header=0)
 
     df.to_sql(con=engine, index_label='report_id',
               name=Report.__tablename__, if_exists='append')
+
+
+if __name__ == '__main__':
+
+    database_creation('repos/ova-alpha/dependency-check-report.csv')
