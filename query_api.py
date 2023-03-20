@@ -5,6 +5,9 @@ from functools import reduce
 from operator import concat
 from pprint import pprint
 from utils import get_json
+from utils import async_request_query_api
+import aiohttp
+import asyncio
 
 
 def get_repo_names(username, github_key):
@@ -43,11 +46,11 @@ def get_items(pages):
 
 def query_api(url, github_key, query=None):
     pages = []
-    headers, data = get_json(create_url(url, query=query), github_key)
+    headers, data = asyncio.run(async_request_query_api(create_url(url, query=query), github_key))
     pages.append(data)
     if (num_pages:= get_num_pages(headers.get('link', ''))) > 1:
         for i in range(1, num_pages):
-            headers, data = get_json(create_url(url, query=query, page=i), github_key)
+            headers, data = asyncio.run(async_request_query_api(create_url(url, query=query, page=i), github_key))
             pages.append(data)
     return pages
 
