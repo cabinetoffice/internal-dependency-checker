@@ -5,9 +5,9 @@ from functools import reduce
 from operator import concat
 from pprint import pprint
 from utils import get_json
-from utils import async_request_query_api
-import aiohttp
+from utils import async_get_json
 import asyncio
+import time
 
 
 def get_repo_names(username, github_key):
@@ -30,7 +30,7 @@ def get_num_pages(link):
         return 1
 
 
-def create_url(url, query=None, page=1, per_page=5):
+def create_url(url, query=None, page=1, per_page=5): # BUG: fix bug if num of dep files > per_page, as len(get_dep_files) is too large. To investigate, but maybe duplicate data is being concatenated together. Also bug where running all_repos only returns first 25 repos if per_page is 5
     url_ = f'{url}?page={page}&per_page={per_page}'
     if query:
         url_ = f'{url_}&{query}'
@@ -42,23 +42,25 @@ def get_items(pages):
         return reduce(concat, [page['items'] for page in pages])
     except TypeError:
         return [item for page in pages for item in page]
+    except KeyError:
+        print("You may have have hit the API request limit if you get this error unexpectedly")
 
 
 def query_api(url, github_key, query=None):
     pages = []
-    headers, data = asyncio.run(async_request_query_api(create_url(url, query=query), github_key))
+    headers, data = asyncio.run(async_get_json(create_url(url, query=query), github_key))
+    time.sleep(1) # mitigate API request limit, potential fix to returning of empty dataset problem too
     pages.append(data)
     if (num_pages:= get_num_pages(headers.get('link', ''))) > 1:
         for i in range(1, num_pages):
-            headers, data = asyncio.run(async_request_query_api(create_url(url, query=query, page=i), github_key))
+            headers, data = asyncio.run(async_get_json(create_url(url, query=query, page=i), github_key))
             pages.append(data)
     return pages
 
 if __name__ == "__main__":
-    # print(get_repo_names('harrisman05', os.environ['GITHUB_KEY']))
-    # print(get_dep_files('harrisman05', 'dependency-test-repo','requirements.txt', os.environ['GITHUB_KEY']))
-    pprint(len(get_dep_files('harrisman05', 'dependency-test-repo','package.json', os.environ['GITHUB_KEY'])))
-    pprint(len(get_dep_files('harrisman05', 'dependency-test-repo','requirements.txt', os.environ['GITHUB_KEY'])))
-    pprint(len(get_dep_files('harrisman05', 'dependency-test-repo','pom.xml', os.environ['GITHUB_KEY'])))
+    # print(len(get_repo_names('cabinetoffice', os.environ['GITHUB_KEY'])))
+    # pprint(len(get_dep_files('harrisman05', 'dependency-test-repo','package.json', os.environ['GITHUB_KEY'])))
+    # pprint(len(get_dep_files('harrisman05', 'dependency-test-repo','requirements.txt', os.environ['GITHUB_KEY'])))
+    # pprint(len(get_dep_files('harrisman05', 'dependency-test-repo','pom.xml', os.environ['GITHUB_KEY'])))
 
 
