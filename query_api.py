@@ -3,7 +3,7 @@
 import os
 from functools import reduce
 from operator import concat
-
+from pprint import pprint
 from utils import get_json
 
 
@@ -52,7 +52,10 @@ def query_api(url, github_key, query=None):
     return pages
 
 if __name__ == "__main__":
-    print(get_repo_names('harrisman05', os.environ['GITHUB_KEY']))
-    print(get_dep_files('harrisman05', 'dependency-test-repo','requirements.txt', os.environ['GITHUB_KEY']))
+    # print(get_repo_names('harrisman05', os.environ['GITHUB_KEY']))
+    # print(get_dep_files('harrisman05', 'dependency-test-repo','requirements.txt', os.environ['GITHUB_KEY']))
+    pprint(len(get_dep_files('harrisman05', 'dependency-test-repo','package.json', os.environ['GITHUB_KEY'])))
+    pprint(len(get_dep_files('harrisman05', 'dependency-test-repo','requirements.txt', os.environ['GITHUB_KEY'])))
+    pprint(len(get_dep_files('harrisman05', 'dependency-test-repo','pom.xml', os.environ['GITHUB_KEY'])))
 
 
