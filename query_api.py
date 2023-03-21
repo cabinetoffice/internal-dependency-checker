@@ -25,19 +25,19 @@ def get_dep_files(username, repo_name, dependency_file, github_key):
 
 def get_num_pages(link):
     try:
+       # list comprehension --> num = ''.join([char for char in link[link.rfind('?page=')+6:] if char.isdigit()])
         num = ''
         for char in link[link.rfind('?page=')+6:]:
             if char.isdigit():
                 num += char
             else:
                 break
-        print(num)
         return int(num)
     except IndexError:
         return 1
 
 
-def create_url(url, query=None, page=1, per_page=3): # BUG: fix bug if num of dep files > per_page, as len(get_dep_files) is too large. To investigate, but maybe duplicate data is being concatenated together. Also bug where running all_repos only returns first 25 repos if per_page is 5
+def create_url(url, query=None, page=1, per_page=100):
     url_ = f'{url}?page={page}&per_page={per_page}'
     if query:
         url_ = f'{url_}&{query}'
@@ -55,21 +55,21 @@ def get_items(pages):
 
 def query_api(url, github_key, query=None):
     pages = []
-    headers, data = asyncio.run(async_get_json(create_url(url, query=query), github_key))
-    breakpoint()
-    if (num_pages:= get_num_pages(headers.get('link', ''))) > 1:
-        for i in range(1, num_pages + 1): # need + 1 to num_pages as second parameter is not inclusive in the range 
-            print(f'num of pages: {num_pages}')
+    headers, data = asyncio.run(async_get_json(create_url(url, query=query), github_key)) # this 1st page data was being appended twice, so started for loop at page 2
+    time.sleep(3)
+    pages.append(data)
+    if headers.get('link'): # 'link' is always None if there's only 1 page
+        (num_pages:= get_num_pages(headers.get('link')))
+        for i in range(2, num_pages + 1): # Start on page 2 as page 1 data appended above. Need + 1 to num_pages as second parameter is not inclusive in the range. 
             headers, data = asyncio.run(async_get_json(create_url(url, query=query, page=i), github_key))
+            time.sleep(3)
             pages.append(data)
     return pages
 
 if __name__ == "__main__":
     # print(len(get_repo_names('cabinetoffice', os.environ['GITHUB_KEY'])))
-    # pprint(get_dep_files('harrisman05', 'dependency-test-repo','package.json', os.environ['GITHUB_KEY']))
-    pprint(get_dep_files('harrisman05', 'dependency-test-repo','requirements.txt', os.environ['GITHUB_KEY']))
-    # pprint(len(get_dep_files('harrisman05', 'dependency-test-repo','requirements.txt', os.environ['GITHUB_KEY'])))
-    print('Length of dep files:')
-    # pprint(len(get_dep_files('harrisman05', 'dependency-test-repo','pom.xml', os.environ['GITHUB_KEY'])))
+    pprint(len(get_dep_files('harrisman05', 'dependency-test-repo','package.json', os.environ['GITHUB_KEY']))) # expected output - 8
+    pprint(len(get_dep_files('harrisman05', 'dependency-test-repo','requirements.txt', os.environ['GITHUB_KEY']))) # expected output - 4
+    pprint(len(get_dep_files('harrisman05', 'dependency-test-repo','pom.xml', os.environ['GITHUB_KEY']))) # expected output - 4
 
 
