@@ -13,14 +13,16 @@ import time
 async def get_repo_names(username, github_key):
     url = f'https://api.github.com/users/{username}/repos'
     pages = await query_api(url, github_key)
-    return get_items(pages)
+    items = get_items(pages)
+    return [item['name'] for item in items]
 
 
 async def get_dep_files(username, repo_name, dependency_file, github_key):
     url = f'https://api.github.com/search/code'
     query = f'q=filename:{dependency_file}+org:{username}+repo:{username}/{repo_name}'
     pages = await query_api(url, github_key, query=query)
-    return get_items(pages)
+    items = get_items(pages)
+    return [{'name': item['name'], 'path': item['path'], 'url': item['url']} for item in items]
 
 
 def get_num_pages(link):
