@@ -3,7 +3,7 @@ import base64
 import os
 import time
 from utils import get_json
-from print_rate_limits import print_rate_limits
+from calc_rate_limits import calc_rate_limits
 
 from dependency_data import dependency_data
 
