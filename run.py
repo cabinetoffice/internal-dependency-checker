@@ -13,7 +13,6 @@ if __name__ == '__main__':
         for option in op_spec['options']:
             subcommand_parser.add_argument(option['short'], option['long'], default=None)
     cli_args = vars(parser.parse_args())
-    # breakpoint()
     if cli_args['subcommand']:
          operations.subcommands[cli_args['subcommand']]['runner'](cli_args)
     print(cli_args)

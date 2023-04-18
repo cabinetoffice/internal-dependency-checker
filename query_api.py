@@ -4,8 +4,14 @@ import os
 from functools import reduce
 from operator import concat
 
-from utils import get_json
+import requests
 
+def get_json(url, github_key):
+    headers = {}
+    if github_key:
+        headers["Authorization"] = f"token {github_key}"
+    r = requests.get(url, headers=headers)
+    return r.headers, r.json()
 
 def get_repo_names(username, github_key):
     url = f'https://api.github.com/users/{username}/repos'
@@ -22,7 +28,13 @@ def get_dep_files(username, repo_name, dependency_file, github_key):
 
 def get_num_pages(link):
     try:
-        return int(link[link.rfind('page=') + 5])
+        num = ''
+        for char in link[link.rfind('?page=')+6:]:
+            if char.isdigit():
+                num += char
+            else:
+                break
+        return int(num)
     except IndexError:
         return 1
 
@@ -52,7 +64,9 @@ def query_api(url, github_key, query=None):
     return pages
 
 if __name__ == "__main__":
-    print(get_repo_names('harrisman05', os.environ['GITHUB_KEY']))
-    print(get_dep_files('harrisman05', 'dependency-test-repo','requirements.txt', os.environ['GITHUB_KEY']))
+    pass
+
+# print(get_repo_names('harrisman05', os.environ['GITHUB_KEY']))
+# print(get_dep_files('harrisman05', 'dependency-test-repo','requirements.txt', os.environ['GITHUB_KEY']))
 
 
