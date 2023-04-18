@@ -28,7 +28,13 @@ def get_dep_files(username, repo_name, dependency_file, github_key):
 
 def get_num_pages(link):
     try:
-        return int(link[link.rfind('page=') + 5])
+        num = ''
+        for char in link[link.rfind('?page=')+6:]:
+            if char.isdigit():
+                num += char
+            else:
+                break
+        return int(num)
     except IndexError:
         return 1
 
