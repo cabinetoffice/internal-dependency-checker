@@ -14,11 +14,14 @@ def test_get_num_pages_with_valid_middle_link(link_with_page_middle):
     assert result == expected
 
 # Test case: Invalid link without '?page='
-def test_get_num_pages_with_invalid_link_without_page(link_without_page):
-    with pytest.raises(ValueError):
-        result = get_num_pages(link_without_page)
+def test_get_num_pages_with_invalid_link_without_page_return(link_without_page):
+    assert get_num_pages(link_without_page) == 1
 
 # Test case: Invalid link without digits after '?page='
-def test_get_num_pages_with_invalid_link_with_empty_page(link_with_empty_page):
-    with pytest.raises(ValueError):
-        result = get_num_pages(link_with_empty_page)
+def test_get_num_pages_with_invalid_link_with_empty_page_return(link_with_empty_page):
+    assert get_num_pages(link_with_empty_page) == 1
+
+# Test case: Invalid link without digits after '?page='
+def test_get_num_pages_link_with_page_no_number_return(link_with_page_no_number):
+    assert get_num_pages(link_with_page_no_number) == 1
+

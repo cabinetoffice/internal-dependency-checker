@@ -35,11 +35,16 @@ def get_num_pages(link):
             else:
                 break
         return int(num)
-    except IndexError:
+    except ValueError:
         return 1
 
+# page = 1, check per page = 1 is in string
+# per_page = 100, check substring contains 10
+# check the defaults
+# check query string comes after page and per page
+# test defaults and other values, that url is valid --> check url is valid using validator package? - https://validators.readthedocs.io/en/latest/
 
-def create_url(url, query=None, page=1, per_page=5):
+def create_url(url, query=None, page=1, per_page=100):
     url_ = f'{url}?page={page}&per_page={per_page}'
     if query:
         url_ = f'{url_}&{query}'
@@ -52,6 +57,8 @@ def get_items(pages):
     except TypeError:
         return [item for page in pages for item in page]
 
+# mocking query_api get_json with pytest-mock -> returns headers and json
+# use responses library to test actual get_json function
 
 def query_api(url, github_key, query=None):
     pages = []

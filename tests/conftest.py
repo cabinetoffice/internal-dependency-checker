@@ -15,3 +15,7 @@ def link_without_page():
 @pytest.fixture
 def link_with_empty_page():
     return 'https://example.com/somepage/?page=&sort=asc'
+
+@pytest.fixture
+def link_with_page_no_number():
+    return 'https://example.com/somepage?page='
