@@ -25,24 +25,8 @@ def link_with_page_no_number():
 # create_url() fixtures
 
 @pytest.fixture
-def url_with_default_first_page_value():
+def example_url():
     return  'https://example.com/users/exampleuser/repos'
-
-@pytest.fixture
-def url_with_default_per_page_value():
-    return  'https://example.com/users/exampleuser/repos'
-
-@pytest.fixture
-def url_with_changed_page_value():
-    return  f'https://example.com/users/exampleuser/repos'
-
-@pytest.fixture
-def url_with_changed_per_page_value():
-    return  f'https://example.com/users/exampleuser/repos'
-
-@pytest.fixture
-def url_with_query_string_to_be_added():
-    return  f'https://example.com/search/code'
  
 # query_api() fixtures
 
