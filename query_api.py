@@ -38,11 +38,6 @@ def get_num_pages(link):
     except ValueError:
         return 1
 
-# page = 1, check per page = 1 is in string
-# per_page = 100, check substring contains 10
-# check the defaults
-# check query string comes after page and per page
-# test defaults and other values, that url is valid --> check url is valid using validator package? - https://validators.readthedocs.io/en/latest/
 
 def create_url(url, query=None, page=1, per_page=100):
     url_ = f'{url}?page={page}&per_page={per_page}'
