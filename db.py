@@ -1,6 +1,7 @@
 from sqlalchemy import create_engine, String, Integer, Float
 from sqlalchemy.orm import DeclarativeBase, Mapped, mapped_column
 import pandas as pd
+from pathlib import Path
 
 
 class Base(DeclarativeBase):
@@ -42,11 +43,13 @@ def csv_to_database(file_dir):
 def csv_to_json(file_dir):
     df = filter_csv(file_dir)
 
-    df.to_json(path_or_buf='repos/report.json', orient='index')
+    path_json = Path(file_dir).parent
+
+    df.to_json(path_or_buf=f'{path_json}/report.json', orient='index')
 
 
 if __name__ == '__main__':
     file_dir = ('repos/node_subdir/dependency-check-report.csv')
 
     csv_to_json(file_dir)
-    csv_to_database(file_dir)
+    # csv_to_database(file_dir)
