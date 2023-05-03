@@ -24,9 +24,9 @@ def filter_csv(file_dir):
     df = pd.read_csv(file_dir, usecols=[
                      2, 4, 12, 13, 17, 18], names=['dependency_name', 'description', 'vulnerability', 'scan_type', 'severity_description', 'severity_score'], header=0)
 
-    remove_null_values = pd.notnull(df['severity_score'])
-
-    return df[remove_null_values]
+    relavent_scan_type = pd.notnull(df['severity_score'])
+    
+    return df[relavent_scan_type].reset_index(drop=True)
 
 
 def csv_to_database(file_dir):
@@ -42,13 +42,11 @@ def csv_to_database(file_dir):
 def csv_to_json(file_dir):
     df = filter_csv(file_dir)
 
-    df.to_json(path_or_buf='repos/ova-alpha/report.json', orient='index')
+    df.to_json(path_or_buf='repos/report.json', orient='index')
 
 
 if __name__ == '__main__':
-    file_dir = ('repos/ova-alpha/dependency-check-report.csv')
-
-    filter_csv(file_dir)
+    file_dir = ('repos/node_subdir/dependency-check-report.csv')
 
     csv_to_json(file_dir)
     csv_to_database(file_dir)
