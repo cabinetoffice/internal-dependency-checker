@@ -1,6 +1,8 @@
 from sqlalchemy import create_engine, String, Integer, Float
 from sqlalchemy.orm import DeclarativeBase, Mapped, mapped_column
 import pandas as pd
+from pathlib import Path
+import os
 
 
 class Base(DeclarativeBase):
@@ -24,9 +26,9 @@ def filter_csv(file_dir):
     df = pd.read_csv(file_dir, usecols=[
                      2, 4, 12, 13, 17, 18], names=['dependency_name', 'description', 'vulnerability', 'scan_type', 'severity_description', 'severity_score'], header=0)
 
-    remove_null_values = pd.notnull(df['severity_score'])
-
-    return df[remove_null_values]
+    relavent_scan_type = pd.notnull(df['severity_score'])
+    
+    return df[relavent_scan_type].reset_index(drop=True)
 
 
 def csv_to_database(file_dir):
@@ -42,13 +44,23 @@ def csv_to_database(file_dir):
 def csv_to_json(file_dir):
     df = filter_csv(file_dir)
 
-    df.to_json(path_or_buf='repos/ova-alpha/report.json', orient='index')
+    path_json = Path(file_dir).parent
 
+    df.to_json(path_or_buf=f'{path_json}/report.json', orient='index')
+
+def loop_csv_to_json(repos):
+
+    for root, subdir, files in os.walk(repos):
+
+        for file in files:
+
+            if file.endswith(".csv"):
+                print(f"found .csv file at{root}")
+
+                csv_to_json(f"{root}/{file}")
 
 if __name__ == '__main__':
-    file_dir = ('repos/ova-alpha/dependency-check-report.csv')
 
-    filter_csv(file_dir)
+    file_dir = ('repos/')
 
-    csv_to_json(file_dir)
-    csv_to_database(file_dir)
+    loop_csv_to_json(file_dir)
