@@ -1,6 +1,7 @@
 from pprint import pprint
 
 import query_api
+import db
 
 # Runners
 
@@ -11,6 +12,10 @@ def _get_repos(cli_args):
 def _get_dep_files(cli_args):
     all_deps = query_api.get_dep_files(cli_args['github-username'], cli_args['repo-name'], cli_args['dep-file'], cli_args['github-key'])
     pprint(all_deps)
+
+def _filter_reports(cli_args):
+    db.loop_csv_to_json(cli_args['repos-dir'])
+
     
 # Parameters
 github_username = {
@@ -27,6 +32,10 @@ dep_file = {
 
 github_key = {
     'name': 'github-key'
+}
+
+repos_dir = {
+    'name': 'repos-dir'
 }
 
 # Options
@@ -46,5 +55,12 @@ subcommands = {
                     'options': [],
                     'runner': _get_dep_files,
                     'help': ''
-                }                
+                },   
+    'filter-reports' : {
+                    'params': [repos_dir],
+                    'options': [],
+                    'runner':_filter_reports,
+                    'help': ''
+                } 
+                
 }
