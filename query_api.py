@@ -3,7 +3,6 @@
 import os
 from functools import reduce
 from operator import concat
-
 import requests
 
 def get_json(url, github_key):
