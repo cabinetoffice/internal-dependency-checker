@@ -69,5 +69,5 @@ def create_dependency_subdirectory(dependency_path, repository_name):
     return absolute_subdir_path
 
 if __name__ == '__main__':
-    write_dependencies_to_file('dependency-test-repo', os.environ['GITHUB_KEY'], dependency_data)
+    pass
 

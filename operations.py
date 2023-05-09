@@ -1,10 +1,11 @@
 from pprint import pprint
-import os
+
 
 from dependency_data import dependency_data
 import query_api
 import db
 import write_dependencies_to_file as wd
+import generate_report as gr
 
 # Runners
 
@@ -21,8 +22,12 @@ def _get_dep_files(cli_args):
 
     pprint(all_deps)
 
+def _generate_reports(cli_args):
+    gr.make_report(cli_args['repos-root-dir'])
+    
+
 def _filter_reports(cli_args):
-    db.loop_csv_to_json(cli_args['repos-dir'])
+    db.loop_csv_to_json(cli_args['repos-root-dir'])
 
     
 # Parameters
@@ -42,8 +47,8 @@ github_key = {
     'name': 'github-key'
 }
 
-repos_dir = {
-    'name': 'repos-dir'
+repos_root_dir = {
+    'name': 'repos-root-dir'
 }
 
 # Options
@@ -65,10 +70,17 @@ subcommands = {
                     'help': ''
                 },   
     'filter-reports' : {
-                    'params': [repos_dir],
+                    'params': [repos_root_dir],
                     'options': [],
                     'runner':_filter_reports,
                     'help': ''
+                },
+    'generate-reports' : {
+                    'params': [repos_root_dir],
+                    'options': [],
+                    'runner':_generate_reports,
+                    'help': ''
                 } 
+            
                 
 }

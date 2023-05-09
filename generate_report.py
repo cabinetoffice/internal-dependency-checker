@@ -39,6 +39,4 @@ def make_report(repos):
 
 
 if __name__ == "__main__":
-    repos = 'repos/'
-
-    make_report(repos)
+    pass
