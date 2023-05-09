@@ -43,9 +43,11 @@ def get_num_pages(link):
 
 
 def create_url(url, query=None, page=1, per_page=100):
-    url_ = f'{url}?page={page}&per_page={per_page}'
+    url_ = url
     if query:
-        url_ = f'{url_}&{query}'
+        url_ = f'{url_}?{query}&page={page}&per_page={per_page}'
+    else:
+        url_ = f'{url_}?page={page}&per_page={per_page}'
     return url_
 
 
