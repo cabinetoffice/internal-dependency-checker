@@ -36,7 +36,7 @@ $ python3 run.py get-repos <github_username> $GITHUB_KEY
 
 `['repo1', 'some_repo2', 'last_repo3']`
 
-2) For a given repository and dependency filetype, extract all dependency names, dependency file paths and dependency content urls:
+2) For a given repository and dependency filetype, extract all dependency names, dependency file paths and dependency content urls. A subfolder with the repository name is created, and the dependency data is recursively written to file:
 
 `
 $ python3 run.py get-dep-files <github_username> <github_repository_name> <package.json> $GITHUB_KEY
@@ -59,3 +59,17 @@ $ python3 run.py get-dep-files <github_username> <github_repository_name> <packa
   'url': 'https://api.github.com/repositories/111111111111/contents/node_subdir/package.json?ref=1111111111111111111111111111111111111111'}]
 ```
 NOTE: Repository is recursively searched, so nested dependency files are extracted.
+
+3. Once data has been written to file, run the following command to generate vulnerable dependency reports in the repository sub-directory. This commands invokes the OWASP CLI tool on all the dependency files present in the sub-directory:
+
+```
+python run.py generate-reports repos
+```
+
+NOTE: If there are many nested dependencies or the OWASP tool hasn't been recently run, this command can take a long time to complete.
+
+4. Once the dependency reports have been generated, run the following command to filter the reports with the relevant vulnerable dependency data, and create a JSON file containing this data.
+
+```
+python run.py filter-reports repos 
+```
