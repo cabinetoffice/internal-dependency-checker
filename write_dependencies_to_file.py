@@ -1,12 +1,8 @@
 import base64
 import os
 from query_api import get_json
-from dependency_data import dependency_data
 
 GITHUB_KEY = os.environ["GITHUB_KEY"]
-
-# TODO import get_json using modules
-
 
 def write_dependency_file(url, github_key, file_path):
     headers, data = get_json(url, github_key)
@@ -22,7 +18,7 @@ def write_dependency_file(url, github_key, file_path):
 def create_subdirs(dependency_name, dependency_path, repo_name):
     
     subdir_path = os.path.join(f"repos/{repo_name}/{dependency_path}")
-
+    print(f'subdir path - {subdir_path}')
     if not os.path.exists(subdir_path):
         os.makedirs(subdir_path)
 
@@ -36,12 +32,14 @@ def write_dependencies_to_file(repo_name, github_key, dependency_data):
         dependency_name = dependency["name"]
         dependency_path = dependency["path"]
 
-        if dependency_path == dependency_name:
-            path_split = dependency_path.split("/")  # split path string into list
-            remove_dependency_file = path_split[:-1]  # remove dependency file from filepath in order to create subdir only filepath
-            dependency_path = "/".join(remove_dependency_file)  # rejoin to list elements to create string with subdir path
+        path_split = dependency_path.split("/")  # split path string into list
+        remove_dependency_file = path_split[:-1]  # remove dependency file from filepath in order to create subdir only filepath
+        dependency_path = "/".join(remove_dependency_file)  # rejoin to list elements to create string with subdir path
 
         url = dependency["url"]
+
+        print(dependency_name)
+        print(dependency_path)
 
         file_path = f"repos/{repo_name}/{dependency_path}" if dependency_name == dependency_path else create_subdirs(dependency_name, dependency_path, repo_name)
         

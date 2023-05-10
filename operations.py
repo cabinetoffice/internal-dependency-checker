@@ -1,7 +1,4 @@
 from pprint import pprint
-
-
-from dependency_data import dependency_data
 import query_api
 import db
 import write_dependencies_to_file as wd

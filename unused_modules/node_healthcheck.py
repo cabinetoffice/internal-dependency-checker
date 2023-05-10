@@ -1,7 +1,7 @@
 import requests
 import os
 from query_api import get_json
-from rate_limit import calc_rate_limits
+from unused_modules.rate_limit import calc_rate_limits
 
 GITHUB_KEY = os.environ["GITHUB_KEY"]
 USERNAME = 'cabinetoffice'

@@ -7,13 +7,13 @@ from sys import platform
 
 def dep_check(dir):
     if platform == "linux":
-        print("is linux")
-        subprocess.run(
-            "/home/danny/Documents/dependency-check/bin/dependency-check.sh -f CSV --enableExperimental --scan . ", shell=True, cwd=dir)
+        print("is linux. Script not added to scan dependencies.")
+        # subprocess.run(
+        #     "/home/danny/Documents/dependency-check/bin/dependency-check.sh -f CSV --enableExperimental --scan . ", shell=True, cwd=dir)
     elif platform == "darwin":
         print("is mac")
         subprocess.run(
-            "dependency-check --enableExperimental --scan .", shell=True, cwd=dir)
+            "dependency-check -f CSV --enableExperimental --scan .", shell=True, cwd=dir)
 
 
 def make_report(repos):
