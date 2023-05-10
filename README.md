@@ -6,14 +6,20 @@ A prototype CLI tool built with Python used to scan Github repositories for depe
 
 ## Pre-requisites to run prototype
 
-- Python
+- MacOS (no current working implementations for Linux/Windows)
+- Python3 installed
 - OWASP CLI tool (Guide to set-up here -
 https://github.com/jeremylong/DependencyCheck)
 
 
 ## Configuration
 
-Create a Github token as below:
+### Create Python virtual environment
+
+- Install pyenv and create a virtual environment - https://realpython.com/intro-to-pyenv/
+- Run `pip install -r requirements.txt`
+
+### Create a Github token as below:
 
 1) Get a Github Token https://github.com/settings/profile then click 'developer settings'
 2) Select personal access tokens and choose a classic token
@@ -25,7 +31,7 @@ Create a Github token as below:
 
 ## Running on the CLI
 
-The tool is run by navigating to the root directory of the project and running commands on the CLI. The tool currently can perform 2 main actions in isolation:
+The tool is run by navigating to the root directory of the project and running commands on the CLI. The tool currently can perform 4 operations:
 
 1) For a given Github username, get all repository names:
 
@@ -63,7 +69,7 @@ $ python run.py get-dep-files <github_username> <github_repository_name> <packag
 ```
 NOTE: Repository is recursively searched, so nested dependency files are extracted.
 
-3. Once data has been written to file, run the following command to generate vulnerable dependency reports in the repository sub-directory. This commands invokes the OWASP CLI tool on all the dependency files present in the sub-directory:
+3. Once data has been written to file, run the following command to generate vulnerable dependency reports in the repository sub-directory. Currently, only package.json and requirements.txt work for this command. This command run the OWASP CLI dependency-check command on all the dependency files present in the sub-directory:
 
 ```
 $ python run.py generate-reports repos
@@ -79,7 +85,7 @@ $ python run.py filter-reports repos
 
 ## TODOs:
 
-* Implement 
+* Implement linters (flake8 + Black)
 
 * Investigate problems associated with repositories that aren't owned by the organisation:
   Fork?
