@@ -17,14 +17,12 @@ class Report(Base):
     description: Mapped[str] = mapped_column(String(1000))
     vulnerability: Mapped[str] = mapped_column(String(1000))
     scan_type: Mapped[str] = mapped_column(String(20))
-    severity_description: Mapped[str] = mapped_column(
-        String(1000))
     severity_score: Mapped[float] = mapped_column(Float)
 
 
 def filter_csv(file_dir):
     df = pd.read_csv(file_dir, usecols=[
-                     2, 4, 12, 13, 17, 18], names=['dependency_name', 'description', 'vulnerability', 'scan_type', 'severity_description', 'severity_score'], header=0)
+                     2, 4, 12, 13, 15], names=['dependency_name', 'description', 'vulnerability', 'scan_type',  'severity_score'], header=0)
 
     relavent_scan_type = pd.notnull(df['severity_score'])
     
