@@ -1,8 +1,8 @@
 .PHONY: clean dependency-checks start docker-up docker-build
 
 # `https://raw.githubusercontent.com/${org}/${repoName}/${repoDefaultBranch}/${fileName}`
-ORG_NAME := Mouhajer-CO
-REPO_NAME := repo-dependency-checker
+ORG_NAME := cabinetoffice
+REPO_NAME := internal-dependency-checker
 BRANCH_NAME := main
 
 REPO_PATH := https://raw.githubusercontent.com/$(ORG_NAME)/$(REPO_NAME)/$(BRANCH_NAME)
