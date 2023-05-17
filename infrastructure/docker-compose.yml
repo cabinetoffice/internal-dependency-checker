@@ -1,0 +1,47 @@
+version: '3'
+
+services:
+
+  # dependency-checks-docker:
+  #   build: ./dependencies/docker
+  #   volumes:
+  #     - ./reports:/repo-dependency-checker/reports
+  
+  # dependency-checks-go:
+  #   build: ./dependencies/go
+  #   volumes:
+  #     - ./reports:/repo-dependency-checker/reports
+  
+  # dependency-checks-java:
+  #   build: ./dependencies/java
+  #   volumes:
+  #     - ./reports:/repo-dependency-checker/reports
+  
+  dependency-checks-node:
+    build: ./dependencies/node
+    volumes:
+      - ./reports:/repo-dependency-checker/reports
+
+  # dependency-checks-perl:
+  #   build: ./dependencies/perl
+  #   volumes:
+  #     - ./reports:/repo-dependency-checker/reports
+  
+  # dependency-checks-php:
+  #   build: ./dependencies/php
+  #   volumes:
+  #     - ./reports:/repo-dependency-checker/reports
+  
+  # dependency-checks-python:
+  #   build: ./dependencies/python
+  #   volumes:
+  #     - ./reports:/repo-dependency-checker/reports
+  
+  # dependency-checks-ruby:
+  #   build: ./dependencies/ruby
+  #   volumes:
+  #     - ./reports:/repo-dependency-checker/reports
+  
+
+volumes:
+    reports:
