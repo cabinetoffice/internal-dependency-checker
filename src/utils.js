@@ -1,5 +1,3 @@
-import axios from "axios";
-
 import { writeFile } from 'node:fs/promises';
 
 import {
