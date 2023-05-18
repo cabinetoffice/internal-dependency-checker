@@ -14,7 +14,7 @@ import {
 // ************************************************************ //
 
 export const checkFileExists = async (fileUrl) => {
-    return await axios.head(fileUrl)
+    return await fetch(fileUrl, {method: 'HEAD'})
         .then( response => response.status === 200)
         .catch( _ => false)
 }
