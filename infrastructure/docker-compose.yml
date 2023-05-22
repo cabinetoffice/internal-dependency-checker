@@ -12,10 +12,10 @@ services:
   #   volumes:
   #     - ./reports:/repo-dependency-checker/reports
   
-  # dependency-checks-java:
-  #   build: ./dependencies/java
-  #   volumes:
-  #     - ./reports:/repo-dependency-checker/reports
+  dependency-checks-java:
+    build: ./dependencies/java
+    volumes:
+      - ./reports:/repo-dependency-checker/reports
   
   dependency-checks-node:
     build: ./dependencies/node
