@@ -32,10 +32,10 @@ services:
   #   volumes:
   #     - ./reports:/repo-dependency-checker/reports
   
-  # dependency-checks-python:
-  #   build: ./dependencies/python
-  #   volumes:
-  #     - ./reports:/repo-dependency-checker/reports
+  dependency-checks-python:
+    build: ./dependencies/python
+    volumes:
+      - ./reports:/repo-dependency-checker/reports
   
   # dependency-checks-ruby:
   #   build: ./dependencies/ruby
