@@ -1,5 +1,3 @@
-import axios from "axios";
-
 import { writeFile } from 'node:fs/promises';
 
 import {
@@ -14,7 +12,7 @@ import {
 // ************************************************************ //
 
 export const checkFileExists = async (fileUrl) => {
-    return await axios.head(fileUrl)
+    return await fetch(fileUrl, {method: 'HEAD'})
         .then( response => response.status === 200)
         .catch( _ => false)
 }
@@ -23,11 +21,12 @@ export const checkFileExists = async (fileUrl) => {
 
 let organizationRepos = [];
 export const getOrganizationRepos = async (organization = "", page = 1, per_page = PER_PAGE) => {
-    return await axios.get(`https://api.github.com/orgs/${organization}/repos?page=${page}&per_page=${per_page}`)
+    return await fetch(`https://api.github.com/orgs/${organization}/repos?page=${page}&per_page=${per_page}`)
+        .then( res => res.json())
         .then( repos => {
-            console.log(`getOrganizationRepos from ${organization}, page ${page}, retrieved ${repos.data.length}`);
-            organizationRepos = organizationRepos.concat(repos.data);
-            return (repos.data?.length) ? getOrganizationRepos(organization, page + 1) : organizationRepos;
+            console.log(`getOrganizationRepos from ${organization}, page ${page}, retrieved ${repos.length}`);
+            organizationRepos = organizationRepos.concat(repos);
+            return (repos?.length) ? getOrganizationRepos(organization, page + 1) : organizationRepos;
         })
         .catch( error => {
             console.error(`getOrganizationRepos error: ${error.message}`);
