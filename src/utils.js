@@ -6,7 +6,9 @@ import {
     STATE_DEPENDENCIES,
     PREFIX_FILE_NAME,
     STATE_DEPENDENCIES_FILE_NAME,
-    STATE_LANGUAGE_DEPENDENCY_KEY
+    STATE_LANGUAGE_DEPENDENCY_KEY,
+    ORGANIZATION,
+    GITHUB_KEY
 } from "./config.js";
 
 // ************************************************************ //
@@ -20,13 +22,15 @@ export const checkFileExists = async (fileUrl) => {
 // ************************************************************ //
 
 let organizationRepos = [];
-export const getOrganizationRepos = async (organization = "", page = 1, per_page = PER_PAGE) => {
-    return await fetch(`https://api.github.com/orgs/${organization}/repos?page=${page}&per_page=${per_page}`)
+const headers = { 'headers': { 'Authorization': `Bearer ${GITHUB_KEY}` } };
+export const getOrganizationRepos = async (page = 1) => {
+    const repoUrl = `https://api.github.com/orgs/${ORGANIZATION}/repos?page=${page}&per_page=${PER_PAGE}`;
+    return await fetch( repoUrl, headers )
         .then( res => res.json())
         .then( repos => {
-            console.log(`getOrganizationRepos from ${organization}, page ${page}, retrieved ${repos.length}`);
+            console.log(`getOrganizationRepos from ${ORGANIZATION}, page ${page}, retrieved ${repos?.length}`);
             organizationRepos = organizationRepos.concat(repos);
-            return (repos?.length) ? getOrganizationRepos(organization, page + 1) : organizationRepos;
+            return (repos?.length) ? getOrganizationRepos(page + 1) : organizationRepos;
         })
         .catch( error => {
             console.error(`getOrganizationRepos error: ${error.message}`);
@@ -49,7 +53,7 @@ export const getInfoFromOrganizationRepos = (repo) => {
 
 // ************************************************************ //
 
-export const writeDependencyFiles = () => {
+export const writeDependencyFiles = async () => {
     console.log(`Writing dependencies files.`);
 
     for ( const key in STATE_LANGUAGE_DEPENDENCY_KEY ) {
@@ -61,7 +65,7 @@ export const writeDependencyFiles = () => {
             data["dependencies"].push(STATE_DEPENDENCIES[langKey][depRepo])
         }
 
-        writeFile(filePath, JSON.stringify(data))
+        await writeFile(filePath, JSON.stringify(data))
             .then(() => {
                 console.log(`Saved data to ${filePath}.`);
             })

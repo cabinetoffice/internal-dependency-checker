@@ -39,7 +39,7 @@ dependency-checks:
 # Start dependency checks and create state file
 start:
 	npm ci --silent
-	npm start -- ORG=${ORG}
+	npm start --ORG=${ORG}
 
 # Build Docker images
 docker-build:
