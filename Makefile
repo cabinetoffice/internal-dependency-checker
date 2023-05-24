@@ -45,9 +45,11 @@ start:
 docker-build:
 	docker compose -f infrastructure/docker-compose.yml build
 
+
+DOCKER_COMPOSE_OUT_FILE_NAME := ./infrastructure/output/$(PREFIX)__docker__compose__output__$(TIMESTAMP).txt
 # Start Docker Compose
 docker-up:
-	docker compose -f infrastructure/docker-compose.yml up
+	docker compose -f infrastructure/docker-compose.yml up &> $(DOCKER_COMPOSE_OUT_FILE_NAME)
 
 # .PHONY: upload-to-s3
 # upload-to-s3: dependency-checks
