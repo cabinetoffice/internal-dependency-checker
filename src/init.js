@@ -13,9 +13,9 @@ import {
 
 // import { repos } from "../test/mock/repos.js";
 
-export const init = async ( organization ) => {
+export const init = async () => {
     try {
-        const repos = await getOrganizationRepos(organization);
+        const repos = await getOrganizationRepos();
         for ( const repo of repos ) {
             const { repoName, org, branch, filter, fileUrl } = getInfoFromOrganizationRepos( repo );
             for ( const fileName of DEPENDENCY_FILES[filter] ) {
