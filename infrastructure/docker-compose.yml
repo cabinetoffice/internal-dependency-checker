@@ -37,10 +37,10 @@ services:
     volumes:
       - ./reports:/repo-dependency-checker/reports
   
-  # dependency-checks-ruby:
-  #   build: ./dependencies/ruby
-  #   volumes:
-  #     - ./reports:/repo-dependency-checker/reports
+  dependency-checks-ruby:
+    build: ./dependencies/ruby
+    volumes:
+      - ./reports:/repo-dependency-checker/reports
   
 
 volumes:
