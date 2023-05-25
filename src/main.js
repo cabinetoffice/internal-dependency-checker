@@ -11,3 +11,5 @@ if (ORGANIZATION && GITHUB_KEY) {
         console.error(`Access Token/Github key is missing`);
     }
 }
+
+export default function() {}
