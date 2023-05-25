@@ -5,8 +5,12 @@
   "main": "src/main.js",
   "type": "module",
   "scripts": {
-    "start": "node src/main.js ${ORG}"
+    "start": "node src/main.js ${ORG}",
+    "test": "NODE_OPTIONS=--experimental-vm-modules jest"
   },
   "author": "X-CO Developers",
-  "license": "MIT"
+  "license": "MIT",
+  "devDependencies": {
+    "jest": "^29.5.0"
+  }
 }
