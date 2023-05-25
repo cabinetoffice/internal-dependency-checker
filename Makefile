@@ -1,4 +1,4 @@
-.PHONY: clean dependency-checks start docker-up docker-build
+.PHONY: clean dependency-checks start docker-up docker-build test
 
 # `https://raw.githubusercontent.com/${org}/${repoName}/${repoDefaultBranch}/${fileName}`
 ORG_NAME := cabinetoffice
@@ -50,6 +50,10 @@ DOCKER_COMPOSE_OUT_FILE_NAME := ./infrastructure/output/$(PREFIX)__docker__compo
 # Start Docker Compose
 docker-up:
 	docker compose -f infrastructure/docker-compose.yml up &> $(DOCKER_COMPOSE_OUT_FILE_NAME)
+
+test:
+	rm -rf ./coverage
+	npm run test
 
 # .PHONY: upload-to-s3
 # upload-to-s3: dependency-checks
