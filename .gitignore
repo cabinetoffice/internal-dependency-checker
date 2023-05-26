@@ -1,6 +1,7 @@
 node_modules
 __*
 coverage
+*.log
 
 infrastructure/output/*.txt
 infrastructure/reports/*.json
