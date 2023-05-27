@@ -26,18 +26,25 @@ do
   # Print arguments
   echo "Contents: $file1, $file2, $file_name and $TIMESTAMP"
 
+  mkdir $TIMESTAMP && cd "$_"
   if [ "${file1##*/}" == $GEMFILE_FILE_NAME ] && [[ "$file2" ]] && [ "${file2##*/}" == $GEMFILE_LOCK_FILE_NAME ]
   then
-    mkdir $TIMESTAMP && cd "$_"
     echo "Detected Gemfile and Gemfile.lock files. Installing dependencies using bundle install"
     curl --silent -O $file1
     curl --silent -O $file2
     bundle install --quiet
     echo "Dependencies installed"
     bundle-audit check --format json --output $REPORT_FILE_NAME
-    echo "Saved report file to $REPORT_FILE_NAME"
-    cd ..
+  elif [ "${file1##*/}" == $GEMFILE_FILE_NAME ]
+  then
+    echo "Detected Gemfile file. Installing dependencies using bundle install"
+    curl --silent -O $file1
+    bundle install --quiet
+    echo "Dependencies installed"
+    bundle-audit check --format json --output $REPORT_FILE_NAME    
   else
-    echo "Error: Could not detect file type or unsupported file type."
+    echo {'"error"' : '"'Error: Could not detect files type ${file1} and ${file2}'"'} > $REPORT_FILE_NAME
   fi
+  echo "Saved report file to $REPORT_FILE_NAME"
+  cd ..
 done
