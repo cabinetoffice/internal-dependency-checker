@@ -34,6 +34,6 @@ do
     echo "Saved report file to $REPORT_FILE_NAME"
     cd ..
   else
-    echo "Error: Could not detect file type or unsupported file type."
+    echo {'"error"' : '"'Error: Could not detect file type ${file1}'"'} > $REPORT_FILE_NAME
   fi
 done
