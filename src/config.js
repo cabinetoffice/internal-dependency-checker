@@ -1,5 +1,5 @@
-export const ORGANIZATION = process.argv[2] || "";
-export const GITHUB_KEY = process.env.GITHUB_KEY || "";
+export const ORGANIZATION = process.argv[2];
+export const GITHUB_KEY = process.env.GITHUB_KEY;
 
 export const PER_PAGE = 100;
 export const PREFIX_FILE_NAME = 'mz';
