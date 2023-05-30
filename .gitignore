@@ -1,5 +1,10 @@
 node_modules
 __*
 
+**/.DS_Store
+**.log
+**.diff
+
+infrastructure/repos/
 infrastructure/output/*.txt
 infrastructure/reports/*.json
