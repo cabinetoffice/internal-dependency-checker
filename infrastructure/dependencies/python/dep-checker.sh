@@ -12,11 +12,12 @@ dependencies=$(/usr/bin/jq -c '.dependencies[]' ./dependencies.json)
 for dependency in $dependencies
 do
 
-  TIMESTAMP=`date +%Y-%m-%d_%H-%M-%S`
-
   # Extract the dependency arguments using jq
   file1=$(echo "$dependency" | jq -r '.file1')
   file_name=$(echo "$dependency" | jq -r '.file_name')
+
+  TIMESTAMP=`date +%Y-%m-%d_%H-%M-%S`
+  REPORT_FILE_NAME="./"${REPORTS_FOLDER_NAME}"/"$file_name"__pip3_install__"$TIMESTAMP".json"
 
   # Print arguments
   echo "Contents: $file1, $file_name and $TIMESTAMP"
@@ -29,10 +30,10 @@ do
     . my_env_$TIMESTAMP/bin/activate
     pip3 install -r requirements.txt --quiet --no-cache-dir
     pip3 install pip-audit
-    pip-audit -r requirements.txt -f json -o "./"${REPORTS_FOLDER_NAME}"/"$file_name"__pip3_install__"$TIMESTAMP".json"
-    echo "Saved report file to ./"${REPORTS_FOLDER_NAME}"/"$file_name"__pip3_install__"$TIMESTAMP".json"
+    pip-audit -r requirements.txt -f json -o $REPORT_FILE_NAME
+    echo "Saved report file to $REPORT_FILE_NAME"
     deactivate
   else
-    echo "Error: Could not detect file type or unsupported file type."
+    echo {'"error"' : '"'Error: Could not detect file type ${file1}'"'} > $REPORT_FILE_NAME
   fi
 done
