@@ -1,4 +1,4 @@
-import { describe, expect, test, jest, afterEach } from '@jest/globals';
+import { describe, expect, test, jest, beforeEach } from '@jest/globals';
 
 import { STATE_DEPENDENCIES } from "../../src/config.js";
 import {
@@ -21,7 +21,7 @@ const consoleErrorMock = jest.spyOn(console, 'error').mockImplementation();
 
 describe("UTILS tests suites", () => {
 
-    afterEach(() => {
+    beforeEach(() => {
         jest.resetAllMocks();
      });
 
@@ -52,7 +52,6 @@ describe("UTILS tests suites", () => {
 
             test(`should throw an error based on wrong data passed to updateStateDependencies`, () => {
                 const errMsg = 'This should not happen!';
-                const err = new Error(errMsg);
                 const mockData = mockStateDependenciesData[3];
                 const { tech, key, repoName, org, branch, fileUrl } = mockData;
 
@@ -83,7 +82,6 @@ describe("UTILS tests suites", () => {
 
             test(`should throw an error based on wrong filename getTechFile("any")`, () => {
                 const errMsg = 'Error: fix DEPENDENCY_FILES object! File "any" has to be added.';
-                const err = new Error(errMsg);
                 expect(() => { getTechFile("any") }).toThrow(Error)
                 expect(() => { getTechFile("any") }).toThrow(errMsg)
             });

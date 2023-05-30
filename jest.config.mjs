@@ -12,6 +12,7 @@ export default {
 
   // The directory where Jest should store its cached dependency information
   // cacheDirectory: "/private/var/folders/4d/1_7234k94j150qv3rjgvydk40000gq/T/jest_dz",
+  silent: true,
 
   // Automatically clear mock calls, instances, contexts and results before every test
   clearMocks: true,
@@ -125,9 +126,7 @@ export default {
   // rootDir: undefined,
 
   // A list of paths to directories that Jest should use to search for files in
-  // roots: [
-  //   "<rootDir>"
-  // ],
+  roots: [  "<rootDir>/src",  "<rootDir>/test" ],
 
   // Allows you to use a custom runner instead of Jest's default test runner
   // runner: "jest-runner",

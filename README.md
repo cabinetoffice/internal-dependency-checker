@@ -17,6 +17,12 @@ make docker-build
 make docker-up
 ```
 
+### Test
+
+```bash
+make test
+```
+
 ### Create a Github token
 
 1. Get a Github Token `https://github.com/settings/profile` then click 'developer settings'
@@ -28,5 +34,4 @@ make docker-up
 ## TO DO
 
 - Cross check dependecy and double ckeck docker scripts (avoid contaminations)
-- Create git Auth Token to get private repos
 - Complete DOCs and Test coverage

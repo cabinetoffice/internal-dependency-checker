@@ -48,7 +48,7 @@ export const getInfoFromOrganizationRepos = (repo) => {
 
     const fileUrl = `https://raw.githubusercontent.com/${org}/${repoName}/${branch}`;
 
-    return { repoName, org, filter, fileUrl, branch }
+    return { repoName, org, filter, fileUrl, branch };
 }
 
 // ************************************************************ //
@@ -66,8 +66,8 @@ export const writeDependencyFiles = async () => {
         }
 
         await writeFile(filePath, JSON.stringify(data))
-            .then(() => {
-                console.log(`Saved data to ${filePath}.`);
+            .then((s) => {
+                console.log(`${s} Saved data to ${filePath}.`);
             })
             .catch(err => {
                 console.error(`Error while saving data to ${filePath}: ${err.message}`);
@@ -78,7 +78,6 @@ export const writeDependencyFiles = async () => {
 // ************************************************************ //
 
 export const updateStateDependencies = (tech, key, repoName, org, branch, fileUrl) => {
-
     const path = `${org}__${repoName}`;
     const file_name = `${PREFIX_FILE_NAME}__${org}__${repoName}__${branch}`;
     const dep_obj = { file_name, [key]: fileUrl };
@@ -141,7 +140,8 @@ export const getTechFile = (fileName) => {
             key = "file2";
             break;
         default:
-            console.error(`Error on ${fileName}.`);
+            const ErrorMsg = "Error: fix DEPENDENCY_FILES object!"
+            throw new Error(`${ErrorMsg} File "${fileName}" has to be added.`);
     }
     return { tech, key };
 };
