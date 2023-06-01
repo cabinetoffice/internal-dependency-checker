@@ -1,0 +1,96 @@
+{
+    "env": {
+      "node": true,
+      "es2021": true
+    },
+    "extends": "eslint:recommended",
+    "overrides": [],
+    "parserOptions": {
+      "ecmaVersion": "latest",
+      "sourceType": "module"
+    },
+    "rules": {
+      "arrow-spacing": "error",
+      "brace-style": [
+        "error",
+        "1tbs",
+        {
+          "allowSingleLine": true
+        }
+      ],
+      "comma-spacing": [
+        "error",
+        {
+          "before": false,
+          "after": true
+        }
+      ],
+      "curly": "error",
+      "eqeqeq": "error",
+      "eol-last": [
+        "warn",
+        "always"
+      ],
+      "indent": [
+        "error",
+        4,
+        {
+          "FunctionExpression": {
+            "parameters": "first"
+          },
+          "CallExpression": {
+            "arguments": "first"
+          },
+          "outerIIFEBody": 2,
+          "SwitchCase": 1
+        }
+      ],
+      "key-spacing": [
+        "error",
+        {
+          "afterColon": true
+        }
+      ],
+      "keyword-spacing": [
+        "error",
+        {
+          "before": true,
+          "after": true
+        }
+      ],
+      "no-irregular-whitespace": "error",
+      "no-trailing-spaces": "error",
+      "no-multi-spaces": "error",
+      "no-multiple-empty-lines": [
+        "error",
+        {
+          "max": 1,
+          "maxEOF": 1
+        }
+      ],
+      "no-underscore-dangle": [
+        "error",
+        {
+          "allowFunctionParams": true
+        }
+      ],
+      "no-unused-vars": "off",
+      "no-whitespace-before-property": "error",
+      "object-curly-spacing": [
+        "error",
+        "always"
+      ],
+      "require-await": "error",
+      "space-infix-ops": "error",
+      "spaced-comment": [
+        "error",
+        "always",
+        {
+          "markers": [
+            "/",
+            "*"
+          ]
+        }
+      ]
+    }
+  }

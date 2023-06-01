@@ -14,7 +14,7 @@ import {
 // ************************************************************ //
 
 export const checkFileExists = async (fileUrl) => {
-    return await fetch(fileUrl, {method: 'HEAD'})
+    return await fetch(fileUrl, { method: 'HEAD' })
         .then( response => response.status === 200)
         .catch( _ => false)
 }
@@ -91,7 +91,7 @@ export const updateStateDependencies = (tech, key, repoName, org, branch, fileUr
             STATE_DEPENDENCIES[tech][path][key] = fileUrl;
         } else {
             console.error( `error: path->${path},\nfile name->${file_name},\nkey->${key}` );
-            throw new Error('This should not happen!'); 
+            throw new Error('This should not happen!');
         }
     }
 
@@ -140,8 +140,7 @@ export const getTechFile = (fileName) => {
             key = "file2";
             break;
         default:
-            const ErrorMsg = "Error: fix DEPENDENCY_FILES object!"
-            throw new Error(`${ErrorMsg} File "${fileName}" has to be added.`);
+            throw new Error(`Error: fix DEPENDENCY_FILES object! File "${fileName}" has to be added.`);
     }
     return { tech, key };
 };
