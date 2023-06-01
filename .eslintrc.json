@@ -33,7 +33,7 @@
       ],
       "indent": [
         "error",
-        2,
+        4,
         {
           "FunctionExpression": {
             "parameters": "first"
@@ -42,7 +42,7 @@
             "arguments": "first"
           },
           "outerIIFEBody": 2,
-          "SwitchCase": 2
+          "SwitchCase": 1
         }
       ],
       "key-spacing": [
