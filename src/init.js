@@ -19,7 +19,7 @@ export const init = async () => {
         for ( const repo of repos ) {
             const { repoName, org, branch, filter, fileUrl } = getInfoFromOrganizationRepos( repo );
             for ( const fileName of DEPENDENCY_FILES[filter] ) {
-                if( await checkFileExists(`${fileUrl}/${fileName}`) ) {
+                if ( await checkFileExists(`${fileUrl}/${fileName}`) ) {
                     const { tech, key } = getTechFile(fileName);
                     updateStateDependencies(tech, key, repoName, org, branch, `${fileUrl}/${fileName}`)
                 }
