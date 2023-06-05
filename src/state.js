@@ -11,9 +11,9 @@ import {
 
 (async () => {
     try {
-        checkFileExists(`./${REPOS_DIRECTORY_PATH}`);
+        checkFileExists(REPOS_DIRECTORY_PATH);
 
-        await saveToFile(`./${STATE_FILE_PATH}`, STATE_DEPENDENCIES);
+        await saveToFile(STATE_FILE_PATH, STATE_DEPENDENCIES);
     } catch (error) {
         console.error(`Error: ${error.message}`)
     }

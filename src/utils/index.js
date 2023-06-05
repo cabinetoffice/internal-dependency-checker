@@ -31,15 +31,16 @@ export const getGitOrgData = async (what, page = 1) => {
 export const updateStateFile = (filePath, fileName, fileExtension) => {
 
     const fp = filePath.split('/');
-    const org = fp[1];
-    const repoName = fp[2];
+    const org = fp[2];
+    const repoName = fp[3];
 
-    const repo_path = `${fp[0]}/${org}/${repoName}`;
-    const repo_file_path = fp.slice(0, fp.length - 1).join('/');
-    const file_name = fp.slice(0, fp.length - 1).join('__');
+    const repo_path = `${fp[1]}/${org}/${repoName}`;
+    const repo_file_path = fp.slice(1, fp.length - 1).join('/');
+    const file_name = fp.slice(1, fp.length - 1).join('__');
+    const file_path = fp.slice(1, fp.length).join('/');
 
     const { tech, key } = getTechFile(fileName, fileExtension);
-    const dep_obj = { repo_path, file_name, repo_file_path, [key]: filePath };
+    const dep_obj = { repo_path, file_name, repo_file_path, [key]: file_path };
 
     if (!STATE_DEPENDENCIES[tech]) {
         STATE_DEPENDENCIES[tech] = { [file_name]: dep_obj };
@@ -47,14 +48,14 @@ export const updateStateFile = (filePath, fileName, fileExtension) => {
         if (!STATE_DEPENDENCIES[tech][file_name]) {
             STATE_DEPENDENCIES[tech][file_name] = dep_obj;
         } else if (!STATE_DEPENDENCIES[tech][file_name][key]) {
-            STATE_DEPENDENCIES[tech][file_name][key] = filePath;
+            STATE_DEPENDENCIES[tech][file_name][key] = file_path;
         } else if (FILES_BY_EXTENSIONS.indexOf(fileExtension) === -1) {
-            console.error(`error: path->${file_name}, file Path->${filePath}, key->${key}`);
+            console.error(`error: path->${file_name}, file Path->${file_path}, key->${key}`);
             throw new Error('This should not happen!');
         }
     }
 
-    console.log(`Added ${filePath} to state file.`);
+    console.log(`Added ${file_path} to state file.`);
 };
 
 // ************************************************************ //

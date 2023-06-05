@@ -28,7 +28,7 @@ import {
             for (const getWhat of Object.keys(ORG_DATA)) {
                 await getGitOrgData(getWhat);
             }
-            await saveToFile(`./${REPOS_FILE_PATH}`, ORG_DATA);
+            await saveToFile(REPOS_FILE_PATH, ORG_DATA);
         } catch (error) {
             console.error(`Error: ${error.message}`)
         }

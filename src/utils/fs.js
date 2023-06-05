@@ -8,7 +8,9 @@ import {
     CLONE_TIMEOUT,
     FILES_NAME,
     FILES_BY_EXTENSIONS,
-    EXCLUDE_SUBDIRECTORY
+    EXCLUDE_SUBDIRECTORY,
+    REPOS_LIST,
+    REPOS_SUB_DIRECTORY_PATH
 } from "../config/index.js";
 
 import { exec_command } from "./exec.js";
@@ -17,17 +19,22 @@ import { updateStateFile } from "./index.js";
 // ************************************************************ //
 
 export const read_and_clone_repo = () => {
-    fs.readFile(`./${REPOS_FILE_PATH}`, 'utf8', async (error, data) => {
+    fs.readFile(`${REPOS_FILE_PATH}`, 'utf8', async (error, data) => {
         if (error) {
             console.error('Issue on reading the file:', error);
             return;
         }
         try {
+            let index = 1;
             const jsonData = JSON.parse(data);
-            console.log(`Started cloning first of ${jsonData['repos'].length} repos!`);
+            const jsonDataLength = jsonData['repos'].length;
             for (const element of jsonData['repos']) {
-                const destPath = `./${REPOS_DIRECTORY_PATH}/${element.full_name}`;
-                await exec_command(`git clone ${element.clone_url} ${destPath}`);
+                const destPath = `${REPOS_DIRECTORY_PATH}/${element.full_name}`;
+                const repo_path = `${REPOS_SUB_DIRECTORY_PATH}/${element.full_name}`;
+                const repo_name = `${REPOS_SUB_DIRECTORY_PATH}__${element.full_name.replace('/', '__')}`;
+                REPOS_LIST['repos'][repo_name] = { repo_path, repo_name }
+
+                await exec_command(`git clone ${element.clone_url} ${destPath}`, index++, jsonDataLength);
                 await new Promise(resolve => setTimeout(resolve, CLONE_TIMEOUT));
             }
         } catch (error) {
