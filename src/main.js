@@ -13,6 +13,7 @@ import {
     ORG_DATA
 } from "./config/index.js";
 
+/* eslint-disable */
 (async () => {
 
     if (!ORGANIZATION) {

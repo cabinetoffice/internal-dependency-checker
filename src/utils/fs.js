@@ -60,11 +60,11 @@ export const checkFileExists = (directoryPath) => {
         const fileExtension = path.extname(file);
         const stats = fs.statSync(filePath);
 
-        if (stats.isFile() && (FILES_NAME.indexOf(file) != -1 || FILES_BY_EXTENSIONS.indexOf(fileExtension) != -1)) {
+        if (stats.isFile() && (FILES_NAME.indexOf(file) !== -1 || FILES_BY_EXTENSIONS.indexOf(fileExtension) !== -1)) {
             updateStateFile(filePath, file, fileExtension);
         }
 
-        if (stats.isDirectory() && EXCLUDE_SUBDIRECTORY.indexOf(file) == -1) {
+        if (stats.isDirectory() && EXCLUDE_SUBDIRECTORY.indexOf(file) === -1) {
             checkFileExists(filePath);
         }
     }

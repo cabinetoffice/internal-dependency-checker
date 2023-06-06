@@ -23,17 +23,17 @@ export const HEADERS = { 'headers': { 'Authorization': `Bearer ${GITHUB_KEY}` } 
 
 export const EXCLUDE_SUBDIRECTORY = ["node_modules", ".DS_Store"];
 export const FILES_NAME = [
-  'pom.xml',
-  'cpanfile',
-  'requirements.txt',
-  'go.mod', 'go.sum',
-  'Gemfile', 'Gemfile.lock',
-  'composer.json', 'composer.lock',
-  'Dockerfile', 'docker-compose.yml',
-  'package.json', 'package-lock.json',
-  'gradlew' //, 'gradlew.bat', 'build.gradle.kts', 'gradle-wrapper.jar', 'gradle-wrapper.properties'
+    'pom.xml',
+    'cpanfile',
+    'requirements.txt',
+    'go.mod', 'go.sum',
+    'Gemfile', 'Gemfile.lock',
+    'composer.json', 'composer.lock',
+    'Dockerfile', 'docker-compose.yml',
+    'package.json', 'package-lock.json',
+    'gradlew'
 ];
 export const FILES_BY_EXTENSIONS = [
-  '.tf',
-  '.csproj'
+    '.tf',
+    '.csproj'
 ];

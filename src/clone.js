@@ -1,5 +1,6 @@
 import {
-    read_and_clone_repo
+    read_and_clone_repo,
+    saveToFile
 } from "./utils/fs.js";
 
 import {
@@ -7,6 +8,7 @@ import {
     REPOS_LIST
 } from "../config/index.js";
 
+/* eslint-disable */
 (async () => {
     try {
         console.log(`This script will likely take a few hours to complete, depending on the number of repositories and other factors (ratelimits ...)`);

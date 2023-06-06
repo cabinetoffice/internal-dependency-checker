@@ -9,6 +9,7 @@ import {
     STATE_FILE_PATH
 } from "./config/index.js";
 
+/* eslint-disable */
 (async () => {
     try {
         checkFileExists(REPOS_DIRECTORY_PATH);

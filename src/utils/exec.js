@@ -17,4 +17,4 @@ export const exec_command = async (command, index, length) => {
     } catch (error) {
         console.error(`Error executing command: ${error.message}`);
     }
-}
+};
