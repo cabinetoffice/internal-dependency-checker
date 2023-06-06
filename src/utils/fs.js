@@ -31,8 +31,8 @@ export const read_and_clone_repo = () => {
             for (const element of jsonData['repos']) {
                 const destPath = `${REPOS_DIRECTORY_PATH}/${element.full_name}`;
                 const repo_path = `${REPOS_SUB_DIRECTORY_PATH}/${element.full_name}`;
-                const repo_name = `${REPOS_SUB_DIRECTORY_PATH}__${element.full_name.replace('/', '__')}`;
-                REPOS_LIST['repos'][repo_name] = { repo_path, repo_name }
+                const file_name = `${REPOS_SUB_DIRECTORY_PATH}__${element.full_name.replace('/', '__')}`;
+                REPOS_LIST['repos'][file_name] = { repo_path, file_name };
 
                 await exec_command(`git clone ${element.clone_url} ${destPath}`, index++, jsonDataLength);
                 await new Promise(resolve => setTimeout(resolve, CLONE_TIMEOUT));

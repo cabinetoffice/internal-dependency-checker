@@ -6,7 +6,7 @@ import {
 import {
     REPOS_LIST_FILE_PATH,
     REPOS_LIST
-} from "../config/index.js";
+} from "./config/index.js";
 
 /* eslint-disable */
 (async () => {
