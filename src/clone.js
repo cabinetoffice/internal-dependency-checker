@@ -1,20 +1,12 @@
 import {
-    read_and_clone_repo,
-    saveToFile
+    cloneRepos
 } from "./utils/fs.js";
-
-import {
-    REPOS_LIST_FILE_PATH,
-    REPOS_LIST
-} from "./config/index.js";
 
 /* eslint-disable */
 (async () => {
     try {
-        console.log(`This script will likely take a few hours to complete, depending on the number of repositories and other factors (ratelimits ...)`);
-        read_and_clone_repo();
-
-        await saveToFile(REPOS_LIST_FILE_PATH, REPOS_LIST);
+        console.log(`This script will likely take a few hours to complete.`);
+        cloneRepos();
     } catch (error) {
         console.error(`Error: ${error.message}`)
     }

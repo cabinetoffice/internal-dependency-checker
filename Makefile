@@ -19,6 +19,8 @@ DEP_CHECK_OUT_FILE_NAME := $(PREFIX)__$(ORG_NAME)__$(REPO_NAME)__$(BRANCH_NAME)_
 
 DOCKER_COMPOSE_OUT_FILE_NAME := ./infrastructure/output/$(PREFIX)__docker__compose__output__$(TIMESTAMP).txt
 
+NOVE_VERSION := v18.16.0
+
 clean:
 	rm -rf ./node_modules
 	rm $(PACKAGE_FILE_NAME)
@@ -34,6 +36,7 @@ dependency-checks:
 	npm audit --json > $(DEP_CHECK_OUT_FILE_NAME)
 
 start:
+	$(info Node version: $(NOVE_VERSION))
 	npm ci --silent
 	npm start --ORG=${ORG}
 
