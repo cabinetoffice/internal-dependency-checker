@@ -31,7 +31,11 @@
     "skipLibCheck": true,                          /* Skip type checking all .d.ts files. */
 
     /* Output Formatting */
-    "pretty": true                                 /* Stylize errors and messages using color and context, this is on by default */
+    
+    "pretty": true,                               /* Stylize errors and messages using color and context, this is on by default */
+  
+    "allowJs": true
+
   },
   "include": [
     "src/**/*"
