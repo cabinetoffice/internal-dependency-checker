@@ -7,7 +7,7 @@ DOCKER_COMPOSE_NAME=docker-compose.yml
 mkdir -p $REPORTS_FOLDER_NAME
 
 # Read the repos from the JSON file
-repos=$(/usr/bin/jq -c '.repos[]' ./repos.json)
+repos=$(/usr/bin/jq -c '.docker[] | {file1: .file1, file_name: .file_name, repo_file_path: .repo_file_path}' ./repos/state.json)
 
 # Loop over the repos
 for repo in $repos
@@ -15,7 +15,7 @@ do
 
   # Extract the repo arguments using jq
   file1=$(echo "$repo" | jq -r '.file1')
-  directory=$(echo "$repo" | jq -r '.directory')
+  repo_file_path=$(echo "$repo" | jq -r '.repo_file_path')
   file_name=$(echo "$repo" | jq -r '.file_name')
 
   TIMESTAMP=`date +%Y-%m-%d_%H-%M-%S`
@@ -33,7 +33,7 @@ do
     # ./trivy image $file1 --format=json --output=$REPORT_FILE_NAME
 
     # Very slow and with high rate of fails
-    # docker build -f $file1 -t myimage_trivy_$TIMESTAMP ./$directory
+    # docker build -f $file1 -t myimage_trivy_$TIMESTAMP ./$repo_file_path
     # ./trivy image myimage_trivy_$TIMESTAMP --format=json --output=$REPORT_FILE_NAME
     # # ./trivy --file $file1 --format=json --output=$REPORT_FILE_NAME
 

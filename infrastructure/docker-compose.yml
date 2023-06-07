@@ -7,15 +7,17 @@ services:
   #   volumes:
   #     - ./reports:/repo-dependency-checker/reports
 
-  # dependency-checks-java:
-  #   build: ./dependencies/java
-  #   volumes:
-  #     - ./reports:/repo-dependency-checker/reports
+  dependency-checks-java:
+    build: ./dependencies/java
+    volumes:
+      - ./reports:/repo-dependency-checker/reports
+      - ./repos:/repo-dependency-checker/repos
 
-  # dependency-checks-node:
-  #   build: ./dependencies/node
-  #   volumes:
-  #     - ./reports:/repo-dependency-checker/reports
+  dependency-checks-node:
+    build: ./dependencies/node
+    volumes:
+      - ./reports:/repo-dependency-checker/reports
+      - ./repos:/repo-dependency-checker/repos
 
   # dependency-checks-perl:
   #   build: ./dependencies/perl
@@ -27,15 +29,17 @@ services:
   #   volumes:
   #     - ./reports:/repo-dependency-checker/reports
 
-  # dependency-checks-python:
-  #   build: ./dependencies/python
-  #   volumes:
-  #     - ./reports:/repo-dependency-checker/reports
+  dependency-checks-python:
+    build: ./dependencies/python
+    volumes:
+      - ./reports:/repo-dependency-checker/reports
+      - ./repos:/repo-dependency-checker/repos
 
-  # dependency-checks-ruby:
-  #   build: ./dependencies/ruby
-  #   volumes:
-  #     - ./reports:/repo-dependency-checker/reports
+  dependency-checks-ruby:
+    build: ./dependencies/ruby
+    volumes:
+      - ./reports:/repo-dependency-checker/reports
+      - ./repos:/repo-dependency-checker/repos
 
   # vulnerability-checks-docker:
   #   build: ./vulnerabilities/docker

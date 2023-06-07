@@ -7,7 +7,7 @@ mkdir -p $REPORTS_FOLDER_NAME
 echo "tfsec --version is $(tfsec --version)"
 
 # Read the repos from the JSON file
-repos=$(/usr/bin/jq -c '.repos[]' ./repos.json)
+repos=$(/usr/bin/jq -c '.terraform[] | {file_name: .file_name, repo_file_path: .repo_file_path}' ./repos/state.json)
 
 # Loop over the repos
 for repo in $repos
