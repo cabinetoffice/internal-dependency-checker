@@ -1,9 +1,14 @@
 # Repo Dependency Checker
 
-- Node script to check dependencies from organisations repositories by using language and platform independent technologies (Makefile and Docker). The script will have three main steps:
-  - Fetch all dependencies from a GitHub organisation (or file)
-  - Exec all dependency check and audits on a dockerized environment.
-  - Save all JSON format reports on the infrastructure reports subdirectory.
+Node scripts to check for dependencies and vulnerabilities in an organization's repositories. The process involves several steps:
+
+- Generating a comprehensive list of repositories.
+- Cloning the repositories.
+- Generating state dependencies and state vulnerabilities files.
+- Creating containers specific to the programming language.
+- Running the containers to generate reports in JSON format.
+
+By following these steps, we ensure thorough analysis of dependencies and vulnerabilities across the organization's repositories.
 
 ## Run
 
@@ -13,6 +18,8 @@ Before running the following commands, please ensure that you have set the GITHU
 git clone `https://github.com/cabinetoffice/internal-dependency-checker.git`
 cd internal-dependency-checker
 make start ORG=`your_org` // es. make start ORG=co-cddo
+make clone
+make state
 make docker-build
 make docker-up
 ```

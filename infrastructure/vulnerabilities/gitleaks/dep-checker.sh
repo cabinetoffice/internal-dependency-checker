@@ -9,7 +9,7 @@ git clone https://github.com/zricethezav/gitleaks.git
 cd gitleaks && go build -o /usr/local/bin/gitleaks && cd ..
 
 # Read the repos from the JSON file
-repos=$(/usr/bin/jq -c '.repos[]' ./repos.json)
+repos=$(/usr/bin/jq -c '.repos[] | {repo_path: .repo_path, file_name: .file_name}' ./repos/repos_list.json)
 
 # Loop over the repos
 for repo in $repos
