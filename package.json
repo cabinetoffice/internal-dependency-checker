@@ -2,12 +2,12 @@
   "name": "internal-dependency-checker",
   "version": "1.0.0",
   "description": "Repo Dependency Checker",
-  "main": "src/main.js",
+  "main": "dist/main.js",
   "type": "module",
   "scripts": {
-    "start": "node src/main.js ${ORG}",
-    "clone": "node src/clone.js",
-    "state": "node src/state.js",
+    "start": "node dist/main.js ${ORG}",
+    "clone": "node dist/clone.js",
+    "state": "node dist/state.js",
     "test": "NODE_OPTIONS=--experimental-vm-modules jest",
     "lint": "eslint src",
     "lint:fix": "eslint --fix src"
