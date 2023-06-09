@@ -1,4 +1,4 @@
-.PHONY: clean dependency-checks start clone state docker-up docker-build test
+.PHONY: clean dependency-checks start clone state docker-up docker-build test coverage
 
 # `https://raw.githubusercontent.com/${org}/${repoName}/${repoDefaultBranch}/${fileName}`
 ORG_NAME := cabinetoffice
@@ -46,17 +46,18 @@ clone:
 state:
 	npm run state
 
-# Build Docker images
 docker-build:
 	docker compose -f infrastructure/docker-compose.yml build
 
-# Start Docker Compose
 docker-up:
 	docker compose -f infrastructure/docker-compose.yml up &> $(DOCKER_COMPOSE_OUT_FILE_NAME)
 
 test:
-	rm -rf ./coverage
 	npm run test
+
+coverage:
+	rm -rf ./coverage
+	npm run coverage
 
 # S3_BUCKET := your-s3-bucket-name/dependency-checks
 # S3_KEY := path/to/uploaded/file.txt
