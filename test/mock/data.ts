@@ -1,137 +1,3 @@
-export const repos = [
-    {
-        name: "repo1",
-        full_name: "org1/repo1",
-        language: "Go",
-        default_branch: "master",
-        owner: {
-            login: "org1",
-        },
-    },
-    {
-        name: "repo2",
-        full_name: "org1/repo2",
-        language: "Java",
-        default_branch: "master",
-        owner: {
-            login: "org1",
-        },
-    },
-    {
-        name: "repo3",
-        full_name: "org1/repo3",
-        language: "TypeScript",
-        default_branch: "master",
-        owner: {
-            login: "org1",
-        },
-    },
-    {
-        name: "repo4",
-        full_name: "org2/repo4",
-        language: "JavaScript",
-        default_branch: "main",
-        owner: {
-            login: "org2",
-        },
-    },
-    {
-        name: "repo5",
-        full_name: "org2/repo5",
-        language: "Python",
-        default_branch: "main",
-        owner: {
-            login: "org2",
-        },
-    },
-    {
-        name: "repo6",
-        full_name: "org2/repo6",
-        language: "Ruby",
-        default_branch: "main",
-        owner: {
-            login: "org2",
-        },
-    },
-    {
-        name: "repo7",
-        full_name: "org1/repo7",
-        language: "Java",
-        default_branch: "master",
-        owner: {
-            login: "org1",
-        },
-    },
-    {
-        name: "repo8",
-        full_name: "org1/repo8",
-        language: "Perl",
-        default_branch: "master",
-        owner: {
-            login: "org1",
-        },
-    },
-];
-
-export const mockInfoFromRepoData = [
-    {
-        repoName: "repo1",
-        fileUrl: "https://raw.githubusercontent.com/org1/repo1/master",
-        filter: "NA",
-        branch: "master",
-        org: "org1"
-    },
-    {
-        repoName: "repo2",
-        fileUrl: "https://raw.githubusercontent.com/org1/repo2/master",
-        filter: "NA",
-        branch: "master",
-        org: "org1"
-    },
-    {
-        repoName: "repo3",
-        fileUrl: "https://raw.githubusercontent.com/org1/repo3/master",
-        filter: "NA",
-        branch: "master",
-        org: "org1"
-    },
-    {
-        repoName: "repo4",
-        fileUrl: "https://raw.githubusercontent.com/org2/repo4/main",
-        filter: "NA",
-        branch: "main",
-        org: "org2"
-    },
-    {
-        repoName: "repo5",
-        fileUrl: "https://raw.githubusercontent.com/org2/repo5/main",
-        filter: "NA",
-        branch: "main",
-        org: "org2"
-    },
-    {
-        repoName: "repo6",
-        fileUrl: "https://raw.githubusercontent.com/org2/repo6/main",
-        filter: "NA",
-        branch: "main",
-        org: "org2"
-    },
-    {
-        repoName: "repo7",
-        fileUrl: "https://raw.githubusercontent.com/org1/repo7/master",
-        filter: "NA",
-        branch: "master",
-        org: "org1"
-    },
-    {
-        repoName: "repo8",
-        fileUrl: "https://raw.githubusercontent.com/org1/repo8/master",
-        filter: "NA",
-        branch: "master",
-        org: "org1"
-    },
-];
-
 export const mockTechData = [
     {
         fileName: "requirements.txt",
@@ -154,8 +20,18 @@ export const mockTechData = [
         key: 'file1'
     },
     {
+        fileName: "composer.lock",
+        tech: "php",
+        key: 'file2'
+    },
+    {
         fileName: "Dockerfile",
         tech: "docker",
+        key: 'file1'
+    },
+    {
+        fileName: "docker-compose.yml",
+        tech: "compose",
         key: 'file1'
     },
     {
@@ -188,4 +64,22 @@ export const mockTechData = [
         tech: "ruby",
         key: 'file2'
     },
+    {
+        fileName: "gradlew",
+        tech: "kotlin",
+        key: 'file1'
+    },
+];
+
+export const mockFileExtensionTechData = [
+    {
+        fileExtension: '.tf',
+        tech: "terraform",
+        key: 'file1'
+    },
+    {
+        fileExtension: '.csproj',
+        tech: "csharp",
+        key: 'file1'
+    }
 ];
