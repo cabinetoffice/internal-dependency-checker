@@ -1,4 +1,4 @@
-export const x = {
+export const mockReposList = {
     "repos": {
         "repos__org1__repo1": {
             "repo_path": "repos/org1/repo1",
