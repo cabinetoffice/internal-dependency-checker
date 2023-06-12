@@ -14,7 +14,7 @@ import {
 } from "./config/index.js";
 
 /* eslint-disable */
-(async () => {
+(async (): Promise<void> => {
 
     if (!ORGANIZATION) {
         console.error(`GitHub organization is missing`);
@@ -30,7 +30,7 @@ import {
                 await getGitOrgData(getWhat);
             }
             await saveToFile(REPOS_FILE_PATH, ORG_DATA);
-        } catch (error) {
+        } catch (error: any) {
             console.error(`Error: ${error.message}`)
         }
     }
