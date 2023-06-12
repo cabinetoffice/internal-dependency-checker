@@ -1,3 +1,4 @@
+import type { TechFile } from '../../types/utils';
 import {
     FILES_BY_EXTENSIONS,
     STATE_DEPENDENCIES,
@@ -10,7 +11,7 @@ import {
 // ************************************************************ //
 
 export const filterRepos = (repos = [], key = 'clone_url') => repos.map((r) => r[key]);
-export const getGitOrgData = async (what, page = 1) => {
+export const getGitOrgData = async (what: string, page = 1): Promise<void> => {
     const repoUrl = `https://api.github.com/orgs/${ORGANIZATION}/${what}?page=${page}&per_page=${PER_PAGE}`;
     return await fetch(repoUrl, HEADERS)
         .then(jsonData => jsonData.json())
@@ -23,12 +24,12 @@ export const getGitOrgData = async (what, page = 1) => {
         })
         .catch(error => {
             console.error(`getGitOrgData error: ${error.message}`);
-        })
+        });
 };
 
 // ************************************************************ //
 
-export const updateStateFile = (filePath, fileName, fileExtension) => {
+export const updateStateFile = (filePath: string, fileName: string, fileExtension: string): void => {
 
     const fp = filePath.split('/');
     const org = fp[2];
@@ -60,7 +61,7 @@ export const updateStateFile = (filePath, fileName, fileExtension) => {
 
 // ************************************************************ //
 
-export const getTechFile = (fileName, fileExtension) => {
+export const getTechFile = (fileName: string, fileExtension: string): TechFile => {
     let tech = ""; let key = "file1";
 
     if (fileExtension === '.tf') {

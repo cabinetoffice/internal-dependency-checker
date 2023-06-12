@@ -1,6 +1,7 @@
 import { writeFile } from 'node:fs/promises';
 import fs from 'node:fs';
 import path from 'node:path';
+import type { RepoList, JsonData } from '../../types/utils';
 
 import {
     REPOS_DIRECTORY_PATH,
@@ -18,7 +19,7 @@ import { updateStateFile } from "./index.js";
 
 // ************************************************************ //
 
-export const cloneRepos = () => {
+export const cloneRepos = (): void => {
     fs.readFile(`${REPOS_FILE_PATH}`, 'utf8', async (error, data) => {
         if (error) {
             console.error('Issue on reading the file:', error);
@@ -26,8 +27,8 @@ export const cloneRepos = () => {
         }
         try {
             let index = 1;
-            const repoList = {}
-            const jsonData = JSON.parse(data);
+            const repoList: RepoList = {};
+            const jsonData: JsonData = JSON.parse(data);
             const jsonDataLength = jsonData['repos'].length;
             for (const element of jsonData['repos']) {
                 const destPath = `${REPOS_DIRECTORY_PATH}/${element.full_name}`;
@@ -43,19 +44,20 @@ export const cloneRepos = () => {
             console.error('Error parsing JSON:', error);
         }
     });
-}
+};
 
 // ************************************************************ //
 
-export const saveToFile = async (fileName, data) => {
+// data typed object as it would need to be a complex union type otherwise
+export const saveToFile = async (fileName: string, data: any): Promise<void> => {
     await writeFile(fileName, JSON.stringify(data))
         .then(() => console.log(`Saved data to ${fileName}.`))
         .catch(err => console.error(`Error while saving data to ${fileName}: ${err.message}`));
-}
+};
 
 // ************************************************************ //
 
-export const checkFileExists = (directoryPath) => {
+export const checkFileExists = (directoryPath: string): void => {
     const files = fs.readdirSync(directoryPath);
     for (const file of files) {
         const filePath = path.join(directoryPath, file);
