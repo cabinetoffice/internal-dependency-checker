@@ -1,5 +1,11 @@
+export const enum WhatEnum {
+  repos = "repos",
+  members = "members",
+  teams = "teams"
+}
+
 export interface OrgData {
-  [key: string]: any[];
+  [key: WhatEnum]: any[];
   repos: any[];
   members: any[];
   teams: any[];

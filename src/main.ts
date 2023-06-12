@@ -12,6 +12,7 @@ import {
     GITHUB_KEY,
     ORG_DATA
 } from "./config/index.js";
+import { WhatEnum } from "../types/config.js";
 
 /* eslint-disable */
 (async (): Promise<void> => {
@@ -27,7 +28,7 @@ import {
     if (ORGANIZATION && GITHUB_KEY) {
         try {
             for (const getWhat of Object.keys(ORG_DATA)) {
-                await getGitOrgData(getWhat);
+                await getGitOrgData(getWhat as WhatEnum);
             }
             await saveToFile(REPOS_FILE_PATH, ORG_DATA);
         } catch (error: any) {

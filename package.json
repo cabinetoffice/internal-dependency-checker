@@ -5,6 +5,7 @@
   "main": "dist/main.js",
   "type": "module",
   "scripts": {
+    "build": "tsc",
     "start": "node dist/main.js ${ORG}",
     "clone": "node dist/clone.js",
     "state": "node dist/state.js",

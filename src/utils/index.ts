@@ -1,3 +1,4 @@
+import { WhatEnum } from '../../types/config';
 import type { TechFile } from '../../types/utils';
 import {
     FILES_BY_EXTENSIONS,
@@ -11,7 +12,7 @@ import {
 // ************************************************************ //
 
 export const filterRepos = (repos = [], key = 'clone_url') => repos.map((r) => r[key]);
-export const getGitOrgData = async (what: string, page = 1): Promise<void> => {
+export const getGitOrgData = async (what: WhatEnum, page = 1): Promise<void> => {
     const repoUrl = `https://api.github.com/orgs/${ORGANIZATION}/${what}?page=${page}&per_page=${PER_PAGE}`;
     return await fetch(repoUrl, HEADERS)
         .then(jsonData => jsonData.json())

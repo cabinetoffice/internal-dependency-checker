@@ -1,4 +1,4 @@
-.PHONY: clean dependency-checks start clone state docker-up docker-build test
+.PHONY: clean dependency-checks build start clone state docker-up docker-build test
 
 # `https://raw.githubusercontent.com/${org}/${repoName}/${repoDefaultBranch}/${fileName}`
 ORG_NAME := cabinetoffice
@@ -34,6 +34,10 @@ dependency-checks:
 	nvm use && \
 	npm --silent ci && \
 	npm audit --json > $(DEP_CHECK_OUT_FILE_NAME)
+
+build:
+	rm -rf ./dist
+	npm run build
 
 start:
 	$(info Node version: $(NODE_VERSION))
