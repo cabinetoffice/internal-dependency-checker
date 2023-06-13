@@ -4,7 +4,8 @@ import { SpiedFunction } from 'jest-mock';
 import {
     getTechFile,
     updateStateFile,
-    getGitOrgData
+    getGitOrgData,
+    setTimeOut
 } from "../../../src/utils/index";
 
 import {
@@ -13,6 +14,7 @@ import {
 } from "../../mock/data";
 
 import {
+    CLONE_TIMEOUT,
     ORG_DATA,
     STATE_DEPENDENCIES
 } from '../../../src/config';
@@ -30,13 +32,15 @@ import {
 
 let consoleLogMock: SpiedFunction;
 let consoleErrorMock: SpiedFunction;
+
 let spyFetchCall = jest.spyOn(global, 'fetch');
+let spySetTimeoutCall = jest.spyOn(global, 'setTimeout');
 
 describe("UTILS Index tests suites", () => {
 
     beforeEach(() => {
-        consoleLogMock = jest.spyOn(console, 'log');//.mockImplementation( () => {} );
-        consoleErrorMock = jest.spyOn(console, 'error'); //.mockImplementation( () => {} );
+        consoleLogMock = jest.spyOn(console, 'log').mockImplementation( () => {} );
+        consoleErrorMock = jest.spyOn(console, 'error').mockImplementation( () => {} );
     });
 
     afterEach(() => {
@@ -176,6 +180,25 @@ describe("UTILS Index tests suites", () => {
             expect(consoleLogMock).toHaveBeenCalledTimes(1);
             expect(consoleLogMock).toHaveBeenCalledWith(logMsg);
             expect(consoleErrorMock).toHaveBeenCalledTimes(0);
+        });
+    });
+
+    // ************************************************************ //
+
+    describe("setTimeOut(...)", () => {
+
+        test('should call global setTimeout', async () => {
+            spySetTimeoutCall.mockImplementationOnce((callback) => {
+                if (typeof callback === 'function') {
+                    callback();
+                }
+                return { hasRef: () => false } as NodeJS.Timeout;
+            });
+
+            await setTimeOut();
+
+            expect(spySetTimeoutCall).toHaveBeenCalledTimes(1);
+            expect(spySetTimeoutCall).toHaveBeenCalledWith(expect.any(Function), CLONE_TIMEOUT);
         });
     });
 
