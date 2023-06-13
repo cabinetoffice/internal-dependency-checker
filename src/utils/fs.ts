@@ -1,9 +1,10 @@
 import { writeFile } from 'node:fs/promises';
 import fs from 'node:fs';
 import path from 'node:path';
-import type { RepoList, JsonData } from '../../types/utils';
+import { RepoList, JsonData } from '../../types/utils';
 
 import {
+    REPOS_KEY,
     REPOS_DIRECTORY_PATH,
     REPOS_FILE_PATH,
     CLONE_TIMEOUT,
@@ -27,19 +28,19 @@ export const cloneRepos = (): void => {
         }
         try {
             let index = 1;
-            const repoList: RepoList = {};
+            const repoList: RepoList = { [REPOS_KEY]: {} };
             const jsonData: JsonData = JSON.parse(data);
-            const jsonDataLength = jsonData['repos'].length;
-            for (const element of jsonData['repos']) {
+            const jsonDataLength = jsonData[REPOS_KEY].length;
+            for (const element of jsonData[REPOS_KEY]) {
                 const destPath = `${REPOS_DIRECTORY_PATH}/${element.full_name}`;
                 const repo_path = `${REPOS_SUB_DIRECTORY_PATH}/${element.full_name}`;
                 const file_name = `${REPOS_SUB_DIRECTORY_PATH}__${element.full_name.replace('/', '__')}`;
-                repoList[file_name] = { repo_path, file_name };
+                repoList[REPOS_KEY][file_name] = { repo_path, file_name };
 
                 await exec_command(`git clone ${element.clone_url} ${destPath}`, index++, jsonDataLength);
                 await new Promise(resolve => setTimeout(resolve, CLONE_TIMEOUT));
             }
-            await saveToFile(REPOS_LIST_FILE_PATH, { 'repos': repoList });
+            await saveToFile(REPOS_LIST_FILE_PATH, repoList);
         } catch (error) {
             console.error('Error parsing JSON:', error);
         }

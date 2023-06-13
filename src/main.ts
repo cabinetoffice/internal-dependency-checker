@@ -12,7 +12,7 @@ import {
     GITHUB_KEY,
     ORG_DATA
 } from "./config/index.js";
-import { WhatEnum } from "../types/config.js";
+import { WhatEnum } from ".././types/config.js";
 
 /* eslint-disable */
 (async (): Promise<void> => {
