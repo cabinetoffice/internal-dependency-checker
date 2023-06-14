@@ -23,8 +23,8 @@ export const getGitOrgData = async (what: WhatEnum, page = 1): Promise<void> => 
                 await getGitOrgData(what, page + 1);
             }
         })
-        .catch(error => {
-            console.error(`getGitOrgData error: ${error.message}`);
+        .catch((error: any) => {
+            console.error(`Error: ${error.message}`);
         });
 };
 
@@ -52,7 +52,7 @@ export const updateStateFile = (filePath: string, fileName: string, fileExtensio
         } else if (!STATE_DEPENDENCIES[tech]![file_name][key]) {
             STATE_DEPENDENCIES[tech]![file_name][key] = file_path;
         } else if (FILES_BY_EXTENSIONS.indexOf(fileExtension) === -1) {
-            console.error(`error: path->${file_name}, file Path->${file_path}, key->${key}`);
+            console.error(`Error: path->${file_name}, file Path->${file_path}, key->${key}`);
             throw new Error('This should not happen!');
         }
     }

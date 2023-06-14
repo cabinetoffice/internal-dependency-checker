@@ -10,11 +10,11 @@ export const exec_command = async (command: string, index: number, length: numbe
         const { stdout, stderr } = await execPromise(command);
 
         if (stderr) {
-            console.error(`command execution: ${stderr}`);
+            console.error(`Error: ${stderr}`);
         }
 
         console.log(stdout);
     } catch (error: any) {
-        console.error(`Error executing command: ${error.message}`);
+        console.error(`Error: ${error.message}`);
     }
 };

@@ -18,11 +18,11 @@ import { WhatEnum } from "./types/config.js";
 (async (): Promise<void> => {
 
     if (!ORGANIZATION) {
-        console.error(`GitHub organization is missing`);
+        console.error(`Error: GitHub organization is missing`);
     }
 
     if (!GITHUB_KEY) {
-        console.error(`Access Token/Github key is missing`);
+        console.error(`Error: Access Token/Github key is missing`);
     }
 
     if (ORGANIZATION && GITHUB_KEY) {
