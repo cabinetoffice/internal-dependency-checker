@@ -3,29 +3,34 @@ import { KeyEnum, TechFile } from '../types/utils.js';
 import {
     FILES_BY_EXTENSIONS,
     STATE_DEPENDENCIES,
-    ORGANIZATION,
     PER_PAGE,
     ORG_DATA,
-    HEADERS
+    HEADERS,
+    CLONE_TIMEOUT
 } from "../config/index.js";
 
 // ************************************************************ //
 
-export const filterRepos = (repos = [], key = 'clone_url') => repos.map((r) => r[key]);
-export const getGitOrgData = async (what: WhatEnum, page = 1): Promise<void> => {
-    const repoUrl = `https://api.github.com/orgs/${ORGANIZATION}/${what}?page=${page}&per_page=${PER_PAGE}`;
-    return await fetch(repoUrl, HEADERS)
-        .then(jsonData => jsonData.json())
-        .then(async data => {
-            console.log(`Get ${what} from ${ORGANIZATION}, page ${page}, retrieved ${data?.length}`);
-            if (data?.length) {
-                ORG_DATA[what] = ORG_DATA[what].concat(data); // filterRepos(data));
-                await getGitOrgData(what, page + 1);
-            }
-        })
-        .catch((error: any) => {
-            console.error(`Error: ${error.message}`);
-        });
+export const setTimeOut = async () => {
+    await new Promise(resolve => setTimeout(resolve, CLONE_TIMEOUT));
+};
+
+// ************************************************************ //
+
+export const getGitOrgData = async (what: WhatEnum, org: string, page = 1): Promise<void> => {
+    const repoUrl = `https://api.github.com/orgs/${org}/${what}?page=${page}&per_page=${PER_PAGE}`;
+    try {
+        const jsonData = await fetch(repoUrl, HEADERS);
+        const data = await jsonData.json();
+
+        console.log(`Get ${what} from ${org}, page ${page}, retrieved ${data?.length}`);
+        if (data?.length) {
+            ORG_DATA[what] = ORG_DATA[what].concat(data);
+            await getGitOrgData(what, org, page + 1);
+        }
+    } catch (error: any) {
+        console.error(`Error: ${error.message}`);
+    }
 };
 
 // ************************************************************ //
@@ -62,7 +67,7 @@ export const updateStateFile = (filePath: string, fileName: string, fileExtensio
 
 // ************************************************************ //
 
-export const getTechFile = (fileName: string, fileExtension: string): TechFile => {
+export const getTechFile = (fileName: string, fileExtension?: string): TechFile => {
     let tech: TechEnum; let key = KeyEnum.file1;
 
     if (fileExtension === '.tf') {

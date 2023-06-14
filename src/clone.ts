@@ -1,13 +1,10 @@
-import {
-    cloneRepos
-} from "./utils/fs.js";
+import { cloneRepos } from "./utils/fs.js";
 
-/* eslint-disable */
-(async (): Promise<void> => {
+export const clone = async (): Promise<void> => {
     try {
         console.log(`This script will likely take a few hours to complete.`);
-        cloneRepos();
+        await cloneRepos();
     } catch (error: any) {
-        console.error(`Error: ${error.message}`)
+        console.error(`Error: ${error.message}`);
     }
-})();
+};
