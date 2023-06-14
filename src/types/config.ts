@@ -1,4 +1,4 @@
-export const enum WhatEnum {
+export enum WhatEnum {
   repos = "repos",
   members = "members",
   teams = "teams"
@@ -10,7 +10,7 @@ export interface OrgData {
   teams: any[];
 }
 
-export const enum TechEnum {
+export enum TechEnum {
   python = "python",
   java = "java",
   perl = "perl",
@@ -25,7 +25,7 @@ export const enum TechEnum {
   csharp = "csharp"
 }
 
-export const enum KeyEnum {
+export enum KeyEnum {
   file1 = "file1",
   file2 = "file2"
 }

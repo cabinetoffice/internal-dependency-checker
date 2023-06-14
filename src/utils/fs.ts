@@ -1,7 +1,7 @@
 import { writeFile } from 'node:fs/promises';
 import fs from 'node:fs';
 import path from 'node:path';
-import { RepoList, JsonData } from '../../types/utils';
+import { RepoList, JsonData } from '../types/utils.js';
 
 import {
     REPOS_KEY,

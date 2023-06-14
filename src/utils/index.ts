@@ -1,5 +1,5 @@
-import { WhatEnum, TechEnum } from '../../types/config';
-import { KeyEnum, TechFile } from '../../types/utils';
+import { WhatEnum, TechEnum, DependencyObject } from '../types/config.js';
+import { KeyEnum, TechFile } from '../types/utils.js';
 import {
     FILES_BY_EXTENSIONS,
     STATE_DEPENDENCIES,
@@ -41,8 +41,8 @@ export const updateStateFile = (filePath: string, fileName: string, fileExtensio
     const file_name = fp.slice(1, fp.length - 1).join('__');
     const file_path = fp.slice(1, fp.length).join('/');
 
-    const { tech, key } = getTechFile(fileName, fileExtension);
-    const dep_obj = { repo_path, file_name, repo_file_path, [key]: file_path };
+    const { tech, key }: TechFile = getTechFile(fileName, fileExtension);
+    const dep_obj: DependencyObject = { repo_path, file_name, repo_file_path, [key]: file_path };
 
     if (!STATE_DEPENDENCIES[tech]) {
         STATE_DEPENDENCIES[tech] = { [file_name]: dep_obj };
