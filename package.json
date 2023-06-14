@@ -2,12 +2,13 @@
   "name": "internal-dependency-checker",
   "version": "1.0.0",
   "description": "Repo Dependency Checker",
-  "main": "src/main.js",
+  "main": "dist/main.js",
   "type": "module",
   "scripts": {
-    "start": "node src/main.js ${ORG}",
-    "clone": "node src/clone.js",
-    "state": "node src/state.js",
+    "build": "tsc",
+    "start": "node dist/main.js ${ORG}",
+    "clone": "node dist/clone.js",
+    "state": "node dist/state.js",
     "test": "NODE_OPTIONS=--experimental-vm-modules jest",
     "lint": "eslint src",
     "lint:fix": "eslint --fix src"
@@ -19,7 +20,12 @@
   "author": "X-CO Developers",
   "license": "MIT",
   "devDependencies": {
-    "eslint": "^8.41.0",
-    "jest": "^29.5.0"
+    "@types/jest": "^29.5.2",
+    "@typescript-eslint/eslint-plugin": "^5.59.9",
+    "@typescript-eslint/parser": "^5.59.9",
+    "eslint": "^8.42.0",
+    "jest": "^29.5.0",
+    "ts-jest": "^29.1.0",
+    "typescript": "^5.1.3"
   }
 }

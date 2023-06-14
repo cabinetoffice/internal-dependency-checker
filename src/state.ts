@@ -10,12 +10,12 @@ import {
 } from "./config/index.js";
 
 /* eslint-disable */
-(async () => {
+(async (): Promise<void> => {
     try {
         checkFileExists(REPOS_DIRECTORY_PATH);
 
         await saveToFile(STATE_FILE_PATH, STATE_DEPENDENCIES);
-    } catch (error) {
+    } catch (error: any) {
         console.error(`Error: ${error.message}`)
     }
 })();
