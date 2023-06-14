@@ -38,28 +38,35 @@ dependency-checks:
 build:
 	rm -rf ./dist
 	npm run build
+	chmod u+x ./dist/cli.js
 
 start:
 	$(info Node version: $(NODE_VERSION))
 	npm ci --silent
-	npm start --ORG=${ORG}
+	./dist/cli.js main ${ORG}
+	$(info === repositories info file created)
 
 clone:
-	npm run clone
+	./dist/cli.js clone
+	$(info === repositories cloned)
 
 state:
-	npm run state
+	./dist/cli.js state
+	$(info === state file created)
 
 # Build Docker images
 docker-build:
 	docker compose -f infrastructure/docker-compose.yml build
+	$(info === docker build completed)
 
 # Start Docker Compose
 docker-up:
+	$(info === docker compose up - vulnerabilities/dependencies checks started)
 	docker compose -f infrastructure/docker-compose.yml up &> $(DOCKER_COMPOSE_OUT_FILE_NAME)
+	docker compose -f infrastructure/docker-compose.yml down
+	$(info === docker compose down - vulnerabilities/dependencies checks completed)
 
 test:
-	rm -rf ./coverage
 	npm run test
 
 # S3_BUCKET := your-s3-bucket-name/dependency-checks

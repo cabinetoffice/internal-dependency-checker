@@ -1,10 +1,10 @@
-import { getGitOrgData } from "./utils/index.js";
-import { saveToFile } from "./utils/fs.js";
-import { WhatEnum } from "./types/config.js";
+import { getGitOrgData } from "../utils/index.js";
+import { saveToFile } from "../utils/fs.js";
+import { WhatEnum } from "../types/config.js";
 import {
     REPOS_FILE_PATH,
     ORG_DATA
-} from "./config/index.js";
+} from "../config/index.js";
 
 export const main = async (org: string): Promise<void> => {
     try {

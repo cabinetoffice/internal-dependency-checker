@@ -1,4 +1,4 @@
-import { cloneRepos } from "./utils/fs.js";
+import { cloneRepos } from "../utils/fs.js";
 
 export const clone = async (): Promise<void> => {
     try {
