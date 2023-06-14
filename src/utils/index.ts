@@ -1,5 +1,5 @@
-import { WhatEnum } from '../../types/config';
-import type { TechFile } from '../../types/utils';
+import { WhatEnum, TechEnum, DependencyObject } from '../types/config.js';
+import { KeyEnum, TechFile } from '../types/utils.js';
 import {
     FILES_BY_EXTENSIONS,
     STATE_DEPENDENCIES,
@@ -23,8 +23,8 @@ export const getGitOrgData = async (what: WhatEnum, page = 1): Promise<void> => 
                 await getGitOrgData(what, page + 1);
             }
         })
-        .catch(error => {
-            console.error(`getGitOrgData error: ${error.message}`);
+        .catch((error: any) => {
+            console.error(`Error: ${error.message}`);
         });
 };
 
@@ -41,18 +41,18 @@ export const updateStateFile = (filePath: string, fileName: string, fileExtensio
     const file_name = fp.slice(1, fp.length - 1).join('__');
     const file_path = fp.slice(1, fp.length).join('/');
 
-    const { tech, key } = getTechFile(fileName, fileExtension);
-    const dep_obj = { repo_path, file_name, repo_file_path, [key]: file_path };
+    const { tech, key }: TechFile = getTechFile(fileName, fileExtension);
+    const dep_obj: DependencyObject = { repo_path, file_name, repo_file_path, [key]: file_path };
 
     if (!STATE_DEPENDENCIES[tech]) {
         STATE_DEPENDENCIES[tech] = { [file_name]: dep_obj };
     } else {
-        if (!STATE_DEPENDENCIES[tech][file_name]) {
-            STATE_DEPENDENCIES[tech][file_name] = dep_obj;
-        } else if (!STATE_DEPENDENCIES[tech][file_name][key]) {
-            STATE_DEPENDENCIES[tech][file_name][key] = file_path;
+        if (!STATE_DEPENDENCIES[tech]![file_name]) {
+            STATE_DEPENDENCIES[tech]![file_name] = dep_obj;
+        } else if (!STATE_DEPENDENCIES[tech]![file_name][key]) {
+            STATE_DEPENDENCIES[tech]![file_name][key] = file_path;
         } else if (FILES_BY_EXTENSIONS.indexOf(fileExtension) === -1) {
-            console.error(`error: path->${file_name}, file Path->${file_path}, key->${key}`);
+            console.error(`Error: path->${file_name}, file Path->${file_path}, key->${key}`);
             throw new Error('This should not happen!');
         }
     }
@@ -63,64 +63,60 @@ export const updateStateFile = (filePath: string, fileName: string, fileExtensio
 // ************************************************************ //
 
 export const getTechFile = (fileName: string, fileExtension: string): TechFile => {
-    let tech = ""; let key = "file1";
+    let tech: TechEnum; let key = KeyEnum.file1;
 
     if (fileExtension === '.tf') {
-        return { tech: "terraform", key };
+        return { tech: TechEnum.terraform, key };
     } else if (fileExtension === '.csproj') {
-        return { tech: "csharp", key };
+        return { tech: TechEnum.csharp, key };
     }
 
     switch (fileName) {
         case "requirements.txt":
-            tech = "python";
+            tech = TechEnum.python;
             break;
         case "pom.xml":
-            tech = "java";
+            tech = TechEnum.java;
             break;
         case "cpanfile":
-            tech = "perl";
+            tech = TechEnum.perl;
             break;
         case "composer.json":
-            tech = "php";
+            tech = TechEnum.php;
             break;
         case "composer.lock":
-            tech = "php";
-            key = "file2";
+            tech = TechEnum.php;
+            key = KeyEnum.file2;
             break;
         case "Dockerfile":
-            tech = "docker";
+            tech = TechEnum.docker;
             break;
         case "docker-compose.yml":
-            tech = "compose";
+            tech = TechEnum.compose;
             break;
         case "package.json":
-            tech = "node";
+            tech = TechEnum.node;
             break;
         case "package-lock.json":
-            tech = "node";
-            key = "file2";
+            tech = TechEnum.node;
+            key = KeyEnum.file2;
             break;
         case "go.mod":
-            tech = "go";
+            tech = TechEnum.go;
             break;
         case "go.sum":
-            tech = "go";
-            key = "file2";
+            tech = TechEnum.go;
+            key = KeyEnum.file2;
             break;
         case "Gemfile":
-            tech = "ruby";
+            tech = TechEnum.ruby;
             break;
         case "Gemfile.lock":
-            tech = "ruby";
-            key = "file2";
+            tech = TechEnum.ruby;
+            key = KeyEnum.file2;
             break;
         case "gradlew":
-            // case "gradlew.bat":
-            // case "build.gradle.kts":
-            // case "gradle-wrapper.jar":
-            // case "gradle-wrapper.properties":
-            tech = "kotlin";
+            tech = TechEnum.kotlin;
             break;
         default:
             throw new Error(`Error: fix FILES_NAME object! File "${fileName}" has to be added.`);
