@@ -26,6 +26,10 @@ make docker-build
 make docker-up
 ```
 
+## CLI usage
+
+Run `npm run help` for guide on how to run the tool through the CLI, remember to built the project first with `npm run build` (or `make build`).
+
 ### Test
 
 ```bash
