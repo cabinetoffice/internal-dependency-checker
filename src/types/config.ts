@@ -4,11 +4,9 @@ export enum WhatEnum {
   teams = "teams"
 }
 
-export interface OrgData {
-  repos: any[];
-  members: any[];
-  teams: any[];
-}
+export type OrgData = {
+  [key in WhatEnum]: any[];
+};
 
 export enum TechEnum {
   python = "python",
