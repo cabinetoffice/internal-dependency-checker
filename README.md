@@ -28,7 +28,7 @@ make docker-up
 
 ## CLI usage
 
-Run `npm run help` for guide on how to run the tool through the CLI, remember to built the project first with `npm run build` (or `make build`).
+Run `npm run help` for guide on how to run the tool through the CLI, remember to build the project first with `npm run build` (or `make build`).
 
 ### Test
 
