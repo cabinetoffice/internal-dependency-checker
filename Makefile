@@ -54,12 +54,10 @@ state:
 	./dist/cli.js state
 	$(info === state file created)
 
-# Build Docker images
 docker-build:
 	docker compose -f infrastructure/docker-compose.yml build
 	$(info === docker build completed)
 
-# Start Docker Compose
 docker-up:
 	$(info === docker compose up - vulnerabilities/dependencies checks started)
 	docker compose -f infrastructure/docker-compose.yml up &> $(DOCKER_COMPOSE_OUT_FILE_NAME)
