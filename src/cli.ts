@@ -3,9 +3,9 @@
 import yargs from 'yargs';
 import { hideBin } from 'yargs/helpers';
 
-import { main } from "./scripts/main.js";
-import { clone } from "./scripts/clone.js";
-import { state } from "./scripts/state.js";
+import { main } from "./scripts/main";
+import { clone } from "./scripts/clone";
+import { state } from "./scripts/state";
 
 export const mainCommand = (argv: any) => {
     console.log('Start main command!');

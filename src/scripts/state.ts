@@ -1,13 +1,13 @@
 import {
     checkFileExists,
     saveToFile
-} from "../utils/fs.js";
+} from "../utils/fs";
 
 import {
     REPOS_DIRECTORY_PATH,
     STATE_DEPENDENCIES,
     STATE_FILE_PATH
-} from "../config/index.js";
+} from "../config/index";
 
 export const state = async (): Promise<void> => {
     try {
