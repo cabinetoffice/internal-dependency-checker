@@ -1,5 +1,8 @@
-export const MOCK_WHAT = "repos";
-export const MOCK_REPO_URL = `https://api.github.com/orgs/${process.argv[2]}/${MOCK_WHAT}?page=1&per_page=100`;
+import { WhatEnum } from "../../src/types/config";
+
+export const MOCK_WHAT = WhatEnum.repos;
+export const MOCK_ORGANIZATION = "COOL_ORG";
+export const MOCK_REPO_URL = `https://api.github.com/orgs/${MOCK_ORGANIZATION}/${MOCK_WHAT}?page=1&per_page=100`;
 export const MOCK_HEADERS = { "headers": { "Authorization": `Bearer ${process.env.GITHUB_KEY}` } };
 
 export const MOCK_REPOS_INFO_EMPTY = {

@@ -2,41 +2,32 @@ jest.mock('../../../src/utils/exec');
 jest.mock('../../../src/utils/index');
 
 import { describe, expect, test, jest, afterEach, beforeEach } from '@jest/globals';
-import { SpiedFunction } from 'jest-mock';
 import fs from 'node:fs';
 
+import { exec_command } from "../../../src/utils/exec";
+import { setTimeOut, updateStateFile } from "../../../src/utils/index";
 import {
     saveToFile,
     checkFileExists,
     cloneRepos
 } from "../../../src/utils/fs";
 
-import {
-    exec_command
-} from "../../../src/utils/exec";
+const spyConsoleLog = jest.spyOn(console, 'log');
+const spyConsoleError = jest.spyOn(console, 'error');
 
-import {
-    setTimeOut
-} from "../../../src/utils/index";
+const spyWriteFileCall = jest.spyOn(fs.promises, 'writeFile');
+const spyReadFileCall = jest.spyOn(fs.promises, 'readFile');
+const spyReaddirSyncCall = jest.spyOn(fs, 'readdirSync');
 
-import { MOCK_REPOS_DATA } from '../../mock/repos_info';
-
-let consoleLogMock: SpiedFunction;
-let consoleErrorMock: SpiedFunction;
-
-let spyWriteFileCall = jest.spyOn(fs.promises, 'writeFile');
-let spyReadFileCall = jest.spyOn(fs.promises, 'readFile');
-let spyReaddirSyncCall = jest.spyOn(fs, 'readdirSync');
-let spyStatSyncCall = jest.spyOn(fs, 'statSync');
-
-let mockExecCommandCall = exec_command as jest.Mock;
-let mockSetTimeOutCall = setTimeOut as jest.Mock;
+const mockExecCommandCall = exec_command as jest.Mock;
+const mockSetTimeOutCall = setTimeOut as jest.Mock;
+const mockUpdateStateFileCall = updateStateFile as jest.Mock;
 
 describe("UTILS fs tests suites", () => {
 
     beforeEach(() => {
-        consoleLogMock = jest.spyOn(console, 'log').mockImplementation( () => {} );
-        consoleErrorMock = jest.spyOn(console, 'error').mockImplementation( () => {} );
+        spyConsoleLog.mockImplementation(() => {/**/});
+        spyConsoleError.mockImplementation(() => {/**/});
     });
 
     afterEach(() => {
@@ -45,56 +36,75 @@ describe("UTILS fs tests suites", () => {
 
     describe("saveToFile(...)", () => {
 
-        test('should call writeFile and log saved data', async () => {
-            const fileName = "mock_name.json";
+        const fileName = "mock_name.json";
 
+        test('should call writeFile and log saved data', async () => {
             spyWriteFileCall.mockImplementationOnce(
-                () => Promise.resolve( { } as any)
+                () => Promise.resolve({} as any)
             );
 
             await saveToFile(fileName, {});
 
-            expect(consoleLogMock).toHaveBeenCalledTimes(1);
-            expect(consoleLogMock).toHaveBeenCalledWith(`Saved data to ${fileName}.`);
-            expect(consoleErrorMock).toHaveBeenCalledTimes(0);
+            expect(spyConsoleLog).toHaveBeenCalledTimes(1);
+            expect(spyConsoleLog).toHaveBeenCalledWith(`Saved data to ${fileName}.`);
+            expect(spyConsoleError).toHaveBeenCalledTimes(0);
         });
 
         test('should call writeFile and catch error', async () => {
-            const fileName = "mock_name.json";
             const errMsg = "Api call Error";
 
-            spyWriteFileCall.mockRejectedValueOnce( new Error(errMsg) );
+            spyWriteFileCall.mockRejectedValueOnce(new Error(errMsg));
 
             await saveToFile(fileName, {});
 
-            expect(consoleLogMock).toHaveBeenCalledTimes(0);
-            expect(consoleErrorMock).toHaveBeenCalledTimes(1);
-            expect(consoleErrorMock).toHaveBeenCalledWith(`Error while saving data to ${fileName}: ${errMsg}`);
+            expect(spyConsoleLog).toHaveBeenCalledTimes(0);
+            expect(spyConsoleError).toHaveBeenCalledTimes(1);
+            expect(spyConsoleError).toHaveBeenCalledWith(`Error: ${errMsg}`);
         });
     });
 
     describe("checkFileExists(...)", () => {
 
+        const mockName1 = "repo1";
+        const mockName2 = "name.tf";
         const directoryPath = "mock/path";
+        const mockReadDirObj = { name: mockName1, isFile: () => true, isDirectory: () => true };
 
-        test('should call readdirSync without going into the for loop', async () => {
-            spyReaddirSyncCall.mockReturnValueOnce( [] );
-
-            checkFileExists(directoryPath);
-
-            expect(spyReaddirSyncCall).toHaveBeenCalledTimes(1);
-            expect(spyStatSyncCall).toHaveBeenCalledTimes(0);
-        });
-
-        test('should call readdirSync without going into the for loop', async () => {
-            spyReaddirSyncCall.mockReturnValueOnce( [] );
+        test('should call readdirSync without going into the for loop', () => {
+            spyReaddirSyncCall.mockReturnValueOnce([]);
 
             checkFileExists(directoryPath);
 
             expect(spyReaddirSyncCall).toHaveBeenCalledTimes(1);
-            expect(spyStatSyncCall).toHaveBeenCalledTimes(0);
         });
 
+        test('should call readdirSync and iterate on files object', () => {
+
+            mockUpdateStateFileCall.mockReturnValueOnce(() => {/**/});
+            spyReaddirSyncCall.mockReturnValueOnce([mockReadDirObj] as any);
+            spyReaddirSyncCall.mockReturnValueOnce([{
+                ...mockReadDirObj,
+                name: mockName2,
+                isDirectory: () => false
+            }] as any);
+            checkFileExists(directoryPath);
+
+            expect(spyReaddirSyncCall).toHaveBeenCalledTimes(2);
+            expect(mockUpdateStateFileCall).toHaveBeenCalledTimes(1);
+            expect(mockUpdateStateFileCall).toHaveBeenCalledWith(`${directoryPath}/${mockName1}/${mockName2}`, mockName2, ".tf");
+        });
+
+        test('should call readdirSync without going into the for loop', () => {
+            const errMsg = "files is not iterable";
+
+            spyReaddirSyncCall.mockReturnValueOnce(null as any);
+            checkFileExists(directoryPath);
+
+            expect(spyReaddirSyncCall).toHaveBeenCalledTimes(1);
+
+            expect(spyConsoleError).toHaveBeenCalledTimes(1);
+            expect(spyConsoleError).toHaveBeenCalledWith(`Error: ${errMsg}`);
+        });
     });
 
     describe("cloneRepos(...)", () => {
@@ -107,11 +117,11 @@ describe("UTILS fs tests suites", () => {
             ]}`;
 
             spyReadFileCall.mockImplementationOnce(
-                () => Promise.resolve( json )
+                () => Promise.resolve(json)
             );
 
-            mockExecCommandCall.mockReturnValueOnce( () => Promise.resolve( {} ) );
-            mockSetTimeOutCall.mockImplementationOnce( () => Promise.resolve( null ) );
+            mockExecCommandCall.mockReturnValueOnce(() => Promise.resolve({}));
+            mockSetTimeOutCall.mockImplementationOnce(() => Promise.resolve(null));
 
             await cloneRepos();
 
@@ -125,14 +135,14 @@ describe("UTILS fs tests suites", () => {
         test('should call readFile and return reject promise object', async () => {
             const errMsg = "Error executing command";
 
-            spyReadFileCall.mockRejectedValueOnce( new Error(errMsg) );
+            spyReadFileCall.mockRejectedValueOnce(new Error(errMsg));
 
             await cloneRepos();
 
             expect(mockSetTimeOutCall).toHaveBeenCalledTimes(0);
             expect(mockExecCommandCall).toHaveBeenCalledTimes(0);
 
-            expect(consoleErrorMock).toHaveBeenCalledWith(`Error: ${errMsg}`);
+            expect(spyConsoleError).toHaveBeenCalledWith(`Error: ${errMsg}`);
         });
     });
 });

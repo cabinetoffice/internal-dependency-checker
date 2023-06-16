@@ -1,5 +1,4 @@
 import { describe, expect, test, jest, afterEach, beforeEach } from '@jest/globals';
-import { SpiedFunction } from 'jest-mock';
 
 import {
     getTechFile,
@@ -27,25 +26,27 @@ import {
     MOCK_HEADERS,
     MOCK_REPO_URL,
     MOCK_REPOS_INFO_EMPTY,
-    MOCK_REPOS_DATA
+    MOCK_REPOS_DATA,
+    MOCK_ORGANIZATION
 } from '../../mock/repos_info';
 
-let consoleLogMock: SpiedFunction;
-let consoleErrorMock: SpiedFunction;
+const spyConsoleLog = jest.spyOn(console, 'log');
+const spyConsoleError = jest.spyOn(console, 'error');
 
-let spyFetchCall = jest.spyOn(global, 'fetch');
-let spySetTimeoutCall = jest.spyOn(global, 'setTimeout');
+const spyFetchCall = jest.spyOn(global, 'fetch');
+const spySetTimeoutCall = jest.spyOn(global, 'setTimeout');
 
+/* eslint-disable */
 describe("UTILS Index tests suites", () => {
 
     beforeEach(() => {
-        consoleLogMock = jest.spyOn(console, 'log').mockImplementation( () => {} );
-        consoleErrorMock = jest.spyOn(console, 'error').mockImplementation( () => {} );
+        spyConsoleLog.mockImplementation(() => {/**/});
+        spyConsoleError.mockImplementation(() => {/**/});
     });
 
     afterEach(() => {
         jest.resetAllMocks();
-    })
+    });
 
     // ************************************************************ //
 
@@ -65,8 +66,8 @@ describe("UTILS Index tests suites", () => {
 
         test(`should throw an error based on wrong filename getTechFile("any")`, () => {
             const errMsg = 'Error: fix FILES_NAME object! File "any" has to be added.';
-            expect(() => { getTechFile("any") }).toThrow(Error)
-            expect(() => { getTechFile("any") }).toThrow(errMsg)
+            expect(() => { getTechFile("any"); }).toThrow(Error);
+            expect(() => { getTechFile("any"); }).toThrow(errMsg);
         });
     });
 
@@ -78,8 +79,8 @@ describe("UTILS Index tests suites", () => {
             (`should update STATE_DEPENDENCIES object based on filePath: $filePath and fileName: $fileName`,
                 ({ filePath, fileName, fileExtension, expected }) => {
                     updateStateFile(filePath, fileName, fileExtension);
-                    expect(consoleLogMock).toHaveBeenCalledTimes(1);
-                    expect(consoleErrorMock).toHaveBeenCalledTimes(0);
+                    expect(spyConsoleLog).toHaveBeenCalledTimes(1);
+                    expect(spyConsoleError).toHaveBeenCalledTimes(0);
                     expect(STATE_DEPENDENCIES).toEqual(expected);
                 });
 
@@ -91,18 +92,18 @@ describe("UTILS Index tests suites", () => {
 
             expect(() => {
                 updateStateFile(filePath, fileName, fileExtension);
-            }).toThrow(Error)
+            }).toThrow(Error);
 
             const errMsg = "file name: repos__org1__repo1, file Path: repos/org1/repo1/package-lock.json, key: file2";
-            expect(consoleErrorMock).toHaveBeenCalledTimes(1);
-            expect(consoleErrorMock).toHaveBeenCalledWith(`Error - ${errMsg}`);
+            expect(spyConsoleError).toHaveBeenCalledTimes(1);
+            expect(spyConsoleError).toHaveBeenCalledWith(errMsg);
 
             expect(() => {
                 updateStateFile(filePath, fileName, fileExtension);
-            }).toThrow('This should not happen!')
+            }).toThrow('This should not happen!');
 
-            expect(consoleLogMock).toHaveBeenCalledTimes(0);
-            expect(consoleErrorMock).toHaveBeenCalledTimes(2);
+            expect(spyConsoleLog).toHaveBeenCalledTimes(0);
+            expect(spyConsoleError).toHaveBeenCalledTimes(2);
         });
     });
 
@@ -113,30 +114,30 @@ describe("UTILS Index tests suites", () => {
         afterEach(() => {
             // Reset object data
             ORG_DATA["members"] = []; ORG_DATA["repos"] = []; ORG_DATA["teams"] = [];
-        })
+        });
 
         test('should return empty list', async () => {
             spyFetchCall.mockImplementationOnce(
-                () => Promise.resolve( { json: () => Promise.resolve( ORG_DATA[MOCK_WHAT] ) } as any)
+                () => Promise.resolve({ json: () => Promise.resolve(ORG_DATA[MOCK_WHAT]) } as any)
             );
 
-            await getGitOrgData(MOCK_WHAT)
+            await getGitOrgData(MOCK_WHAT, MOCK_ORGANIZATION);
 
             expect(ORG_DATA).toEqual(MOCK_REPOS_INFO_EMPTY);
 
             expect(spyFetchCall).toHaveBeenCalledWith(MOCK_REPO_URL, MOCK_HEADERS);
             expect(spyFetchCall).toHaveBeenCalledTimes(1);
 
-            expect(consoleLogMock).toHaveBeenCalledTimes(1);
-            expect(consoleErrorMock).toHaveBeenCalledTimes(0);
+            expect(spyConsoleLog).toHaveBeenCalledTimes(1);
+            expect(spyConsoleError).toHaveBeenCalledTimes(0);
         });
 
         test('should return correct list', async () => {
             spyFetchCall
-                .mockImplementationOnce( () => Promise.resolve( { json: () => Promise.resolve( MOCK_REPOS_DATA ) } as any) )
-                .mockImplementationOnce( () => Promise.resolve( { json: () => Promise.resolve( [] ) } as any) );
+                .mockImplementationOnce(() => Promise.resolve({ json: () => Promise.resolve(MOCK_REPOS_DATA) } as any))
+                .mockImplementationOnce(() => Promise.resolve({ json: () => Promise.resolve([]) } as any));
 
-            await getGitOrgData(MOCK_WHAT)
+            await getGitOrgData(MOCK_WHAT, MOCK_ORGANIZATION);
 
             expect(Object.keys(ORG_DATA).length).toEqual(3);
             expect(ORG_DATA["members"]).toEqual([]);
@@ -146,40 +147,40 @@ describe("UTILS Index tests suites", () => {
             expect(spyFetchCall).toHaveBeenCalledWith(MOCK_REPO_URL, MOCK_HEADERS);
             expect(spyFetchCall).toHaveBeenCalledTimes(2);
 
-            expect(consoleLogMock).toHaveBeenCalledTimes(2);
-            expect(consoleErrorMock).toHaveBeenCalledTimes(0);
+            expect(spyConsoleLog).toHaveBeenCalledTimes(2);
+            expect(spyConsoleError).toHaveBeenCalledTimes(0);
         });
 
         test('should catch the promise reject call', async () => {
-            spyFetchCall.mockRejectedValueOnce( new Error("Api call Error") );
+            spyFetchCall.mockRejectedValueOnce(new Error("Api call Error"));
 
-            await getGitOrgData(MOCK_WHAT)
+            await getGitOrgData(MOCK_WHAT, MOCK_ORGANIZATION);
 
             expect(ORG_DATA).toEqual(MOCK_REPOS_INFO_EMPTY);
 
             expect(spyFetchCall).toHaveBeenCalledWith(MOCK_REPO_URL, MOCK_HEADERS);
             expect(spyFetchCall).toHaveBeenCalledTimes(1);
 
-            expect(consoleLogMock).toHaveBeenCalledTimes(0);
-            expect(consoleErrorMock).toHaveBeenCalledTimes(1);
+            expect(spyConsoleLog).toHaveBeenCalledTimes(0);
+            expect(spyConsoleError).toHaveBeenCalledTimes(1);
         });
 
         test('should return a null object from fetch call', async () => {
-            const logMsg = `Get ${MOCK_WHAT} from ${process.argv[2]}, page 1, retrieved undefined`;
+            const logMsg = `Get ${MOCK_WHAT} from ${MOCK_ORGANIZATION}, page 1, retrieved undefined`;
             spyFetchCall.mockImplementationOnce(
-                () => Promise.resolve( { json: () => Promise.resolve( null ) } as any)
+                () => Promise.resolve({ json: () => Promise.resolve(null) } as any)
             );
 
-            await getGitOrgData(MOCK_WHAT)
+            await getGitOrgData(MOCK_WHAT, MOCK_ORGANIZATION);
 
             expect(ORG_DATA).toEqual(MOCK_REPOS_INFO_EMPTY);
 
             expect(spyFetchCall).toHaveBeenCalledWith(MOCK_REPO_URL, MOCK_HEADERS);
             expect(spyFetchCall).toHaveBeenCalledTimes(1);
 
-            expect(consoleLogMock).toHaveBeenCalledTimes(1);
-            expect(consoleLogMock).toHaveBeenCalledWith(logMsg);
-            expect(consoleErrorMock).toHaveBeenCalledTimes(0);
+            expect(spyConsoleLog).toHaveBeenCalledTimes(1);
+            expect(spyConsoleLog).toHaveBeenCalledWith(logMsg);
+            expect(spyConsoleError).toHaveBeenCalledTimes(0);
         });
     });
 

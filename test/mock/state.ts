@@ -3,7 +3,7 @@ const pythonObjWithFile1DependencyFile = {
         "repo_path": "repos/org1/repo1",
         "file1": "repos/org1/repo1/requirements.txt",
         "repo_file_path": "repos/org1/repo1",
-        "file_name": "repos__org1__repo1",
+        "file_name": "repos__org1__repo1"
     },
 };
 
@@ -13,7 +13,7 @@ const pythonObjWithTwoOrgReposAndFile1DependencyFile = {
         "repo_path": "repos/org1/repo2",
         "file1": "repos/org1/repo2/requirements.txt",
         "repo_file_path": "repos/org1/repo2",
-        "file_name": "repos__org1__repo2",
+        "file_name": "repos__org1__repo2"
     }
 };
 
@@ -22,7 +22,7 @@ const javaObjWithFile1DependencyFile = {
         "repo_path": "repos/org2/repo2",
         "file1": "repos/org2/repo2/pom.xml",
         "repo_file_path": "repos/org2/repo2",
-        "file_name": "repos__org2__repo2",
+        "file_name": "repos__org2__repo2"
     },
 };
 
@@ -31,14 +31,14 @@ const nodeObjWithFile1DependencyFile = {
         "repo_path": "repos/org1/repo1",
         "file1": "repos/org1/repo1/package.json",
         "repo_file_path": "repos/org1/repo1",
-        "file_name": "repos__org1__repo1",
+        "file_name": "repos__org1__repo1"
     },
-}
+};
 
 const nodeObjWithBothDependencyFiles = {
     ...nodeObjWithFile1DependencyFile["repos__org1__repo1"],
     "file2": "repos/org1/repo1/package-lock.json"
-}
+};
 
 export const mockStateDependenciesData = [
     {

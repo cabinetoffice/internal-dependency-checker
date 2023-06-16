@@ -1,16 +1,15 @@
 import { describe, expect, test, jest, afterEach, beforeEach } from '@jest/globals';
-import { SpiedFunction } from 'jest-mock';
 
 import { exec_command } from '../../../src/utils/exec';
 
-let consoleLogMock: SpiedFunction;
-let consoleErrorMock: SpiedFunction;
+const spyConsoleLog = jest.spyOn(console, 'log');
+const spyConsoleError = jest.spyOn(console, 'error');
 
 describe("UTILS exec tests suites", () => {
 
     beforeEach(() => {
-        consoleLogMock = jest.spyOn(console, 'log').mockImplementation( () => {} );
-        consoleErrorMock = jest.spyOn(console, 'error').mockImplementation( () => {} );
+        spyConsoleLog.mockImplementation(() => {/**/});
+        spyConsoleError.mockImplementation(() => {/**/});
     });
 
     afterEach(() => {
@@ -18,13 +17,13 @@ describe("UTILS exec tests suites", () => {
     });
 
     test('should call execPromise and print logs', async () => {
-        await exec_command("ls", 5, 99)
+        await exec_command("ls", 5, 99);
 
-        expect(consoleLogMock).toHaveBeenCalledTimes(3);
-        expect(consoleLogMock).toHaveBeenCalledWith(`5/99 - execute command: ls`);
-        expect(consoleLogMock).toHaveBeenCalledWith("stdout:", expect.anything());
-        expect(consoleLogMock).toHaveBeenCalledWith("stderr:", expect.anything());
-        expect(consoleErrorMock).toHaveBeenCalledTimes(0);
+        expect(spyConsoleLog).toHaveBeenCalledTimes(3);
+        expect(spyConsoleLog).toHaveBeenCalledWith(`5/99 - execute command: ls`);
+        expect(spyConsoleLog).toHaveBeenCalledWith("stdout:", expect.anything());
+        expect(spyConsoleLog).toHaveBeenCalledWith("stderr:", expect.anything());
+        expect(spyConsoleError).toHaveBeenCalledTimes(0);
     });
 
 });

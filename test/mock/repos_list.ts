@@ -17,4 +17,4 @@ export const mockReposList = {
             "file_name": "repos__org2__repo2"
         }
     }
-}
+};
