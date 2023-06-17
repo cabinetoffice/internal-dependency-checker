@@ -3,12 +3,14 @@
   "version": "1.0.0",
   "description": "Repo Dependency Checker",
   "main": "./dist/cli.js",
-  "type": "module",
   "scripts": {
     "build": "tsc",
     "help": "./dist/cli.js --help",
+    "test": "jest",
+    "coverage": "jest --coverage",
     "lint": "eslint src",
-    "lint:fix": "eslint --fix src"
+    "lint:fix": "eslint --fix src",
+    "prepare": "husky install"
   },
   "engines": {
     "npm": ">=9.0.0",
@@ -22,6 +24,7 @@
     "@typescript-eslint/eslint-plugin": "^5.59.9",
     "@typescript-eslint/parser": "^5.59.9",
     "eslint": "^8.42.0",
+    "husky": "^8.0.3",
     "jest": "^29.5.0",
     "ts-jest": "^29.1.0",
     "typescript": "^5.1.3"
