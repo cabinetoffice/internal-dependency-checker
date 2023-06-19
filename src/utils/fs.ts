@@ -2,7 +2,7 @@ import { writeFile, readFile } from 'node:fs/promises';
 import fs from 'node:fs';
 import path from 'node:path';
 
-import { RepoList, JsonData } from '../types/utils.js';
+import { RepoList, JsonData } from '../types/utils';
 
 import {
     REPOS_KEY,
@@ -13,10 +13,10 @@ import {
     EXCLUDE_SUBDIRECTORY,
     REPOS_SUB_DIRECTORY_PATH,
     REPOS_LIST_FILE_PATH
-} from "../config/index.js";
+} from "../config/index";
 
-import { exec_command } from "./exec.js";
-import { updateStateFile, setTimeOut } from "./index.js";
+import { exec_command } from "./exec";
+import { updateStateFile, setTimeOut } from "./index";
 
 // ************************************************************ //
 
@@ -58,18 +58,22 @@ export const saveToFile = async (fileName: string, data: any): Promise<void> => 
 // ************************************************************ //
 
 export const checkFileExists = (directoryPath: string): void => {
-    const files = fs.readdirSync(directoryPath, { withFileTypes: true });
-    for (const file of files) {
-        const fileName = file.name;
-        const filePath = path.join(directoryPath, fileName);
-        const fileExtension = path.extname(fileName);
+    try {
+        const files = fs.readdirSync(directoryPath, { withFileTypes: true });
+        for (const file of files) {
+            const fileName = file.name;
+            const filePath = path.join(directoryPath, fileName);
+            const fileExtension = path.extname(fileName);
 
-        if (file.isFile() && (FILES_NAME.indexOf(fileName) !== -1 || FILES_BY_EXTENSIONS.indexOf(fileExtension) !== -1)) {
-            updateStateFile(filePath, fileName, fileExtension);
-        }
+            if (file.isFile() && (FILES_NAME.indexOf(fileName) !== -1 || FILES_BY_EXTENSIONS.indexOf(fileExtension) !== -1)) {
+                updateStateFile(filePath, fileName, fileExtension);
+            }
 
-        if (file.isDirectory() && EXCLUDE_SUBDIRECTORY.indexOf(fileName) === -1) {
-            checkFileExists(filePath);
+            if (file.isDirectory() && EXCLUDE_SUBDIRECTORY.indexOf(fileName) === -1) {
+                checkFileExists(filePath);
+            }
         }
+    } catch (error: any) {
+        console.error(`Error: ${error.message}`);
     }
 };

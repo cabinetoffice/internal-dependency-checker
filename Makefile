@@ -1,4 +1,4 @@
-.PHONY: build start clone state docker-up docker-build test
+.PHONY: build start clone state docker-up docker-build test coverage
 
 NODE_VERSION := v18.16.0
 PREFIX := repos
@@ -35,3 +35,7 @@ docker-up:
 
 test:
 	npm run test
+
+coverage:
+	rm -rf ./coverage
+	npm run coverage
