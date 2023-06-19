@@ -21,12 +21,10 @@ describe("Main tests suites", () => {
     });
 
     afterEach(() => {
-        jest.clearAllMocks();
+        jest.resetAllMocks();
     });
 
     test("should call the mockGetGitOrgData and saveToFile functions", async () => {
-        mockGetGitOrgData.mockReturnValueOnce(() => Promise.resolve({}));
-        mockSaveToFile.mockReturnValueOnce(() => Promise.resolve({}));
 
         await main(MOCK_ORGANIZATION);
 
@@ -37,7 +35,6 @@ describe("Main tests suites", () => {
 
     test("should call the saveToFile function and catch the saving data to file error", async () => {
         const errMsg = "Error while saving data to file!";
-        mockGetGitOrgData.mockReturnValueOnce(() => Promise.resolve({}));
         mockSaveToFile.mockRejectedValueOnce(new Error(errMsg) as never);
 
         await main(MOCK_ORGANIZATION);

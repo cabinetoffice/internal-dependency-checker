@@ -11,7 +11,7 @@ import {
 
 // ************************************************************ //
 
-export const setTimeOut = async () => {
+export const setTimeOut = async (): Promise<void> => {
     await new Promise(resolve => setTimeout(resolve, CLONE_TIMEOUT));
 };
 

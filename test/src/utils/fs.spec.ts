@@ -39,9 +39,7 @@ describe("UTILS fs tests suites", () => {
         const fileName = "mock_name.json";
 
         test('should call writeFile and log saved data', async () => {
-            spyWriteFileCall.mockImplementationOnce(
-                () => Promise.resolve({} as any)
-            );
+            spyWriteFileCall.mockImplementationOnce( () => Promise.resolve() );
 
             await saveToFile(fileName, {});
 
@@ -79,8 +77,6 @@ describe("UTILS fs tests suites", () => {
         });
 
         test('should call readdirSync and iterate on files object', () => {
-
-            mockUpdateStateFileCall.mockReturnValueOnce(() => {/**/});
             spyReaddirSyncCall.mockReturnValueOnce([mockReadDirObj] as any);
             spyReaddirSyncCall.mockReturnValueOnce([{
                 ...mockReadDirObj,
@@ -94,7 +90,7 @@ describe("UTILS fs tests suites", () => {
             expect(mockUpdateStateFileCall).toHaveBeenCalledWith(`${directoryPath}/${mockName1}/${mockName2}`, mockName2, ".tf");
         });
 
-        test('should call readdirSync without going into the for loop', () => {
+        test('should return null from readdirSync and catch the error', () => {
             const errMsg = "files is not iterable";
 
             spyReaddirSyncCall.mockReturnValueOnce(null as any);
@@ -119,9 +115,6 @@ describe("UTILS fs tests suites", () => {
             spyReadFileCall.mockImplementationOnce(
                 () => Promise.resolve(json)
             );
-
-            mockExecCommandCall.mockReturnValueOnce(() => Promise.resolve({}));
-            mockSetTimeOutCall.mockImplementationOnce(() => Promise.resolve(null));
 
             await cloneRepos();
 

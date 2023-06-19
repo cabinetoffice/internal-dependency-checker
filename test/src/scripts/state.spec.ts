@@ -20,13 +20,10 @@ describe("State tests suites", () => {
     });
 
     afterEach(() => {
-        jest.clearAllMocks();
+        jest.resetAllMocks();
     });
 
     test("should call the checkFileExists and saveToFile functions", async () => {
-        mockCheckFileExists.mockReturnValueOnce({});
-        mockSaveToFile.mockReturnValueOnce(() => Promise.resolve({}));
-
         await state();
 
         expect(mockCheckFileExists).toHaveBeenCalledTimes(1);
@@ -36,7 +33,6 @@ describe("State tests suites", () => {
 
     test("should call the saveToFile function and catch the saving data to file error", async () => {
         const errMsg = "Error while saving data to file!";
-        mockCheckFileExists.mockReturnValueOnce({});
         mockSaveToFile.mockRejectedValueOnce(new Error(errMsg) as never);
 
         await state();

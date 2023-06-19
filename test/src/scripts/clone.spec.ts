@@ -18,12 +18,10 @@ describe("Clone tests suites", () => {
     });
 
     afterEach(() => {
-        jest.clearAllMocks();
+        jest.resetAllMocks();
     });
 
     test("should call the cloneRepos function", async () => {
-        mockCloneReposCall.mockReturnValueOnce(() => Promise.resolve({}));
-
         await clone();
 
         expect(mockCloneReposCall).toHaveBeenCalledTimes(1);

@@ -30,7 +30,6 @@ describe("CLI tests suites", () => {
     });
 
     test('should exec mainCommand with empty argv', () => {
-        mockMainCall.mockReturnValueOnce(() => Promise.resolve({}));
         mainCommand({});
 
         expect(mockMainCall).toHaveBeenCalledTimes(0);
@@ -40,7 +39,6 @@ describe("CLI tests suites", () => {
     });
 
     test('should exec mainCommand with ORG field', () => {
-        mockMainCall.mockReturnValueOnce(() => Promise.resolve({}));
         const mockArgv = { ORG: MOCK_ORGANIZATION };
         mainCommand(mockArgv);
 
@@ -53,8 +51,8 @@ describe("CLI tests suites", () => {
     });
 
     test('should exec cloneCommand', () => {
-        mockCloneCall.mockReturnValueOnce(() => Promise.resolve({}));
         cloneCommand();
+
         expect(mockCloneCall).toHaveBeenCalledTimes(1);
         expect(mockCloneCall).toHaveBeenCalledWith();
 
@@ -64,8 +62,8 @@ describe("CLI tests suites", () => {
     });
 
     test('should exec stateCommand', () => {
-        mockStateCall.mockReturnValueOnce(() => Promise.resolve({}));
         stateCommand();
+
         expect(mockStateCall).toHaveBeenCalledTimes(1);
         expect(mockStateCall).toHaveBeenCalledWith();
 
