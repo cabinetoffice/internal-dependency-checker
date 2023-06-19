@@ -1,5 +1,5 @@
-import { TechEnum } from './config.js';
-import { REPOS_KEY } from '../config/index.js';
+import { TechEnum } from './config';
+import { REPOS_KEY } from '../config/index';
 
 export interface JsonData {
   // The full interface can be accessed here:https://docs.github.com/en/rest/repos/repos

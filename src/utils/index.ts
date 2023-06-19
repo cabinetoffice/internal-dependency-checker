@@ -1,5 +1,5 @@
-import { WhatEnum, TechEnum, DependencyObject } from '../types/config.js';
-import { KeyEnum, TechFile } from '../types/utils.js';
+import { WhatEnum, TechEnum, DependencyObject } from '../types/config';
+import { KeyEnum, TechFile } from '../types/utils';
 import {
     FILES_BY_EXTENSIONS,
     STATE_DEPENDENCIES,
@@ -7,11 +7,11 @@ import {
     ORG_DATA,
     HEADERS,
     CLONE_TIMEOUT
-} from "../config/index.js";
+} from "../config/index";
 
 // ************************************************************ //
 
-export const setTimeOut = async () => {
+export const setTimeOut = async (): Promise<void> => {
     await new Promise(resolve => setTimeout(resolve, CLONE_TIMEOUT));
 };
 
@@ -57,7 +57,7 @@ export const updateStateFile = (filePath: string, fileName: string, fileExtensio
         } else if (!STATE_DEPENDENCIES[tech]![file_name][key]) {
             STATE_DEPENDENCIES[tech]![file_name][key] = file_path;
         } else if (FILES_BY_EXTENSIONS.indexOf(fileExtension) === -1) {
-            console.error(`Error: path->${file_name}, file Path->${file_path}, key->${key}`);
+            console.error(`file name: ${file_name}, file Path: ${file_path}, key: ${key}`);
             throw new Error('This should not happen!');
         }
     }

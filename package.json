@@ -3,10 +3,11 @@
   "version": "1.0.0",
   "description": "Repo Dependency Checker",
   "main": "./dist/cli.js",
-  "type": "module",
   "scripts": {
     "build": "tsc",
     "help": "./dist/cli.js --help",
+    "test": "jest",
+    "coverage": "jest --coverage",
     "lint": "eslint src",
     "lint:fix": "eslint --fix src"
   },
