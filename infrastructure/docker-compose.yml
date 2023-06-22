@@ -2,10 +2,11 @@ version: '3'
 
 services:
 
-  # dependency-checks-go:
-  #   build: ./dependencies/go
-  #   volumes:
-  #     - ./reports:/repo-dependency-checker/reports
+  dependency-checks-go:
+    build: ./dependencies/go
+    volumes:
+      - ./reports:/repo-dependency-checker/reports
+      - ./repos:/repo-dependency-checker/repos
 
   dependency-checks-java:
     build: ./dependencies/java
