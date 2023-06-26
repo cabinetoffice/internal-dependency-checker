@@ -47,7 +47,7 @@ Here is a breakdown of what the code does:
 8. It then validates that `pom.xml` exists.
 
    - The `if [ "${file1##*/}" == $POM_FILE_NAME ]` validates wether `file1` is equal to `pom.xml`
-   - The `else echo {'"error"' : '"'Error: Could not detect file type ${file1}'"'} > $REPORT_FILE_NAME` saves the error message to `$REPORT_FILE_NAME` when pom.xml cannot be found in `file1`, the script will then stop.
+   - The `else echo {'"error"' : '"'Error: Could not detect file type ${file1}'"'} > $REPORT_FILE_NAME` saves the error message to `$REPORT_FILE_NAME` when `pom.xml` cannot be found in `file1`, the script will then stop.
 
 9. It changes the current directory to the repository file path where the project is.
 
