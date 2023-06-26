@@ -1,8 +1,8 @@
 # Golang
 
-Go lang dependency checks logic consists of two separate files, similar to other languages: a bash script and a dockerfile.
+The Go language dependency checks logic consists of two separate files, similar to other languages: a bash script and a Dockerfile.
 
-**Bash** script performs dependency checking by fetching detail of (folder path, file name ...) the project from the dependency state file and reporting the check results to the reports folder. Tools used in this context are Nancy and Gosec, the first one focuses on scanning Go dependencies for known vulnerabilities and the second helps identify security flaws, coding mistakes, and vulnerabilities in the go code intself. Here is a breakdown of what the code does:
+The **bash script** performs dependency checking by fetching project details (such as folder path and file name) from the dependency state file. It then reports the check results to the reports folder. The tools used in this context are Nancy and Gosec. Nancy focuses on scanning Go dependencies for known vulnerabilities, while Gosec helps identify security flaws, coding mistakes, and vulnerabilities in the Go code itself. Here is a breakdown of what the code does:
 
 1. It sets up some variables for folder names and the working directory.
 
