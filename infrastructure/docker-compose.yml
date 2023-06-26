@@ -8,17 +8,17 @@ services:
       - ./reports:/repo-dependency-checker/reports
       - ./repos:/repo-dependency-checker/repos
 
-  # dependency-checks-java:
-  #   build: ./dependencies/java
-  #   volumes:
-  #     - ./reports:/repo-dependency-checker/reports
-  #     - ./repos:/repo-dependency-checker/repos
+  dependency-checks-java:
+    build: ./dependencies/java
+    volumes:
+      - ./reports:/repo-dependency-checker/reports
+      - ./repos:/repo-dependency-checker/repos
 
-  # dependency-checks-node:
-  #   build: ./dependencies/node
-  #   volumes:
-  #     - ./reports:/repo-dependency-checker/reports
-  #     - ./repos:/repo-dependency-checker/repos
+  dependency-checks-node:
+    build: ./dependencies/node
+    volumes:
+      - ./reports:/repo-dependency-checker/reports
+      - ./repos:/repo-dependency-checker/repos
 
   # dependency-checks-perl:
   #   build: ./dependencies/perl
@@ -31,17 +31,17 @@ services:
       - ./reports:/repo-dependency-checker/reports
       - ./repos:/repo-dependency-checker/repos
 
-  # dependency-checks-python:
-  #   build: ./dependencies/python
-  #   volumes:
-  #     - ./reports:/repo-dependency-checker/reports
-  #     - ./repos:/repo-dependency-checker/repos
+  dependency-checks-python:
+    build: ./dependencies/python
+    volumes:
+      - ./reports:/repo-dependency-checker/reports
+      - ./repos:/repo-dependency-checker/repos
 
-  # dependency-checks-ruby:
-  #   build: ./dependencies/ruby
-  #   volumes:
-  #     - ./reports:/repo-dependency-checker/reports
-  #     - ./repos:/repo-dependency-checker/repos
+  dependency-checks-ruby:
+    build: ./dependencies/ruby
+    volumes:
+      - ./reports:/repo-dependency-checker/reports
+      - ./repos:/repo-dependency-checker/repos
 
   # vulnerability-checks-docker:
   #   build: ./vulnerabilities/docker
@@ -50,17 +50,17 @@ services:
   #     - ./repos:/repo-vulnerability-checker/repos
   #     - /var/run/docker.sock:/var/run/docker.sock
 
-  # vulnerability-checks-terraform:
-  #   build: ./vulnerabilities/terraform
-  #   volumes:
-  #     - ./reports:/repo-vulnerability-checker/reports
-  #     - ./repos:/repo-vulnerability-checker/repos
+  vulnerability-checks-terraform:
+    build: ./vulnerabilities/terraform
+    volumes:
+      - ./reports:/repo-vulnerability-checker/reports
+      - ./repos:/repo-vulnerability-checker/repos
 
-  # vulnerability-checks-gitleaks:
-  #   build: ./vulnerabilities/gitleaks
-  #   volumes:
-  #     - ./reports:/repo-vulnerability-checker/reports
-  #     - ./repos:/repo-vulnerability-checker/repos
+  vulnerability-checks-gitleaks:
+    build: ./vulnerabilities/gitleaks
+    volumes:
+      - ./reports:/repo-vulnerability-checker/reports
+      - ./repos:/repo-vulnerability-checker/repos
 
 volumes:
     reports:
