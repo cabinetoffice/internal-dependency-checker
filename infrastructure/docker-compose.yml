@@ -25,10 +25,11 @@ services:
   #   volumes:
   #     - ./reports:/repo-dependency-checker/reports
 
-  # dependency-checks-php:
-  #   build: ./dependencies/php
-  #   volumes:
-  #     - ./reports:/repo-dependency-checker/reports
+  dependency-checks-php:
+    build: ./dependencies/php
+    volumes:
+      - ./reports:/repo-dependency-checker/reports
+      - ./repos:/repo-dependency-checker/repos
 
   dependency-checks-python:
     build: ./dependencies/python
