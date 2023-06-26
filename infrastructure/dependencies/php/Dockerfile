@@ -15,5 +15,5 @@ WORKDIR /repo-dependency-checker
 # Copy the current directory contents to the container
 COPY . /repo-dependency-checker
 
-# Start scirpt
+# Start script
 CMD ["./dep-checker.sh"]
