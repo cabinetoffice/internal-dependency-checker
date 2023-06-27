@@ -50,15 +50,15 @@ Here is a breakdown of what the code does:
 
 8. It then validates if both `package.json` and `package-lock.json` exists or if just `package.json` exists without `package-lock.json`.
 
-   - The `if [ "${file1##*/}" == $PACKAGE_FILE_NAME ] && [[ "$file2" ]] && [ "${file2##*/}" == $PACKAGE_LOCK_FILE_NAME ]` validates that `file1` is equal to `package.json` and `file2` is equal to `package-lock.json`
-   - The `elif [ "${file1##*/}" == $PACKAGE_FILE_NAME ]` checks if `file1` is equal to `package.json` only if the the first `if check` failed
+   - The `if [ "${file1##*/}" == $PACKAGE_FILE_NAME ] && [[ "$file2" ]] && [ "${file2##*/}" == $PACKAGE_LOCK_FILE_NAME ]` validates that `file1` is equal to `package.json` and `file2` is equal to `package-lock.json`.
+   - The `elif [ "${file1##*/}" == $PACKAGE_FILE_NAME ]` checks if `file1` is equal to `package.json` only if the the first `if check` failed.
    - The `else echo {'"error"' : '"'Error: Could not detect file type ${file1}'"'} > $REPORT_FILE_NAME` saves the error message to `$REPORT_FILE_NAME` when `package.json` cannot be found in `file1`, the script will then stop.
 
 9. 
 
    - The `cd $WORKDIR"/"$repo_file_path` command changes the directory to the specified repository file path.
 
-10a. If both `package.json` and `package-lock.json` exist it then does a clean install of dependencies
+10a. If both `package.json` and `package-lock.json` exist it then does a clean install of dependencies.
 
    - `npm --silent ci` operates a clean install of dependencies from `package.json` & `package-lock.json`.
 
@@ -67,7 +67,7 @@ Here is a breakdown of what the code does:
    - `npm --silent install` installs all dependencies from package.json.
    - The reason for not using `npm ci` is: `npm ci` requires a package-lock.json file to run.
 
-11. It then scans for vulnerable dependencies using `npm audit`
+11. It then scans for vulnerable dependencies using `npm audit`.
 
    - `npm audit --json > $REPORT_FILE_NAME` captures the output from the `npm audit` command into a `json` format.
    - The result is saved to the `REPORT_FILE_NAME` file.
@@ -76,7 +76,7 @@ Here is a breakdown of what the code does:
 
 13. It will remove node_modules, deleting all installed dependencies
 
-13b. If `package.json` exists but `package-lock` did not, it also removes `package-lock.json`
+13b. If `package.json` exists but `package-lock` did not, it also removes `package-lock.json`.
 
 **Dockerfile** used to build a Docker image for a Maven application. Here is a breakdown of what the code does:
 
