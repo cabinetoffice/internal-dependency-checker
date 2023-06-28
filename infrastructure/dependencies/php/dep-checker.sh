@@ -24,7 +24,7 @@ do
   repo_file_path=$(echo "$dependency" | jq -r '.repo_file_path')
 
   TIMESTAMP=`date +%Y-%m-%d_%H-%M-%S`
-  REPORT_FILE_NAME=${WORKDIR}"/"${REPORTS_FOLDER_NAME}"/"$file_name"__php_7.4__"$TIMESTAMP".json"
+  REPORT_FILE_NAME=${WORKDIR}"/"${REPORTS_FOLDER_NAME}"/"$file_name"__php_7.2__"$TIMESTAMP".json"
 
   # Print arguments
   echo "Contents: $file1, $file2, $file_name, $repo_file_path and $TIMESTAMP"
