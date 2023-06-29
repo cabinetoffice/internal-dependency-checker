@@ -1,4 +1,8 @@
-FROM perl:latest
+FROM perl:5.36
+
+RUN apt-get update && apt-get install -y jq
+
+RUN cpanm CPAN::Audit
 
 # Set the working directory to /repo-dependency-checker
 WORKDIR /repo-dependency-checker
