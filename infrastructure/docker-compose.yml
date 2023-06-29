@@ -14,6 +14,13 @@ services:
       - ./reports:/repo-dependency-checker/reports
       - ./repos:/repo-dependency-checker/repos
 
+  dependency-checks-kotlin:
+    build: ./dependencies/kotlin
+    volumes:
+      - ./reports:/repo-dependency-checker/reports
+      - ./repos:/repo-dependency-checker/repos
+      - ./utils:/repo-dependency-checker/utils
+
   dependency-checks-node:
     build: ./dependencies/node
     volumes:
@@ -65,3 +72,4 @@ services:
 volumes:
     reports:
     repos:
+    utils:

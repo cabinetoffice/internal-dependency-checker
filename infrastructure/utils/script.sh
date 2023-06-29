@@ -1,12 +1,18 @@
 #!/bin/bash
 
 REPORTS_FOLDER=reports
+STATE_FILE_PATH=./repos/state.json
 WORKDIR=/repo-dependency-checker
 
 set_dependencies_object ()
 {
     # Read the dependencies from the JSON file
-    dependencies=$(/usr/bin/jq -c '.'$1'[] | {file1: .file1, file2: .file2, file_name: .file_name, repo_file_path: .repo_file_path}' ./repos/state.json)
+    dependencies=$(/usr/bin/jq -c '.'$1'[] | {
+        file1: .file1,
+        file2: .file2,
+        file_name: .file_name,
+        repo_file_path: .repo_file_path
+    }' $STATE_FILE_PATH)
 }
 
 fetch_arguments ()
@@ -41,13 +47,4 @@ print_arguments ()
 print_error ()
 {
     echo {'"error"' : '"'Error: Could not detect file type ${file1}'"'} > $REPORT_FILE_NAME
-}
-
-debug_script ()
-{
-    while true
-    do
-        echo "Sleeping 10 sec"
-        sleep 10
-    done
 }
