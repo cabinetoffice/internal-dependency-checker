@@ -27,10 +27,11 @@ services:
       - ./reports:/repo-dependency-checker/reports
       - ./repos:/repo-dependency-checker/repos
 
-  # dependency-checks-perl:
-  #   build: ./dependencies/perl
-  #   volumes:
-  #     - ./reports:/repo-dependency-checker/reports
+  dependency-checks-perl:
+    build: ./dependencies/perl
+    volumes:
+      - ./reports:/repo-dependency-checker/reports
+      - ./repos:/repo-dependency-checker/repos
 
   dependency-checks-php:
     build: ./dependencies/php
