@@ -1,7 +1,7 @@
 #!/bin/bash
 
 REPORTS_FOLDER_NAME=reports/csharp
-CSPROJ_FILE_NAME=*".csproj"
+CSPROJ_FILE_EXTENSION="csproj"
 WORKDIR=/repo-dependency-checker
 
 mkdir -p $REPORTS_FOLDER_NAME
@@ -19,9 +19,8 @@ do
   repo_file_path=$(echo "$dependency" | jq -r '.repo_file_path')
 
   # Extract C# project name
-  project_name="${file1##*/}"
-  project_name="${project_name%.*}"
-  echo "$project_name"
+  PROJECT_NAME=$(basename $file1 "."$CSPROJ_FILE_EXTENSION)
+  echo "$PROJECT_NAME"
 
   TIMESTAMP=`date +%Y-%m-%d_%H-%M-%S`
   REPORT_FILE_NAME="${WORKDIR}/${REPORTS_FOLDER_NAME}/${file_name}__dotnet_sdk_6_build__${TIMESTAMP}.json"
@@ -29,16 +28,16 @@ do
   # Print arguments
   echo "Contents: $file1, $repo_file_path, $file_name, and $TIMESTAMP"
 
-  if [[ "${file1##*/}" == $CSPROJ_FILE_NAME ]]; then
+  if [ "${file1##*.}" == $CSPROJ_FILE_EXTENSION ]
+  then
     echo "Installing csharp dependencies for $repo_file_path"
     cd "${WORKDIR}/${repo_file_path}"
     dotnet restore
     dotnet build --output .
-    dependency-check.sh --scan "${project_name}.dll" --format JSON
-    REPORT_FILE_CONTENT=$(cat dependency-check-report.json)
-    echo "$REPORT_FILE_CONTENT" > "$REPORT_FILE_NAME"
+    dependency-check.sh --scan "${PROJECT_NAME}.dll" --format JSON
+    mv dependency-check-report.json $REPORT_FILE_NAME
     echo "Saved report file to $REPORT_FILE_NAME"
   else
-    echo '{"error": "Error: Could not detect file type ${file1}"}' > "$REPORT_FILE_NAME"
+    echo '{"error": "Error: Could not detect file type '${file1}'"}' > $REPORT_FILE_NAME
   fi
 done
