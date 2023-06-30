@@ -18,8 +18,8 @@ do
   then
     print_arguments
     cd $WORKDIR"/"$repo_file_path
-    ./gradlew clean build || echo {'"error"' : '"'Error: Could not build project ${repo_file_path}, check file on output folder.'"'} > $REPORT_FILE_NAME && continue
-    ./gradlew dependencyCheckAnalyze > $REPORT_FILE_NAME
+    ./gradlew clean build
+    ./gradlew dependencyCheckAnalyze > $REPORT_FILE_NAME || echo {'"error"' : '"'Error: Could not build project ${repo_file_path}, check file on output folder.'"'} > $REPORT_FILE_NAME
     rm -rf .gradle
     echo "Saved report file to $REPORT_FILE_NAME"
   else
