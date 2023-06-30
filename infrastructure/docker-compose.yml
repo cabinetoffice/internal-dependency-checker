@@ -44,6 +44,12 @@ services:
       - ./reports:/repo-dependency-checker/reports
       - ./repos:/repo-dependency-checker/repos
 
+  dependency-checks-csharp:
+    build: ./dependencies/csharp
+    volumes:
+      - ./reports:/repo-dependency-checker/reports
+      - ./repos:/repo-dependency-checker/repos
+
   # vulnerability-checks-docker:
   #   build: ./vulnerabilities/docker
   #   volumes:
