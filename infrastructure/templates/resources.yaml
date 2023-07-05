@@ -1,0 +1,59 @@
+AWSTemplateFormatVersion: "2010-09-09"
+Description: 'Cloudformation to deploy the IDC static resources, IAMs user, s3 and policies.'
+
+Parameters:
+  ServiceName:
+    Type: String
+    Default: idc
+    Description: Easy to identify project that the resources belong too
+    AllowedPattern: "[a-zA-Z0-9-_]*"
+    MaxLength: 10
+  UniqueID:
+    Type: String
+    Description: a unique to id multiple stacks.
+    AllowedPattern: "[a-zA-Z0-9-_]*"
+    MaxLength: 10
+  BranchName:
+    Type: String
+    Description: the git hub branch name.
+    AllowedPattern: "[a-zA-Z0-9-_\\/]*"
+    MaxLength: 20
+
+Resources:
+  ReportsUser:
+    Type: 'AWS::IAM::User'
+    Properties:
+      UserName: !Sub '${UniqueID}-${BranchName}-${ServiceName}-reports'
+
+  ReportsS3bucket:
+    Type: 'AWS::S3::Bucket'
+    Properties:
+      AccessControl: Private
+      BucketName: !Sub '${UniqueID}-${BranchName}-${ServiceName}-reports'
+      BucketEncryption:
+        ServerSideEncryptionConfiguration:
+        - ServerSideEncryptionByDefault:
+            SSEAlgorithm: 'AES256'
+          BucketKeyEnabled: true
+
+  ReportsS3Policy:
+    Type: 'AWS::IAM::Policy'
+    Properties:
+      PolicyName: !Sub ${UniqueID}-${BranchName}-${ServiceName}-reports
+      PolicyDocument:
+        Version: '2012-10-17'
+        Statement:
+        - Effect: Allow
+          Action:
+          - s3:GetAccountPublicAccessBlock
+          - s3:GetBucketAcl
+          - s3:GetBucketLocation
+          - s3:GetBucketPolicyStatus
+          - s3:GetBucketPublicAccessBlock
+          - s3:ListAccessPoints
+          - s3:ListAllMyBuckets
+          Resource:
+          - !Sub arn:${AWS::Partition}:s3:::${ReportsS3bucket}
+          - !Sub arn:${AWS::Partition}:s3:::${ReportsS3bucket}/*
+      Users:
+      - !Ref ReportsUser
