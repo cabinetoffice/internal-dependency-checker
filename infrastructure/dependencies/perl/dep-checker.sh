@@ -1,31 +1,27 @@
 #!/bin/bash
 
+# Directory path in the running container. Check volumes on compose file.
+# shellcheck disable=SC1091
+source ./utils/script.sh
+
+LANG_NAME=perl
 REPORTS_FOLDER_NAME=reports/perl
-WORKDIR=/repo-dependency-checker
 
 mkdir -p $REPORTS_FOLDER_NAME
 
-# Read the dependencies from the JSON file
-dependencies=$(/usr/bin/jq -c '.perl[] | {file_name: .file_name, repo_file_path: .repo_file_path}' ./repos/state.json)
+dependencies=$(set_dependencies_object $LANG_NAME)
 
-# Loop over the dependencies
+# shellcheck disable=SC2154
+# `repo_file_path` assigned on fetch_arguments
 for dependency in $dependencies
 do
-  # Extract the dependency arguments using jq
-  file_name=$(echo "$dependency" | jq -r '.file_name')
-  repo_file_path=$(echo "$dependency" | jq -r '.repo_file_path')
+  fetch_arguments "$dependency"
+  print_arguments
 
-  TIMESTAMP=`date +%Y-%m-%d_%H-%M-%S`
-  REPORT_FILE_NAME=${WORKDIR}"/"${REPORTS_FOLDER_NAME}"/"$file_name"__cpan-audit__"$TIMESTAMP".json"
+  report_file_name=$(set_file_name "cpan_audit")
 
-  # Print arguments
-  echo "Contents: $repo_file_path, $file_name and $TIMESTAMP"
-
-  cd $WORKDIR"/"$repo_file_path
-  # Install dependencies using cpanm
+  cd "${WORKDIR}/${repo_file_path}" || continue
   cpanm --installdeps .
-  # Run cpan-audit to check for vulnerabilities for all installed modules
-  cpan-audit installed --json > $REPORT_FILE_NAME
-
-  echo "Saved report file to $REPORT_FILE_NAME"
+  cpan-audit installed --json > "$report_file_name"
+  echo "Saved report to ${report_file_name}"
 done

@@ -10,9 +10,14 @@ Node scripts to check for dependencies and vulnerabilities in an organization's 
 
 By following these steps, we ensure thorough analysis of dependencies and vulnerabilities across the organization's repositories.
 
-## Run
+## Required
 
-Before running the following commands, please ensure that you have set the GITHUB_KEY on your local environment as described below.
+- NodeJs v18
+- Docker
+- Make (command)
+- GITHUB_KEY config (check section below)
+
+## Run
 
 ```bash
 git clone https://github.com/cabinetoffice/internal-dependency-checker.git
@@ -45,9 +50,3 @@ make coverage
 3. Allow it to only have: `read:packages`, `read:org`, `read:repo_hook`, `read:public_key`, `read:user` and `repo`
 4. Make the expiry short and keep renewing
 5. Add this `export GITHUB_KEY="YOUR_KEY"` to your bash/zsh environments, `~/.bashrc` or `~/.zshrc`
-
-## TO DOs
-
-- Improve matching of dependency files - [NTRNL-71](https://technologyprogramme.atlassian.net/browse/NTRNL-71)
-- Add DOCs page per technology/language covered by the project - [NTRNL-55](https://technologyprogramme.atlassian.net/browse/NTRNL-55)
-- Cross check dependecy and double ckeck docker scripts (avoid contaminations)

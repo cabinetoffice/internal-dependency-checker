@@ -47,8 +47,8 @@ print_arguments() {
 
 print_error() {
   if [[ "$1" == "FILE" ]]; then
-    echo '{'"error"' : '"'Error: Could not detect file type.'"'}'
+    echo '{"error" : "Error: Could not detect file type."}'
   elif [[ "$1" == "BUILD" ]]; then
-    echo '{'"error"' : '"'Error: Could not build project ${2}, check file on output folder.'"'}'
+    echo '{"error" : "Error: Could not build project '"${2}"', check file on output folder."}'
   fi
 }
