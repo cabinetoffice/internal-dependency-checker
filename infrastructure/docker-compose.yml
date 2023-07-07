@@ -14,16 +14,24 @@ services:
       - ./reports:/repo-dependency-checker/reports
       - ./repos:/repo-dependency-checker/repos
 
+  dependency-checks-kotlin:
+    build: ./dependencies/kotlin
+    volumes:
+      - ./reports:/repo-dependency-checker/reports
+      - ./repos:/repo-dependency-checker/repos
+      - ./utils:/repo-dependency-checker/utils
+
   dependency-checks-node:
     build: ./dependencies/node
     volumes:
       - ./reports:/repo-dependency-checker/reports
       - ./repos:/repo-dependency-checker/repos
 
-  # dependency-checks-perl:
-  #   build: ./dependencies/perl
-  #   volumes:
-  #     - ./reports:/repo-dependency-checker/reports
+  dependency-checks-perl:
+    build: ./dependencies/perl
+    volumes:
+      - ./reports:/repo-dependency-checker/reports
+      - ./repos:/repo-dependency-checker/repos
 
   dependency-checks-php:
     build: ./dependencies/php
@@ -39,6 +47,12 @@ services:
 
   dependency-checks-ruby:
     build: ./dependencies/ruby
+    volumes:
+      - ./reports:/repo-dependency-checker/reports
+      - ./repos:/repo-dependency-checker/repos
+
+  dependency-checks-csharp:
+    build: ./dependencies/csharp
     volumes:
       - ./reports:/repo-dependency-checker/reports
       - ./repos:/repo-dependency-checker/repos
@@ -65,3 +79,4 @@ services:
 volumes:
     reports:
     repos:
+    utils:
