@@ -3,11 +3,11 @@ FROM node:14
 RUN apt-get update && \
     apt-get install -y jq
 
-# Set the working directory to /repo-dependency-checker
-WORKDIR /repo-dependency-checker
+# Set the working directory to /idc
+WORKDIR /idc
 
 # Copy the current directory contents to the container
-COPY . /repo-dependency-checker
+COPY . /idc
 
 # Start script
 CMD ["./dep-checker.sh"]

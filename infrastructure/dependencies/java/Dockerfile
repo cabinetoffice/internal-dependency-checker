@@ -16,11 +16,11 @@ RUN curl -LO https://github.com/jeremylong/DependencyCheck/releases/download/v${
 # Add OWASP Dependency-Check to the PATH
 ENV PATH="/opt/dependency-check/dependency-check/bin:${PATH}"
 
-# Set the working directory to /repo-dependency-checker
-WORKDIR /repo-dependency-checker
+# Set the working directory to /idc
+WORKDIR /idc
 
 # Copy the current directory contents to the container
-COPY . /repo-dependency-checker
+COPY . /idc
 
 # Start script
 CMD ["./dep-checker.sh"]

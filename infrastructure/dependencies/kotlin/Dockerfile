@@ -8,8 +8,8 @@ RUN curl "https://awscli.amazonaws.com/awscli-exe-linux-x86_64.zip" -o "awscliv2
     && ./aws/install \
     && rm awscliv2.zip
 
-WORKDIR /repo-dependency-checker
+WORKDIR /idc
 
-COPY . /repo-dependency-checker
+COPY . /idc
 
 CMD ["./dep-checker.sh"]
