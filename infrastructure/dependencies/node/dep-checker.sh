@@ -19,7 +19,7 @@ for dependency in $dependencies
 do
   fetch_arguments "STATE" "${dependency}"
 
-  report_file_name=$(set_file_name "${LANG_NAME}")
+  report_file_name=$(set_file_name "${REPORTS_FOLDER_NAME}" "${LANG_NAME}")
   
   if [[ "${file1##*/}" == "${PACKAGE_FILE_NAME}" ]] && [[ "$file2" ]] && [[ "${file2##*/}" == "${PACKAGE_LOCK_FILE_NAME}" ]]; then
     echo "Detected Node.js ${PACKAGE_FILE_NAME} and ${PACKAGE_LOCK_FILE_NAME} files. Installing dependencies using npm ci with node 14"

@@ -44,7 +44,7 @@ fetch_arguments() {
 }
 
 set_file_name() {
-  file_name="${WORKDIR}/${REPORTS_FOLDER_NAME}/${file_name}__${1}__${TIMESTAMP}.json"
+  file_name="${WORKDIR}/${1}/${file_name}__${2}__${TIMESTAMP}.json"
   echo "$file_name"
 }
 

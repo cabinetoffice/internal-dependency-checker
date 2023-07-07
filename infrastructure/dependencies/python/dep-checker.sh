@@ -18,7 +18,7 @@ for dependency in $dependencies
 do
   fetch_arguments "STATE" "${dependency}"
 
-  report_file_name=$(set_file_name "${LANG_NAME}")
+  report_file_name=$(set_file_name "${REPORTS_FOLDER_NAME}" "${LANG_NAME}")
   
   if [[ "${file1##*/}" == "${REQUIREMENTS_FILE_NAME}" ]]; then
     echo "Installing python dependencies using pip3 install -r requirements.txt --quiet --no-cache-dir"

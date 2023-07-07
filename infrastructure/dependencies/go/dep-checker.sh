@@ -21,8 +21,8 @@ for dependency in $dependencies
 do
   fetch_arguments "STATE" "${dependency}"
 
-  nancy_report_file_name=$(set_file_name "${NANCY_NAME}")
-  gosec_report_file_name=$(set_file_name "${GOSEC_NAME}")
+  nancy_report_file_name=$(set_file_name "${NANCY_REPORTS_FOLDER_NAME}" "${NANCY_NAME}")
+  gosec_report_file_name=$(set_file_name "${GOSEC_REPORTS_FOLDER_NAME}" "${GOSEC_NAME}")
 
   cd "${WORKDIR}/${repo_file_path}" || continue
   gosec -fmt=json -out="${gosec_report_file_name}" ./...

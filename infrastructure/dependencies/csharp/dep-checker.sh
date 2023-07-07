@@ -22,7 +22,7 @@ do
   PROJECT_NAME=$(basename "${file1}" ".${CSPROJ_FILE_EXTENSION}")
   echo "${PROJECT_NAME}"
 
-  report_file_name=$(set_file_name "${LANG_NAME}")
+  report_file_name=$(set_file_name "${REPORTS_FOLDER_NAME}" "${LANG_NAME}")
 
   if [[ "${file1##*.}" == "${CSPROJ_FILE_EXTENSION}" ]]; then
     echo "Installing ${LANG_NAME} dependencies. Checking dependencies using dependency-check.sh"

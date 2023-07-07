@@ -19,7 +19,7 @@ for file in $files
 do
   fetch_arguments "STATE" "${file}"
 
-  report_file_name=$(set_file_name "${LANG_NAME}")
+  report_file_name=$(set_file_name "${REPORTS_FOLDER_NAME}" "${LANG_NAME}")
 
   echo "Detected terraform file. Checking vulnerabilities using tfsec"
   tfsec --format=json "./${repo_file_path}" > "${report_file_name}"

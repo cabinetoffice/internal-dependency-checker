@@ -19,7 +19,7 @@ for file in $files
 do
   fetch_arguments "STATE" "${file}"
 
-  report_file_name=$(set_file_name "${LANG_NAME}")
+  report_file_name=$(set_file_name "${REPORTS_FOLDER_NAME}" "${LANG_NAME}")
 
   if [[ "${file1##*/}" == "$DOCKERFILE_NAME" ]]; then
     echo "Detected ${DOCKERFILE_NAME} file. Checking vulnerabilities using trivy"

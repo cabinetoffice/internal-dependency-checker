@@ -17,7 +17,7 @@ for dependency in $dependencies
 do
   fetch_arguments "STATE" "${dependency}"
 
-  report_file_name=$(set_file_name "${LANG_NAME}")
+  report_file_name=$(set_file_name "${REPORTS_FOLDER_NAME}" "${LANG_NAME}")
 
   cd "${WORKDIR}/${repo_file_path}" || continue
   cpanm --installdeps .
