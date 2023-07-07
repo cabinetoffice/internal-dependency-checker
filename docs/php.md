@@ -95,7 +95,7 @@ RUN curl -sS https://getcomposer.org/installer | php -- --install-dir=/usr/local
 5. It copies the contents of the current directory to the Docker image.
    - `COPY . /repo-dependency-checker` copies the script file from the current directory to "/repo-dependency-checker" in the image.
 
-8. It specifies the command to run when the container starts.
+6. It specifies the command to run when the container starts.
    - `CMD ["./dep-checker.sh"]` executes the shell script "./dep-checker.sh" within the container.
 
 The resulting Docker image will have the necessary dependencies installed, including Composer, and will execute the "dep-checker.sh" script when a container is started from the image.
