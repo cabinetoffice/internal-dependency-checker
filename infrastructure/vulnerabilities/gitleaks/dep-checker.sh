@@ -21,7 +21,7 @@ for repo in $repos
 do
   fetch_arguments "REPO" "${repo}"  
 
-  report_file_name=$(set_file_name $LANG_NAME)
+  report_file_name=$(set_file_name "${LANG_NAME}")
 
   echo "Git leaks started for ${repo_path}"
   gitleaks detect --source "./${repo_path}" --report-path "${report_file_name}"

@@ -11,7 +11,7 @@ REPORTS_FOLDER_NAME=$REPORTS_FOLDER/$LANG_NAME
 
 mkdir -p "$REPORTS_FOLDER_NAME"
 
-files=$(set_dependencies_object "${LANG_NAME}")
+files=$(set_state_object "${LANG_NAME}")
 
 # shellcheck disable=SC2154
 # `file1` and `repo_file_path` assigned on fetch_arguments

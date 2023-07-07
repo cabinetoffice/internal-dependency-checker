@@ -6,15 +6,15 @@ export WORKDIR=/idc
 STATE_FILE_PATH=./repos/state.json
 REPO_FILE_PATH=./repos/repos_list.json
 
-set_dependencies_object() {
-  dependencies=$(jq -c '.'"$1"'[] | {
+set_state_object() {
+  state=$(jq -c '.'"$1"'[] | {
         file1: .file1,
         file2: .file2,
         file_name: .file_name,
         repo_file_path: .repo_file_path
     }' "${STATE_FILE_PATH}")
 
-  echo "${dependencies}"
+  echo "${state}"
 }
 
 set_repos_object() {

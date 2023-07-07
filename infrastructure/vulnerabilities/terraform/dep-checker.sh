@@ -11,7 +11,7 @@ mkdir -p "${REPORTS_FOLDER_NAME}"
 
 echo "tfsec --version is $(tfsec --version)"
 
-files=$(set_dependencies_object "${LANG_NAME}")
+files=$(set_state_object "${LANG_NAME}")
 
 # shellcheck disable=SC2154
 # `repo_file_path` assigned on fetch_arguments

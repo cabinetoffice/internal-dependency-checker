@@ -5,29 +5,28 @@
 source ./utils/script.sh
 
 LANG_NAME=java
-REPORTS_FOLDER_NAME=reports/java
 POM_FILE_NAME=pom.xml
+REPORTS_FOLDER_NAME="${REPORTS_FOLDER}/${LANG_NAME}"
 
-mkdir -p $REPORTS_FOLDER_NAME
+mkdir -p "${REPORTS_FOLDER_NAME}"
 
-dependencies=$(set_dependencies_object $LANG_NAME)
+dependencies=$(set_state_object "${LANG_NAME}")
 
 # shellcheck disable=SC2154
 # `file1` and `repo_file_path` assigned on fetch_arguments
 for dependency in $dependencies
 do
-  fetch_arguments "$dependency"
-  print_arguments
+  fetch_arguments "STATE" "${dependency}"
 
-  report_file_name=$(set_file_name "pom_xml")
+  report_file_name=$(set_file_name "${LANG_NAME}")
   
-  if [[ "${file1##*/}" == "$POM_FILE_NAME" ]]; then
-    echo "Detected pom.xml file. Checking dependencies using dependency-check:check"
+  if [[ "${file1##*/}" == "${POM_FILE_NAME}" ]]; then
+    echo "Detected ${POM_FILE_NAME} file. Checking dependencies using dependency-check.sh"
     cd "${WORKDIR}/${repo_file_path}" || continue
     mvn clean install
-    dependency-check.sh --scan "target/**/*.jar" --format "JSON" --out "$report_file_name"
+    dependency-check.sh --scan "target/**/*.jar" --format "JSON" --out "${report_file_name}"
     echo "Saved report to ${report_file_name}"
   else
-    print_error "FILE" > "$report_file_name"
+    print_error "FILE" > "${report_file_name}"
   fi
 done
