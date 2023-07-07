@@ -1,32 +1,29 @@
 #!/bin/bash
 
-REPORTS_FOLDER_NAME=reports/gitleaks
+# Directory path in the running container. Check volumes on compose file.
+# shellcheck disable=SC1091
+source ./utils/script.sh
 
-mkdir -p $REPORTS_FOLDER_NAME
+LANG_NAME=gitleaks
+REPORTS_FOLDER_NAME="${REPORTS_FOLDER}/${LANG_NAME}"
 
-# # Download and Build Gitleaks
+mkdir -p "${REPORTS_FOLDER_NAME}"
+
+# Download and Build Gitleaks
 git clone https://github.com/zricethezav/gitleaks.git
 cd gitleaks && go build -o /usr/local/bin/gitleaks && cd ..
 
-# Read the repos from the JSON file
-repos=$(/usr/bin/jq -c '.repos[] | {repo_path: .repo_path, file_name: .file_name}' ./repos/repos_list.json)
+repos=$(set_repos_object)
 
-# Loop over the repos
+# shellcheck disable=SC2154
+# `repo_path` assigned on fetch_arguments
 for repo in $repos
 do
+  fetch_arguments "REPO" "${repo}"  
 
-  # Extract the repo arguments using jq
-  repo_path=$(echo "$repo" | jq -r '.repo_path')
-  file_name=$(echo "$repo" | jq -r '.file_name')
+  report_file_name=$(set_file_name $LANG_NAME)
 
-  TIMESTAMP=`date +%Y-%m-%d_%H-%M-%S`
-  REPORT_FILE_NAME="./"${REPORTS_FOLDER_NAME}"/"$file_name"__gitleaks__"$TIMESTAMP".json"
-
-  # Print arguments
-  echo "Repo: $repo_path and $REPORT_FILE_NAME"
-
-  echo "Git leaks started for $repo_path"
-  gitleaks detect --source ./$repo_path --report-path $REPORT_FILE_NAME
-  echo "Saved report file to $REPORT_FILE_NAME"
-
+  echo "Git leaks started for ${repo_path}"
+  gitleaks detect --source "./${repo_path}" --report-path "${report_file_name}"
+  echo "Saved report to ${report_file_name}"
 done

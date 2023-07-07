@@ -1,30 +1,27 @@
 #!/bin/bash
 
-REPORTS_FOLDER_NAME=reports/hcl
+# Directory path in the running container. Check volumes on compose file.
+# shellcheck disable=SC1091
+source ./utils/script.sh
 
-mkdir -p $REPORTS_FOLDER_NAME
+LANG_NAME=terraform
+REPORTS_FOLDER_NAME=$REPORTS_FOLDER/$LANG_NAME
+
+mkdir -p "${REPORTS_FOLDER_NAME}"
 
 echo "tfsec --version is $(tfsec --version)"
 
-# Read the repos from the JSON file
-repos=$(/usr/bin/jq -c '.terraform[] | {file_name: .file_name, repo_file_path: .repo_file_path}' ./repos/state.json)
+files=$(set_dependencies_object "${LANG_NAME}")
 
-# Loop over the repos
-for repo in $repos
+# shellcheck disable=SC2154
+# `repo_file_path` assigned on fetch_arguments
+for file in $files
 do
+  fetch_arguments "STATE" "${file}"
 
-  # Extract the repo arguments using jq
-  repo_file_path=$(echo "$repo" | jq -r '.repo_file_path')
-  file_name=$(echo "$repo" | jq -r '.file_name')
-
-  TIMESTAMP=`date +%Y-%m-%d_%H-%M-%S`
-  REPORT_FILE_NAME="./"${REPORTS_FOLDER_NAME}"/"$file_name"__tfsec__"$TIMESTAMP".json"
-
-  # Print arguments
-  echo "Contents: $repo_file_path $file_name and $TIMESTAMP"
+  report_file_name=$(set_file_name "${LANG_NAME}")
 
   echo "Detected terraform file. Checking vulnerabilities using tfsec"
-  tfsec --format=json ./$repo_file_path > $REPORT_FILE_NAME
-  echo "Saved report file to $REPORT_FILE_NAME"
-
+  tfsec --format=json "./${repo_file_path}" > "${report_file_name}"
+  echo "Saved report to ${report_file_name}"
 done
