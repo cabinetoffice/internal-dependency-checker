@@ -1,43 +1,37 @@
 #!/bin/bash
 
-REPORTS_FOLDER_NAME=reports/csharp
-CSPROJ_FILE_EXTENSION="csproj"
-WORKDIR=/repo-dependency-checker
+# Directory path in the running container. Check volumes on compose file.
+# shellcheck disable=SC1091
+source ./utils/script.sh
 
-mkdir -p $REPORTS_FOLDER_NAME
+LANG_NAME=csharp
+CSPROJ_FILE_EXTENSION=csproj
+REPORTS_FOLDER_NAME="${REPORTS_FOLDER}/${LANG_NAME}"
 
-# Read the dependencies from the JSON file
-dependencies=$(/usr/bin/jq -c '.csharp[] | {file1: .file1, file_name: .file_name, repo_file_path: .repo_file_path}' ./repos/state.json)
+mkdir -p "${REPORTS_FOLDER_NAME}"
 
-# Loop over the dependencies
+dependencies=$(set_state_object "${LANG_NAME}")
+
+# shellcheck disable=SC2154
+# `file1` and `repo_file_path` assigned on fetch_arguments
 for dependency in $dependencies
 do
-
-  # Extract the dependency arguments using jq
-  file1=$(echo "$dependency" | jq -r '.file1')
-  file_name=$(echo "$dependency" | jq -r '.file_name')
-  repo_file_path=$(echo "$dependency" | jq -r '.repo_file_path')
+  fetch_arguments "STATE" "${dependency}"
 
   # Extract C# project name
-  PROJECT_NAME=$(basename $file1 "."$CSPROJ_FILE_EXTENSION)
-  echo "$PROJECT_NAME"
+  PROJECT_NAME=$(basename "${file1}" ".${CSPROJ_FILE_EXTENSION}")
+  echo "${PROJECT_NAME}"
 
-  TIMESTAMP=`date +%Y-%m-%d_%H-%M-%S`
-  REPORT_FILE_NAME="${WORKDIR}/${REPORTS_FOLDER_NAME}/${file_name}__dotnet_sdk_6_build__${TIMESTAMP}.json"
+  report_file_name=$(set_file_name "${REPORTS_FOLDER_NAME}" "${LANG_NAME}")
 
-  # Print arguments
-  echo "Contents: $file1, $repo_file_path, $file_name, and $TIMESTAMP"
-
-  if [ "${file1##*.}" == $CSPROJ_FILE_EXTENSION ]
-  then
-    echo "Installing csharp dependencies for $repo_file_path"
-    cd "${WORKDIR}/${repo_file_path}"
+  if [[ "${file1##*.}" == "${CSPROJ_FILE_EXTENSION}" ]]; then
+    echo "Installing ${LANG_NAME} dependencies. Checking dependencies using dependency-check.sh"
+    cd "${WORKDIR}/${repo_file_path}" || continue
     dotnet restore
     dotnet build --output .
-    dependency-check.sh --scan "${PROJECT_NAME}.dll" --format JSON
-    mv dependency-check-report.json $REPORT_FILE_NAME
-    echo "Saved report file to $REPORT_FILE_NAME"
+    dependency-check.sh --scan "${PROJECT_NAME}.dll" --format JSON --out "${report_file_name}"
+    echo "Saved report to ${report_file_name}"
   else
-    echo '{"error": "Error: Could not detect file type '${file1}'"}' > $REPORT_FILE_NAME
+    print_error "FILE" > "${report_file_name}"
   fi
 done

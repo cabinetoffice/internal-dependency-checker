@@ -8,11 +8,11 @@ RUN apk update && \
 RUN git clone https://github.com/sonatype-nexus-community/nancy.git
 RUN cd nancy && go get ./... && go build -o /usr/local/bin/nancy .
 
-# Set the working directory to /repo-dependency-checker
-WORKDIR /repo-dependency-checker
+# Set the working directory to /idc
+WORKDIR /idc
 
 # Copy the current directory contents to the container
-COPY . /repo-dependency-checker
+COPY . /idc
 
 # Start script
 CMD ["/bin/sh", "./dep-checker.sh"]
