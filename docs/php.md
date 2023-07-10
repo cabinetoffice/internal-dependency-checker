@@ -6,45 +6,35 @@ The **bash script** performs dependency checking by fetching project details (su
 
 ### Bash Script
 
-1. It sets up some variables for folder/file names and the working directory.
+1. It sources the utility functions from `./utils/script.sh`:
 
-   - `REPORTS_FOLDER_NAME` is set to "reports/php".
-   - `COMPOSER_FILE_NAME` is set to "composer.json".
-   - `COMPOSER_LOCK_FILE_NAME` is set to "composer.lock".
-   - `WORKDIR` is set to "/repo-dependency-checker".
+   - `source ./utils/script.sh` 
 
-2. It creates the necessary folder to store the reports.
+2. It sets up some variables for language name, file names and folder name:
+
+   - `LANG_NAME` is set to `php`.
+   - `COMPOSER_FILE_NAME` is set to `composer.json`.
+   - `COMPOSER_LOCK_FILE_NAME` is set to `composer.lock`.
+   - `REPORTS_FOLDER_NAME` is set to `"${REPORTS_FOLDER}/${LANG_NAME}"`.
+
+3. It creates the necessary folder to store the reports:
 
    - The `mkdir -p` command ensures that the folders are created if they don't already exist.
    - `$REPORTS_FOLDER_NAME` variable is used to specify the folder path.
 
-3. It retrieves the dependencies from a JSON file named "state.json" using `jq` (a command-line JSON processor).
+4. It retrieves the php dependencies from a JSON file named "state.json" using the `set_state_object ()` utility function:
 
-   - The `jq` command extracts the `.php` array from the JSON file.
-   - The `.php[]` expression iterates over each element in the array.
-   - The `| {file1: .file1, file2: .file2, file_name: .file_name, repo_file_path: .repo_file_path}` part selects the "file1", "file2, "file_name" and "repo_file_path" properties from each element and creates a new object.
-   - The result is stored in the `dependencies` variable.
+   - `dependencies=$(set_state_object "${LANG_NAME}")`
 
-4. It loops over each dependency retrieved from the previous step.
+5. It loops over each dependency retrieved from the previous step.
 
    - The `for dependency in $dependencies` loop iterates over each item in the `$dependencies` variable.
 
-5. Inside the loop, it extracts the "file1", "file2", "file_name" and "repo_file_path" properties from the dependency object.
+6. Inside the loop, it extracts the "file1", "file2", "file_name" and "repo_file_path" properties the dependency object using `fetch_arguments ()` utility function.
 
-   - The `echo "$dependency" | jq -r '.file1'` command extracts the "file1" value
-   - The `echo "$dependency" | jq -r '.file2'` command extracts the "file2" value.
-   - The `echo "$dependency" | jq -r '.file_name'` command extracts the "file_name" value.
-   - The `echo "$dependency" | jq -r '.repo_file_path'` command extracts the "repo_file_path" value.
-   - The values are stored in the `$file1`, `$file2`, `$file_name` and `$repo_file_path` variables, respectively.
+   `fetch_arguments "STATE" "${dependency}"`
 
-6. It generates timestamped file names for the reports.
-
-   - The `date +%Y-%m-%d_%H-%M-%S` command generates a timestamp in the format "YYYY-MM-DD_HH-MM-SS" and stores it in the `TIMESTAMP` variable.
-   - The `REPORT_FILE_NAME` variable is constructed by concatenating the working directory (`WORKDIR`), `REPORTS_FOLDER_NAME`, `file_name`, "**php.7.2**" and `TIMESTAMP`.
-
-7. It prints the extracted values and the timestamp.
-
-   - The `echo` command is used to display the values of `file1`, `file2`, `file_name`, `repo_file_path`, and `TIMESTAMP`.
+7. It creates a report file name using the `set_file_name ()` utility function.
 
 8a. The `if [ "${file1##*/}" == $COMPOSER_FILE_NAME ] && [[ "$file2" ]] && [ "${file2##*/}" == $COMPOSER_LOCK_FILE_NAME ]` expression executes and performs the following:
 - `${file1##*/}` extracts the filename from the full path stored in the variable `$file1`, then checks if this filename is the equal to the `"composer.json"` value stored in `$COMPOSER_FILE_NAME` variable
@@ -58,10 +48,11 @@ The **bash script** performs dependency checking by fetching project details (su
    - The `cd $WORKDIR"/"$repo_file_path` command changes the directory to the specified repository file path.
 
 10a. If the 8a. expression evaluates to true, then both `composer.json` and `composer.lock` are present:
+   - `composer install` is run to install the dependencies
    - `composer audit --format=json > "$REPORT_FILE_NAME"` is run, which analyses the packages and checks for security vulnerabilities based on the information in `composer.lock`.
 
-10b. If the 8.b expression evaluates to true, then only the `composer.json` is present. Therefore the `composer.lock` needs to be generated:
-   - `composer update` is run and will update the dependencies to their latest versions compatible with PHP 7.2 and generate an updated `composer.lock` file.
+10b. If the 8b expression evaluates to true, then only the `composer.json` is present. Therefore the `composer.lock` needs to be generated:
+   - `composer install` is run to re-generate the `composer.lock` file and install the dependencies
    - Then, `composer audit --format=json > "$REPORT_FILE_NAME"` is run, which analyses the installed packages and checks for security vulnerabilities based on the information in the re-generated `composer.lock`.
 
 11. It prints a message indicating the location where the report file is saved. 
@@ -89,11 +80,11 @@ The **bash script** performs dependency checking by fetching project details (su
 RUN curl -sS https://getcomposer.org/installer | php -- --install-dir=/usr/local/bin --filename=composer
 ```
 
-4. It sets the working directory to "/repo-dependency-checker".
-   - `WORKDIR /repo-dependency-checker` sets the working directory for subsequent instructions.
+4. It sets the working directory to "/idc".
+   - `WORKDIR /idc` sets the working directory for subsequent instructions.
 
 5. It copies the contents of the current directory to the Docker image.
-   - `COPY . /repo-dependency-checker` copies the script file from the current directory to "/repo-dependency-checker" in the image.
+   - `COPY . /idc` copies the script file from the current directory to "/idc" in the image.
 
 6. It specifies the command to run when the container starts.
    - `CMD ["./dep-checker.sh"]` executes the shell script "./dep-checker.sh" within the container.
