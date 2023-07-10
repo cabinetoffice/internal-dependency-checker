@@ -4,11 +4,11 @@ FROM golang:latest
 # Install jq
 RUN apt-get update && apt-get install -y jq
 
-# Set the working directory to /repo-vulnerability-checker
-WORKDIR /repo-vulnerability-checker
+# Set the working directory to /idc
+WORKDIR /idc
 
 # Copy the current directory contents to the container
-COPY . /repo-vulnerability-checker
+COPY . /idc
 
 # Start script
 CMD ["./dep-checker.sh"]

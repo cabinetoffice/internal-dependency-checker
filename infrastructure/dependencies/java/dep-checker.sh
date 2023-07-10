@@ -1,39 +1,32 @@
 #!/bin/bash
 
-REPORTS_FOLDER_NAME=reports/java
+# Directory path in the running container. Check volumes on compose file.
+# shellcheck disable=SC1091
+source ./utils/script.sh
+
+LANG_NAME=java
 POM_FILE_NAME=pom.xml
-WORKDIR=/repo-dependency-checker
+REPORTS_FOLDER_NAME="${REPORTS_FOLDER}/${LANG_NAME}"
 
-mkdir -p $REPORTS_FOLDER_NAME
+mkdir -p "${REPORTS_FOLDER_NAME}"
 
-# Read the dependencies from the JSON file
-dependencies=$(/usr/bin/jq -c '.java[] | {file1: .file1, file_name: .file_name, repo_file_path: .repo_file_path}' ./repos/state.json)
+dependencies=$(set_state_object "${LANG_NAME}")
 
-# Loop over the dependencies
+# shellcheck disable=SC2154
+# `file1` and `repo_file_path` assigned on fetch_arguments
 for dependency in $dependencies
 do
-  # Extract the dependency arguments using jq
-  file1=$(echo "$dependency" | jq -r '.file1')
-  file_name=$(echo "$dependency" | jq -r '.file_name')
-  repo_file_path=$(echo "$dependency" | jq -r '.repo_file_path')
+  fetch_arguments "STATE" "${dependency}"
 
-  TIMESTAMP=`date +%Y-%m-%d_%H-%M-%S`
-  REPORT_FILE_NAME=${WORKDIR}"/"${REPORTS_FOLDER_NAME}"/"$file_name"__pom_xml__"$TIMESTAMP".json"
-
-  # Print arguments
-  echo "Contents: $file1, $file_name, $repo_file_path and $TIMESTAMP"
+  report_file_name=$(set_file_name "${REPORTS_FOLDER_NAME}" "${LANG_NAME}")
   
-  if [ "${file1##*/}" == $POM_FILE_NAME ]
-  then
-    echo "Detected pom.xml file. Checking dependencies using dependency-check:check"
-    cd $WORKDIR"/"$repo_file_path
-    # The dependency-check:check goal is provided by the OWASP Dependency Check tool,  which can be executed
-    # as a standalone application or integrated with Maven. When running the mvn dependency-check:check command,
-    # Maven automatically downloads and executes the OWASP Dependency Check tool to analyze the project's dependencies.
-    mvn dependency-check:check -Dformat=json
-    mv ./target/dependency-check-report.json $REPORT_FILE_NAME
-    echo "Saved report file to $REPORT_FILE_NAME"
+  if [[ "${file1##*/}" == "${POM_FILE_NAME}" ]]; then
+    echo "Detected ${POM_FILE_NAME} file. Checking dependencies using dependency-check.sh"
+    cd "${WORKDIR}/${repo_file_path}" || continue
+    mvn clean install
+    dependency-check.sh --scan "target/**/*.jar" --format "JSON" --out "${report_file_name}"
+    echo "Saved report to ${report_file_name}"
   else
-    echo {'"error"' : '"'Error: Could not detect file type ${file1}'"'} > $REPORT_FILE_NAME
+    print_error "FILE" > "${report_file_name}"
   fi
 done

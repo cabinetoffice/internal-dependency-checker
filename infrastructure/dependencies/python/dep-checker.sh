@@ -1,42 +1,38 @@
 #!/bin/bash
 
-REPORTS_FOLDER_NAME=reports/python
+# Directory path in the running container. Check volumes on compose file.
+# shellcheck disable=SC1091
+source ./utils/script.sh
+
+LANG_NAME=python
 REQUIREMENTS_FILE_NAME=requirements.txt
-WORKDIR=/repo-dependency-checker
+REPORTS_FOLDER_NAME="${REPORTS_FOLDER}/${LANG_NAME}"
 
-mkdir -p $REPORTS_FOLDER_NAME
+mkdir -p "${REPORTS_FOLDER_NAME}"
 
-# Read the dependencies from the JSON file
-dependencies=$(/usr/bin/jq -c '.python[] | {file1: .file1, file_name: .file_name, repo_file_path: .repo_file_path}' ./repos/state.json)
+dependencies=$(set_state_object "${LANG_NAME}")
 
-# Loop over the dependencies
+# shellcheck disable=SC2154
+# `file1` and `repo_file_path` assigned on fetch_arguments
 for dependency in $dependencies
 do
+  fetch_arguments "STATE" "${dependency}"
 
-  # Extract the dependency arguments using jq
-  file1=$(echo "$dependency" | jq -r '.file1')
-  file_name=$(echo "$dependency" | jq -r '.file_name')
-  repo_file_path=$(echo "$dependency" | jq -r '.repo_file_path')
-
-  TIMESTAMP=`date +%Y-%m-%d_%H-%M-%S`
-  REPORT_FILE_NAME=${WORKDIR}"/"${REPORTS_FOLDER_NAME}"/"$file_name"__pip3_install__"$TIMESTAMP".json"
-
-  # Print arguments
-  echo "Contents: $file1, $repo_file_path, $file_name and $TIMESTAMP"
+  report_file_name=$(set_file_name "${REPORTS_FOLDER_NAME}" "${LANG_NAME}")
   
-  if [ "${file1##*/}" == $REQUIREMENTS_FILE_NAME ]
-  then
+  if [[ "${file1##*/}" == "${REQUIREMENTS_FILE_NAME}" ]]; then
     echo "Installing python dependencies using pip3 install -r requirements.txt --quiet --no-cache-dir"
-    cd $WORKDIR"/"$repo_file_path
-    python3 -m venv my_env_$TIMESTAMP
-    . my_env_$TIMESTAMP/bin/activate
+    cd "${WORKDIR}/${repo_file_path}" || continue
+    python3 -m venv my_env_"${TIMESTAMP}"
+    # shellcheck source=./my_env_"${TIMESTAMP}"/bin/activate
+    . my_env_"${TIMESTAMP}"/bin/activate
     pip3 install -r requirements.txt --quiet --no-cache-dir
     pip3 install pip-audit
-    pip-audit -r requirements.txt -f json -o $REPORT_FILE_NAME
-    echo "Saved report file to $REPORT_FILE_NAME"
+    pip-audit -r requirements.txt -f json -o "${report_file_name}"
+    echo "Saved report to ${report_file_name}"
     deactivate
-    # cd $WORKDIR
+    rm -rf "my_env_$TIMESTAMP"
   else
-    echo {'"error"' : '"'Error: Could not detect file type ${file1}'"'} > $REPORT_FILE_NAME
+    print_error "FILE" > "${report_file_name}"
   fi
 done

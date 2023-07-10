@@ -5,76 +5,87 @@ services:
   dependency-checks-go:
     build: ./dependencies/go
     volumes:
-      - ./reports:/repo-dependency-checker/reports
-      - ./repos:/repo-dependency-checker/repos
+      - ./reports:/idc/reports
+      - ./repos:/idc/repos
+      - ./utils:/idc/utils
 
   dependency-checks-java:
     build: ./dependencies/java
     volumes:
-      - ./reports:/repo-dependency-checker/reports
-      - ./repos:/repo-dependency-checker/repos
+      - ./reports:/idc/reports
+      - ./repos:/idc/repos
+      - ./utils:/idc/utils
 
   dependency-checks-kotlin:
     build: ./dependencies/kotlin
     volumes:
-      - ./reports:/repo-dependency-checker/reports
-      - ./repos:/repo-dependency-checker/repos
-      - ./utils:/repo-dependency-checker/utils
+      - ./reports:/idc/reports
+      - ./repos:/idc/repos
+      - ./utils:/idc/utils
 
   dependency-checks-node:
     build: ./dependencies/node
     volumes:
-      - ./reports:/repo-dependency-checker/reports
-      - ./repos:/repo-dependency-checker/repos
+      - ./reports:/idc/reports
+      - ./repos:/idc/repos
+      - ./utils:/idc/utils
 
   dependency-checks-perl:
     build: ./dependencies/perl
     volumes:
-      - ./reports:/repo-dependency-checker/reports
-      - ./repos:/repo-dependency-checker/repos
+      - ./reports:/idc/reports
+      - ./repos:/idc/repos
+      - ./utils:/idc/utils
 
   dependency-checks-php:
     build: ./dependencies/php
     volumes:
-      - ./reports:/repo-dependency-checker/reports
-      - ./repos:/repo-dependency-checker/repos
+      - ./reports:/idc/reports
+      - ./repos:/idc/repos
+      - ./utils:/idc/utils
 
   dependency-checks-python:
     build: ./dependencies/python
     volumes:
-      - ./reports:/repo-dependency-checker/reports
-      - ./repos:/repo-dependency-checker/repos
+      - ./reports:/idc/reports
+      - ./repos:/idc/repos
+      - ./utils:/idc/utils
 
   dependency-checks-ruby:
     build: ./dependencies/ruby
     volumes:
-      - ./reports:/repo-dependency-checker/reports
-      - ./repos:/repo-dependency-checker/repos
+      - ./reports:/idc/reports
+      - ./repos:/idc/repos
+      - ./utils:/idc/utils
 
   dependency-checks-csharp:
     build: ./dependencies/csharp
     volumes:
-      - ./reports:/repo-dependency-checker/reports
-      - ./repos:/repo-dependency-checker/repos
+      - ./reports:/idc/reports
+      - ./repos:/idc/repos
+      - ./utils:/idc/utils
 
   # vulnerability-checks-docker:
   #   build: ./vulnerabilities/docker
   #   volumes:
-  #     - ./reports:/repo-vulnerability-checker/reports
-  #     - ./repos:/repo-vulnerability-checker/repos
+  #     - ./reports:/idc/reports
+  #     - ./repos:/idc/repos
+  #     - ./utils:/idc/utils
   #     - /var/run/docker.sock:/var/run/docker.sock
 
   vulnerability-checks-terraform:
     build: ./vulnerabilities/terraform
     volumes:
-      - ./reports:/repo-vulnerability-checker/reports
-      - ./repos:/repo-vulnerability-checker/repos
+      - ./reports:/idc/reports
+      - ./repos:/idc/repos
+      - ./utils:/idc/utils
 
   vulnerability-checks-gitleaks:
     build: ./vulnerabilities/gitleaks
     volumes:
-      - ./reports:/repo-vulnerability-checker/reports
-      - ./repos:/repo-vulnerability-checker/repos
+      - ./reports:/idc/reports
+      - ./repos:/idc/repos
+      - ./utils:/idc/utils
 
 volumes:
     reports:

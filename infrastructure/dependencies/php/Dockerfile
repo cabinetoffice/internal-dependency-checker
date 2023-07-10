@@ -9,11 +9,11 @@ RUN apt-get update && \
 # Install Composer 
 RUN curl -sS https://getcomposer.org/installer | php -- --install-dir=/usr/local/bin --filename=composer
 
-# Set the working directory to /repo-dependency-checker
-WORKDIR /repo-dependency-checker
+# Set the working directory to /idc
+WORKDIR /idc
 
 # Copy the current directory contents to the container
-COPY . /repo-dependency-checker
+COPY . /idc
 
 # Start script
 CMD ["./dep-checker.sh"]

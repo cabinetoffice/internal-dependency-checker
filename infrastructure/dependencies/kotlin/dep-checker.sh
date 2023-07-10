@@ -1,28 +1,32 @@
 #!/bin/bash
 
-. ./utils/script.sh --source-only
+# Directory path in the running container. Check volumes on compose file.
+# shellcheck disable=SC1091
+source ./utils/script.sh
 
 LANG_NAME=kotlin
 GRADLEW_FILE_NAME=gradlew
-REPORTS_FOLDER_NAME=$REPORTS_FOLDER/$LANG_NAME
+REPORTS_FOLDER_NAME="${REPORTS_FOLDER}/${LANG_NAME}"
 
-mkdir -p $REPORTS_FOLDER_NAME
+mkdir -p "${REPORTS_FOLDER_NAME}"
 
-set_dependencies_object $LANG_NAME
+dependencies=$(set_state_object "${LANG_NAME}")
 
+# shellcheck disable=SC2154
+# `file1` and `repo_file_path` assigned on fetch_arguments
 for dependency in $dependencies
 do
-  fetch_arguments
-  set_file_name "gradlew"
-  if [ "${file1##*/}" == $GRADLEW_FILE_NAME ]
-  then
-    print_arguments
-    cd $WORKDIR"/"$repo_file_path
+  fetch_arguments "STATE" "${dependency}"
+
+  report_file_name=$(set_file_name "${REPORTS_FOLDER_NAME}" "${LANG_NAME}")
+
+  if [[ "${file1##*/}" == "${GRADLEW_FILE_NAME}" ]]; then
+    cd "${WORKDIR}/${repo_file_path}" || continue
     ./gradlew clean build
-    ./gradlew dependencyCheckAnalyze > $REPORT_FILE_NAME || echo {'"error"' : '"'Error: Could not build project ${repo_file_path}, check file on output folder.'"'} > $REPORT_FILE_NAME
+    ./gradlew dependencyCheckAnalyze > "${report_file_name}" || print_error "BUILD" "${repo_file_path}" > "${report_file_name}"
     rm -rf .gradle
-    echo "Saved report file to $REPORT_FILE_NAME"
+    echo "Saved report to ${report_file_name}"
   else
-    print_error
+    print_error "FILE" > "${report_file_name}"
   fi
 done
