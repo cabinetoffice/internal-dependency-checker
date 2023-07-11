@@ -32,28 +32,34 @@ The **bash script** performs dependency checking by fetching project details (su
 
 6. Inside the loop, it extracts the "file1", "file2", "file_name" and "repo_file_path" properties the dependency object using `fetch_arguments ()` utility function.
 
-   `fetch_arguments "STATE" "${dependency}"`
+   - `fetch_arguments "STATE" "${dependency}"`
 
-7. It creates a report file name using the `set_file_name ()` utility function.
+7. It creates a report file name using the `set_file_name ()` utility function:
 
-8a. The `if [ "${file1##*/}" == $COMPOSER_FILE_NAME ] && [[ "$file2" ]] && [ "${file2##*/}" == $COMPOSER_LOCK_FILE_NAME ]` expression executes and performs the following:
-- `${file1##*/}` extracts the filename from the full path stored in the variable `$file1`, then checks if this filename is the equal to the `"composer.json"` value stored in `$COMPOSER_FILE_NAME` variable
-- `[[ "$file2" ]]` checks if the variable `$file2` is not empty or null
-- `${file2##*/}` extracts the filename from the full path stored in the variable `$file2`, then checks if this filename is equal to the `"composer.lock"` value stored in `$COMPOSER_LOCK_FILE_NAME` variable
+   - `report_file_name=$(set_file_name "${REPORTS_FOLDER_NAME}" "${LANG_NAME}")`
 
-8b. The `elif [ "${file1##*/}" == $COMPOSER_FILE_NAME ]` expression extracts the filename from the full path stored in the variable `$file1`, then checks if this filename is the equal to the `"composer.json"` value stored in `$COMPOSER_FILE_NAME` variable
+
+8. It evaluates the conditional expressions:
+    - The `if [ "${file1##*/}" == $COMPOSER_FILE_NAME ] && [[ "$file2" ]] && [ "${file2##*/}" == $COMPOSER_LOCK_FILE_NAME ]` expression executes and performs the following:
+      - `${file1##*/}` extracts the filename from the full path stored in the variable `$file1`, then checks if this filename is the equal to the `"composer.json"` value stored in `$COMPOSER_FILE_NAME` variable
+      - `[[ "$file2" ]]` checks if the variable `$file2` is not empty or null
+      - `${file2##*/}` extracts the filename from the full path stored in the variable `$file2`, then checks if this filename is equal to the `"composer.lock"` value stored in `$COMPOSER_LOCK_FILE_NAME` variable
+
+    - The `elif [ "${file1##*/}" == $COMPOSER_FILE_NAME ]` expression extracts the filename from the full path stored in the variable `$file1`, then checks if this filename is the equal to the `"composer.json"` value stored in `$COMPOSER_FILE_NAME` variable
 
 9. It changes the current directory to the repository file path where the project is.
 
-   - The `cd $WORKDIR"/"$repo_file_path` command changes the directory to the specified repository file path.
+   - The `cd "${WORKDIR}/${repo_file_path}" || continue` command changes the directory to the specified repository file path.
 
-10a. If the 8a. expression evaluates to true, then both `composer.json` and `composer.lock` are present:
-   - `composer install` is run to install the dependencies
-   - `composer audit --format=json > "$REPORT_FILE_NAME"` is run, which analyses the packages and checks for security vulnerabilities based on the information in `composer.lock`.
+10. The condition expression checks whether both `composer.json` and `composer.lock` files are present:
+    - If both are present, the `if` check evaluates to true:
+      - `composer install` is run to install the dependencies
+      - `composer audit --format=json > "$REPORT_FILE_NAME"` is run, which analyses the packages and checks for security vulnerabilities based on the information in `composer.lock`.
 
-10b. If the 8b expression evaluates to true, then only the `composer.json` is present. Therefore the `composer.lock` needs to be generated:
-   - `composer install` is run to re-generate the `composer.lock` file and install the dependencies
-   - Then, `composer audit --format=json > "$REPORT_FILE_NAME"` is run, which analyses the installed packages and checks for security vulnerabilities based on the information in the re-generated `composer.lock`.
+    - If only `composer.json` is present, the `elif` check evaluates to true and the `composer.lock` file is re-generated:
+
+      - `composer install` is run to re-generate the `composer.lock` file and install the dependencies
+      - Then, `composer audit --format=json > "$REPORT_FILE_NAME"` is run, which analyses the installed packages and checks for security vulnerabilities based on the information in the re-generated `composer.lock`.
 
 11. It prints a message indicating the location where the report file is saved. 
 
@@ -61,7 +67,7 @@ The **bash script** performs dependency checking by fetching project details (su
 
 **Dockerfile** is used to build a Docker image for a PHP application with Composer installed. Here is a breakdown of what the code does:
 
-1. It sets the base image to `php:7.2`.
+1. It sets the base image to `php:7.2`:
    - `FROM php:7.2` - The image is based on Debian Linux and contains PHP version 7.2.
 
 2. It updates the package repository and installs `git`, `jq`, `zip` and `unzip` using the `apt` package manager.
