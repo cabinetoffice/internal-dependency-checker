@@ -8,75 +8,63 @@ One way node potentially differs from other languages is: the possibility of the
 
 Here is a breakdown of what the code does:
 
-1. It sets up some variables for the folder name, the dependency file name, and the working directory.
+1. It sources the utility functions from `./utils/script.sh`:
 
-   - `REPORTS_FOLDER_NAME` is set to "reports/node".
-   - `PACKAGE_FILE_NAME` is set to "package.json".
-   - `PACKAGE_LOCK_FILE_NAME` is set to "package-lock.json".
-   - `WORKDIR` is set to "/repo-dependency-checker".
+   - `source ./utils/script.sh` 
 
-2. It creates the necessary folders to store the reports.
+2. It sets up some variables for language name, file names and folder name:
+
+   - `LANG_NAME` is set to `node`.
+   - `PACKAGE_FILE_NAME` is set to `package.json`.
+   - `PACKAGE_LOCK_FILE_NAME` is set to `package-lock.json`.
+   - `REPORTS_FOLDER_NAME` is set to `"${REPORTS_FOLDER}/${LANG_NAME}"`.
+
+3. It creates the necessary folders to store the reports.
 
    - The `mkdir -p` command ensures that the folders are created if they don't already exist.
-   - The `REPORTS_FOLDER_NAME` variable is used to specify the folders path.
+   - The `$REPORTS_FOLDER_NAME` variable is used to specify the folders path.
 
-3. It retrieves the dependencies from a JSON file named "state.json" using `jq` (a command-line JSON processor).
+4. It retrieves the node dependencies from a JSON file named "state.json" using the `set_state_object ()` utility function:
 
-   - The `jq` command extracts the `.node` array from the JSON file.
-   - The `.node[]` expression iterates over each element in the array.
-   - The `| {file1: .file1, file2: file2, file_name: .file_name, repo_file_path: .repo_file_path}` part selects "file1", "file2" "file_name", and "repo_file_path" properties from each element and creates a new object.
-   - The result is stored in the `dependencies` variable.
+   - `dependencies=$(set_state_object "${LANG_NAME}")`
 
-4. It loops over each dependency retrieved from the previous step.
+5. It loops over each dependency retrieved from the previous step.
 
    - The `for dependency in $dependencies` loop iterates over each item in the `$dependencies` variable.
 
-5. Inside the loop, it extracts "file1", "file_name", and "repo_file_path" properties from the dependency object.
+6. Inside the loop, it extracts the "file1", "file2", "file_name" and "repo_file_path" properties the dependency object using `fetch_arguments ()` utility function.
 
-   - The `echo "$dependency" | jq -r '.file1'` command extracts the "file1" value.
-   - The `echo "$dependency" | jq -r '.file2'` command extracts the "file2" value.
-   - The `echo "$dependency" | jq -r '.file_name'` command extracts the "file_name" value.
-   - The `echo "$dependency" | jq -r '.repo_file_path'` command extracts the "repo_file_path" value.
-   - The values are stored in the `file1`, `file2`, `file_name`, and `repo_file_path` variables, respectively.
+   - `fetch_arguments "STATE" "${dependency}"`
 
-6. It generates timestamped file names for the reports.
+7. It creates a report file name using the `set_file_name ()` utility function:
 
-   - The `date +%Y-%m-%d_%H-%M-%S` command generates a timestamp in the format "YYYY-MM-DD_HH-MM-SS" and stores it in the `TIMESTAMP` variable.
-   - The `REPORT_FILE_NAME` variable is constructed by concatenating the working directory (`WORKDIR`), `REPORTS_FOLDER_NAME`, `file_name`, "**node_14**", and `TIMESTAMP`.
+   - `report_file_name=$(set_file_name "${REPORTS_FOLDER_NAME}" "${LANG_NAME}")`
 
-7. It prints the extracted values and the timestamp.
+8. It evaluates the conditional expressions:
+    - The `if [ "${file1##*/}" == $PACKAGE_FILE_NAME ] && [[ "$file2" ]] && [ "${file2##*/}" == $PACKAGE_LOCK_FILE_NAME ]` expression executes and performs the following:
+      - `${file1##*/}` extracts the filename from the full path stored in the variable `$file1`, then checks if this filename is the equal to the `"package.json"` value stored in `$PACKAGE_FILE_NAME` variable
+      - `[[ "$file2" ]]` checks if the variable `$file2` is not empty or null
+      - `${file2##*/}` extracts the filename from the full path stored in the variable `$file2`, then checks if this filename is equal to the `"package-lock.json"` value stored in `$PACKAGE_LOCK_FILE_NAME` variable
 
-   - The `echo` command is used to display the values of `file1`,`file2`, `file_name`, `repo_file_path`, and `TIMESTAMP`.
+    - The `elif [ "${file1##*/}" == $PACKAGE_FILE_NAME ]` expression extracts the filename from the full path stored in the variable `$file1`, then checks if this filename is the equal to the `"package.json"` value stored in `$PACKAGE_FILE_NAME` variable
 
-8. It then validates if both `package.json` and `package-lock.json` exists or if just `package.json` exists without `package-lock.json`.
+9. It changes the current directory to the repository file path where the project is.
 
-   - The `if [ "${file1##*/}" == $PACKAGE_FILE_NAME ] && [[ "$file2" ]] && [ "${file2##*/}" == $PACKAGE_LOCK_FILE_NAME ]` validates that `file1` is equal to `package.json` and `file2` is equal to `package-lock.json`.
-   - The `elif [ "${file1##*/}" == $PACKAGE_FILE_NAME ]` checks if `file1` is equal to `package.json` only if the the first `if check` failed.
-   - The `else echo {'"error"' : '"'Error: Could not detect file type ${file1}'"'} > $REPORT_FILE_NAME` saves the error message to `$REPORT_FILE_NAME` when `package.json` cannot be found in `file1`, the script will then stop.
+   - The `cd "${WORKDIR}/${repo_file_path}" || continue` command changes the directory to the specified repository file path.
 
-9. 
+10. The condition expression checks whether both `package.json` and `package-lock.json` files are present:
+    - If both are present, the `if` check evaluates to true:
+      - `npm --silent ci` is run to do a clean install of dependencies
+      - `npm audit --json > "${report_file_name}""` is run, which analyses the packages and checks for security vulnerabilities. It then outputs the report to `{report_file_name}`
+      - `rm -rf ./node_modules` is run to delete all installed dependencies.
 
-   - The `cd $WORKDIR"/"$repo_file_path` command changes the directory to the specified repository file path.
+    - If only `package.json` is present, the `elif` check evaluates to true and the `package-lock.json` file is re-generated:
 
-10a. If both `package.json` and `package-lock.json` exist it then does a clean install of dependencies.
+      - `npm install` is run when only `package.json` exists, this is because `npm ci` requires package-lock.json to exist.
+      - `npm audit --json > "${report_file_name}""` is run, which analyses the packages and checks for security vulnerabilities. It then outputs the report to `{report_file_name}`
+      - `rm -rf ./node_modules` is run to delete all installed dependencies.
 
-   - `npm --silent ci` operates a clean install of dependencies from `package.json` & `package-lock.json`.
-
-10b. If `package.json` exists and `package-lock.json` does not, it does a normal install of dependencies.
-
-   - `npm --silent install` installs all dependencies from package.json.
-   - The reason for not using `npm ci` is: `npm ci` requires a package-lock.json file to run.
-
-11. It then scans for vulnerable dependencies using `npm audit`.
-
-   - `npm audit --json > $REPORT_FILE_NAME` captures the output from the `npm audit` command into a `json` format.
-   - The result is saved to the `REPORT_FILE_NAME` file.
-
-12. It prints a message indicating the location where the report file is saved.
-
-13. It will remove node_modules, deleting all installed dependencies
-
-13b. If `package.json` exists but `package-lock` did not, it also removes `package-lock.json`.
+11. It prints a message indicating node modules has been deleted and prints the location where the report file is saved. 
 
 **Dockerfile** used to build a Docker image for a Maven application. Here is a breakdown of what the code does:
 
@@ -87,11 +75,11 @@ Here is a breakdown of what the code does:
    - `apt-get update` updates the package repository.
    - `apt-get install -y jq` installs jq.
 
-3. It sets the working directory to "/repo-dependency-checker".
-   - `WORKDIR /repo-dependency-checker` sets the working directory for subsequent instructions.
+3. It sets the working directory to "/idc".
+   - `WORKDIR /idc` sets the working directory for subsequent instructions.
 
 4. It copies the contents of the current directory to the Docker image.
-   - `COPY . /repo-dependency-checker` copies the script file from the current directory to "/repo-dependency-checker" in the image.
+   - `COPY . /idc` copies the script file from the current directory to "/idc" in the image.
 
 5. It specifies the command to run when the container starts.
    - `CMD ["./dep-checker.sh"]` executes the shell script "./dep-checker.sh" within the container.
