@@ -1,4 +1,4 @@
-# Python
+# Terraform
 
 The Terraform vulnerability checks logic consists of two separate files, similar to other languages: a bash script and a Dockerfile.
 
