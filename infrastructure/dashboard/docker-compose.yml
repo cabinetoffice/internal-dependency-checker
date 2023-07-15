@@ -1,0 +1,22 @@
+version: '3'
+
+services:
+
+  git:
+    build: ./git
+    volumes:
+      - ../reports:/idc/reports
+      - ../repos:/idc/repos
+      - ../utils:/idc/utils
+
+  app:
+    build: ./app
+    ports:
+        - 8080:80
+    volumes:
+      - ../repos:/idc/repos
+  
+volumes:
+    reports:
+    repos:
+    utils:
