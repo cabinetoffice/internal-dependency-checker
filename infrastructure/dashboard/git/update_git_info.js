@@ -1,11 +1,11 @@
-import { writeFile, readFile, readdir } from 'node:fs/promises';
-import path from 'node:path';
+const { writeFile, readFile, readdir } = require('node:fs/promises');
+const path = require('node:path');
 
 const GIT_REPORTS_FOLDER_NAME = process.argv[2];
-const DASHBOARD_REPORTS_FOLDER_NAME = process.argv[3];
+const COMMITS_FILE_PATH = process.argv[3];
+const COMMITS = [];
 const USER = {};
 const REPO = {};
-const COMMITS = [];
 
 const updateUser = (name, commit) => {
     if (USER[commit.email]) {
@@ -34,14 +34,13 @@ const init = async () => {
         const files = await readdir(GIT_REPORTS_FOLDER_NAME);
         const jsonFiles = files.filter(file => path.extname(file) === '.json');
 
-        // Iterate in all json files
         for (const file of jsonFiles) {
+            console.log(`Update commits info file with ${file} commits`);
             try {
                 const filePath = path.join(GIT_REPORTS_FOLDER_NAME, file);
                 const data = await readFile(filePath, 'utf8');
                 const jsonData = JSON.parse(data);
 
-                // Process the JSON data as needed
                 for (const [name, commits] of Object.entries(jsonData)) {
                     REPO[name] = { "members": [], "last": "" };
                     for (const commit of commits) {
@@ -60,7 +59,7 @@ const init = async () => {
             }
         }
 
-        await writeFile(`${DASHBOARD_REPORTS_FOLDER_NAME}/git_info.json`, JSON.stringify({ USER, REPO }));
+        await writeFile(COMMITS_FILE_PATH, JSON.stringify({ USER, REPO }));
     } catch (error) {
         console.error('Error:', error);
     }

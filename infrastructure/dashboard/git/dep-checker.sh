@@ -4,6 +4,7 @@
 # shellcheck disable=SC1091
 source ./utils/script.sh
 
+COMMITS_FILE_NAME=commits_info.json
 GIT_COMMITS_FOLDER_NAME=git/commits
 GIT_DASHBOARD_FOLDER_NAME=git/dashboard
 GIT_REPORTS_FOLDER_NAME="${REPORTS_FOLDER}/${GIT_COMMITS_FOLDER_NAME}"
@@ -36,4 +37,4 @@ do
   fi
 done
 
-node "${WORKDIR}/update_git_info.mjs" "${WORKDIR}/${GIT_REPORTS_FOLDER_NAME}" "${WORKDIR}/${DASHBOARD_REPORTS_FOLDER_NAME}"
+node "${WORKDIR}/update_git_info.js" "${WORKDIR}/${GIT_REPORTS_FOLDER_NAME}" "${WORKDIR}/${DASHBOARD_REPORTS_FOLDER_NAME}/${COMMITS_FILE_NAME}"
