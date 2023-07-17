@@ -45,7 +45,8 @@ export const setTeamsData = async ( ): Promise<void> => {
 
             TEAMS_DATA[team["name"]] = {
                 "members": { ... await membersData.json() },
-                "repositories": { ... await repositoriesData.json() }
+                "repositories": { ... await repositoriesData.json() },
+                "description": team["description"]
             };
             console.log(`Get members info for ${team["name"]} team`);
         }

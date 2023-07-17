@@ -47,6 +47,7 @@ export type StateDependencies = {
 export interface TeamsData{
   [team_name: string]: {
     members: {},
-    repositories: {}
+    repositories: {},
+    description: string;
   }
 }
