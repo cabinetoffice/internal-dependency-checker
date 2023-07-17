@@ -4,47 +4,43 @@ The Go language dependency checks logic consists of two separate files, similar 
 
 The **bash script** performs dependency checking by fetching project details (such as folder path and file name) from the dependency state file. It then reports the check results to the reports folder. The tools used in this context are Nancy and Gosec. Nancy focuses on scanning Go dependencies for known vulnerabilities, while Gosec helps identify security flaws, coding mistakes, and vulnerabilities in the Go code itself. Here is a breakdown of what the code does:
 
-1. It sets up some variables for folder names and the working directory.
+1. It sources the utility functions from `./utils/script.sh`:
 
-   - `NANCY_REPORTS_FOLDER_NAME` is set to "reports/go/nancy".
-   - `GOSEC_REPORTS_FOLDER_NAME` is set to "reports/go/gosec".
-   - `WORKDIR` is set to "/repo-dependency-checker".
+   - `source ./utils/script.sh` 
 
-2. It creates the necessary folders to store the reports.
+2. It sets up some variables for language name, file names and folder names:
+
+   - `LANG_NAME` is set to `go`.
+   - `NANCY_NAME` is set to `nancy`.
+   - `GOSEC_NAME` is set to `gosec`.
+   - `NANCY_REPORTS_FOLDER_NAME` is set to `"${REPORTS_FOLDER}/${LANG_NAME}/${NANCY_NAME}"`.
+   - `GOSEC_REPORTS_FOLDER_NAME` is set to `"${REPORTS_FOLDER}/${LANG_NAME}/${GOSEC}"`.
+
+3. It creates the necessary folders to store the reports.
 
    - The `mkdir -p` command ensures that the folders are created if they don't already exist.
    - `$NANCY_REPORTS_FOLDER_NAME` and `$GOSEC_REPORTS_FOLDER_NAME` variables are used to specify the folder paths.
 
-3. It retrieves the dependencies from a JSON file named "state.json" using `jq` (a command-line JSON processor).
+4. It retrieves the go dependencies from a JSON file named "state.json" using the `set_state_object ()` utility function:
 
-   - The `jq` command extracts the `.go` array from the JSON file.
-   - The `.go[]` expression iterates over each element in the array.
-   - The `| {file_name: .file_name, repo_file_path: .repo_file_path}` part selects the "file_name" and "repo_file_path" properties from each element and creates a new object.
-   - The result is stored in the `dependencies` variable.
+   - `dependencies=$(set_state_object "${LANG_NAME}")`
 
-4. It loops over each dependency retrieved from the previous step.
+5. It loops over each dependency retrieved from the previous step.
 
    - The `for dependency in $dependencies` loop iterates over each item in the `$dependencies` variable.
 
-5. Inside the loop, it extracts the "file_name" and "repo_file_path" properties from the dependency object.
+6. Inside the loop, it extracts the "file_name" and "repo_file_path" properties from the dependency object using `fetch_arguments ()` utility function.
 
-   - The `echo "$dependency" | jq -r '.file_name'` command extracts the "file_name" value.
-   - The `echo "$dependency" | jq -r '.repo_file_path'` command extracts the "repo_file_path" value.
-   - The values are stored in the `file_name` and `repo_file_path` variables, respectively.
+   - `fetch_arguments "STATE" "${dependency}"`
 
-6. It generates timestamped file names for the reports.
+7. It creates two report file names using the `set_file_name ()` utility function:
 
-   - The `date +%Y-%m-%d_%H-%M-%S` command generates a timestamp in the format "YYYY-MM-DD_HH-MM-SS" and stores it in the `TIMESTAMP` variable.
-   - The `NANCY_REPORT_FILE_NAME` variable is constructed by concatenating the working directory (`WORKDIR`), `NANCY_REPORTS_FOLDER_NAME`, `file_name`, "**nancy**", and `TIMESTAMP`.
-   - The `GOSEC_REPORT_FILE_NAME` variable is constructed similarly using the `GOSEC_REPORTS_FOLDER_NAME` folder.
-
-7. It prints the extracted values and the timestamp.
-
-   - The `echo` command is used to display the values of `file_name`, `repo_file_path`, and `TIMESTAMP`.
+   - `nancy_report_file_name=$(set_file_name "${NANCY_REPORTS_FOLDER_NAME}" "${NANCY_NAME}")`
+   - `gosec_report_file_name=$(set_file_name "${GOSEC_REPORTS_FOLDER_NAME}" "${GOSEC_NAME}")`
 
 8. It changes the current directory to the repository file path where the project is.
 
-   - The `cd $WORKDIR"/"$repo_file_path` command changes the directory to the specified repository file path.
+   - The `cd "${WORKDIR}/${repo_file_path}" || continue` command changes the directory to the specified repository file path.
 
 9. It runs the `gosec` command to perform security analysis on the Go code.
 
@@ -74,15 +70,15 @@ The **bash script** performs dependency checking by fetching project details (su
 4. It clones the Nancy repository from GitHub.
    - `git clone https://github.com/sonatype-nexus-community/nancy.git` clones the Nancy repository.
 
-5. It sets the working directory to "/repo-dependency-checker".
-   - `WORKDIR /repo-dependency-checker` sets the working directory for subsequent instructions.
-
-6. It fetches the dependencies and builds Nancy.
+5. It fetches the dependencies and builds Nancy.
    - `go get ./...` fetches the dependencies for Nancy.
    - `go build -o /usr/local/bin/nancy .` builds the Nancy tool and places the executable in "/usr/local/bin/nancy".
 
+6. It sets the working directory to "/idc".
+   - `WORKDIR /idc` sets the working directory for subsequent instructions.
+
 7. It copies the contents of the current directory to the Docker image.
-   - `COPY . /repo-dependency-checker` copies the script file from the current directory to "/repo-dependency-checker" in the image.
+   - `COPY . /idc` copies the script file from the current directory to "/repo-dependency-checker" in the image.
 
 8. It specifies the command to run when the container starts.
    - `CMD ["/bin/sh", "./dep-checker.sh"]` executes the shell script "./dep-checker.sh" using the "/bin/sh" shell within the container.

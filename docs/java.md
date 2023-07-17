@@ -6,43 +6,35 @@ The **bash script** performs dependency checking by fetching project details (su
 
 Here is a breakdown of what the code does:
 
-1. It sets up some variables for the folder name, the dependency file name, and the working directory.
+1. It sources the utility functions from `./utils/script.sh`:
 
-   - `REPORTS_FOLDER_NAME` is set to "reports/java".
-   - `POM_FILE_NAME` is set to "pom.xml".
-   - `WORKDIR` is set to "/repo-dependency-checker".
+   - `source ./utils/script.sh` 
 
-2. It creates the necessary folders to store the reports.
+2. It sets up some variables for language name, file name and folder name:
+   - `LANG_NAME` is set to `java`
+   - `POM_FILE_NAME` is set to `pom.xml`
+   - `REPORTS_FOLDER_NAME` is set to `"${REPORTS_FOLDER}/${LANG_NAME}`
+
+3. It creates the necessary folders to store the reports.
 
    - The `mkdir -p` command ensures that the folders are created if they don't already exist.
-   - The `REPORTS_FOLDER_NAME` variable is used to specify the folders path.
+   - The `$REPORTS_FOLDER_NAME` variable is used to specify the folders path.
 
-3. It retrieves the dependencies from a JSON file named "state.json" using `jq` (a command-line JSON processor).
+4. It retrieves the java dependencies from a JSON file named "state.json" using the `set_state_object ()` utility function:
 
-   - The `jq` command extracts the `.java` array from the JSON file.
-   - The `.java[]` expression iterates over each element in the array.
-   - The `| {file1: .file1, file_name: .file_name, repo_file_path: .repo_file_path}` part selects "file1", "file_name", and "repo_file_path" properties from each element and creates a new object.
-   - The result is stored in the `dependencies` variable.
+   - `dependencies=$(set_state_object "${LANG_NAME}")`
 
-4. It loops over each dependency retrieved from the previous step.
+5. It loops over each dependency retrieved from the previous step.
 
    - The `for dependency in $dependencies` loop iterates over each item in the `$dependencies` variable.
 
-5. Inside the loop, it extracts "file1", "file_name", and "repo_file_path" properties from the dependency object.
+6. Inside the loop, it extracts the "file1", "file_name" and "repo_file_path" properties the dependency object using `fetch_arguments ()` utility function.
 
-   - The `echo "$dependency" | jq -r '.file1'` command extracts the "file1" value.
-   - The `echo "$dependency" | jq -r '.file_name'` command extracts the "file_name" value.
-   - The `echo "$dependency" | jq -r '.repo_file_path'` command extracts the "repo_file_path" value.
-   - The values are stored in the `file1`,`file_name`, and `repo_file_path` variables, respectively.
+   - `fetch_arguments "STATE" "${dependency}"`
 
-6. It generates timestamped file names for the reports.
+7. It creates a report file name using the `set_file_name ()` utility function:
 
-   - The `date +%Y-%m-%d_%H-%M-%S` command generates a timestamp in the format "YYYY-MM-DD_HH-MM-SS" and stores it in the `TIMESTAMP` variable.
-   - The `REPORT_FILE_NAME` variable is constructed by concatenating the working directory (`WORKDIR`), `REPORTS_FOLDER_NAME`, `file_name`, "**pom_xml**", and `TIMESTAMP`.
-
-7. It prints the extracted values and the timestamp.
-
-   - The `echo` command is used to display the values of `file1`,`file_name`, `repo_file_path`, and `TIMESTAMP`.
+   - `report_file_name=$(set_file_name "${REPORTS_FOLDER_NAME}" "${LANG_NAME}")`
 
 8. It then validates that `pom.xml` exists.
 
@@ -51,17 +43,14 @@ Here is a breakdown of what the code does:
 
 9. It changes the current directory to the repository file path where the project is.
 
-   - The `cd $WORKDIR"/"$repo_file_path` command changes the directory to the specified repository file path.
+   - The `cd "${WORKDIR}/${repo_file_path}" || continue` command changes the directory to the specified repository file path.
 
 10. It downloads and runs the OWASP Dependency Check Tool.
 
-   - The `mvn dependency-check:check` allows maven to automatically download and run the tool on the project to analyse the dependencies
-   - `Dformat=json` changes the report output format from html to json.
-
-11. It moves the report to `$REPORT_FILE_NAME`.
-
-   - The `mv ./target/dependency-check-report.json $REPORT_FILE_NAME` moves the report to `$REPORT_FILE_NAME`
-   - `echo "Saved report file to $REPORT_FILE_NAME"` prints a message indicating the location where the OWASP report file is saved.
+   - The `mvn clean install` does a clean install of mvn dependencies including the OWASP Dependency Check Tool.
+   - The `dependency-check.sh --scan "target/**/*.jar" --format "JSON" --out "${report_file_name}"` scans for vulnerabilities and outputs a report to `${report_file_name}`in format `json`.
+   
+11. It prints a message indicating the location where the report file is saved. 
 
 **Dockerfile** used to build a Docker image for a Maven application. Here is a breakdown of what the code does:
 
@@ -71,14 +60,23 @@ Here is a breakdown of what the code does:
 2. It updates the package repository and jq using the `apt-get` package manager.
    - `apt-get update` updates the package repository.
    - `apt-get install -y jq` installs jq.
+   - `unzip\zip` initializes unzip and zip for later use
 
-3. It sets the working directory to "/repo-dependency-checker".
-   - `WORKDIR /repo-dependency-checker` sets the working directory for subsequent instructions.
+3. It downloads and configures OWASP Dependency Check.
 
-4. It copies the contents of the current directory to the Docker image.
-   - `COPY . /repo-dependency-checker` copies the script file from the current directory to "/repo-dependency-checker" in the image.
+   - `ARG DC_VERSION=8.0.0 ` defines version of OWASP Dependency Check
+   - `RUN curl -LO https://github.com/jeremylong/DependencyCheck/releases/download/v${DC_VERSION}/dependency-check-${DC_VERSION}-release.zip` downloads specified version of OWASP Dependency Check
+   - `unzip dependency-check-${DC_VERSION}-release.zip -d /opt/dependency-check` unzips OWASP Dependency Check to `/opt/dependency-check`.
+   - `rm dependency-check-${DC_VERSION}-release.zip` deletes the original downloaded OWASP Dependency Check Zip folder.
+   - `ENV PATH="/opt/dependency-check/dependency-check/bin:${PATH}"` Adds OWASP Dependency Check to `${PATH}`
 
-5. It specifies the command to run when the container starts.
+4. It sets the working directory to "/idc".
+   - `WORKDIR /idc` sets the working directory for subsequent instructions.
+
+5. It copies the contents of the current directory to the Docker image.
+   - `COPY . /idc` copies the script file from the current directory to "/idc" in the image.
+
+6. It specifies the command to run when the container starts.
    - `CMD ["./dep-checker.sh"]` executes the shell script "./dep-checker.sh" within the container.
 
 The resulting Docker image will have the necessary dependencies installed, it will execute the "dep-checker.sh" script when a container is started from the image.
