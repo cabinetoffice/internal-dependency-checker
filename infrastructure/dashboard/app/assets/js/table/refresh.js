@@ -8,29 +8,6 @@ function mapContent(data, dataKey) {
     return ul
 }
 
-function refreshTable() { 
-    var tbodyEl = document.querySelector("tbody");
-    while (tbodyEl.rows.length > 0) {
-        tbodyEl.deleteRow(0);
-    }
-    var template = document.querySelector('#table-template');
-    
-    org_info["teams"].forEach( element => {
-        // Clone the new row and insert it into the table
-        var clone = template.content.cloneNode(true);
-        var td = clone.querySelectorAll("td");
-        td[0].textContent = element.name;
-        td[1].textContent = element.description;
-        td[2].appendChild(mapContent(org_info["membersPerTeam"][element.name]["members_url"], "login"));
-        td[3].appendChild(mapContent(org_info["membersPerTeam"][element.name]["repositories_url"], "name"));
-
-        tbodyEl.appendChild(clone);
-    });
-
-    inputFilter = document.getElementById("search_team");
-    inputFilter.oninput = searchTable;
-}
-
 function searchTable() {
     // Declare variables
     var filter, table, tr, i, innerText;
@@ -51,4 +28,28 @@ function searchTable() {
     }
 }
 
-refreshTable();
+function updateTable(data) { 
+    var tbodyEl = document.querySelector("tbody");
+    while (tbodyEl.rows.length > 0) {
+        tbodyEl.deleteRow(0);
+    }
+    var template = document.querySelector('#table-template');
+
+    for (const [name, content] of Object.entries(data)) {
+        var clone = template.content.cloneNode(true);
+        var td = clone.querySelectorAll("td");
+        td[0].textContent = name;
+        td[1].textContent = content.description || "";
+        td[2].appendChild(mapContent(content["members"], "login"));
+        td[3].appendChild(mapContent(content["repositories"], "name"));
+
+        tbodyEl.appendChild(clone);
+    }
+
+    inputFilter = document.getElementById("search_team");
+    inputFilter.oninput = searchTable;
+}
+
+( async () => {
+    updateTable(await setTableData());
+})()

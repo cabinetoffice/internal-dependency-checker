@@ -21,7 +21,7 @@
   <link rel="apple-touch-icon" href="../assets/images/govuk-apple-touch-icon.png">
 
   <link href="../assets/app.min.css" rel="stylesheet">
-  <link href="../assets/style.css" rel="stylesheet">
+  <link href="../assets/css/chart.css" rel="stylesheet">
 
   <meta property="og:image" content="../assets/images/govuk-opengraph-image.png">
 
@@ -54,7 +54,14 @@
     <main class="govuk-main-wrapper idc-main-wrapper" id="main-content">
       <h1 class="govuk-heading-l">Cabinet Office's Teams Chart</h1>
 
+      <h2 class="govuk-heading-m">Pie chart - Members per team (Ascending Order)</h2>
+      <div id='teams_pie_chart'></div>
+
+      <br><br>
+
+      <h2 class="govuk-heading-m">Bar chart - Members per team (Ascending Order)</h2>
       <div id='teams_bar_chart'></div>
+
     </main>
   </div>
 
@@ -89,7 +96,8 @@
     window.GOVUKFrontend.initAll()
   </script>
 
-  <script src="../assets/data/org_info.js"></script>
+  <script src="../assets/js/utils.js"></script>
+
   <script src="../assets/js/d3/d3.v7.min.js"></script>
   <script src="../assets/js/d3/charts.js"></script>
 

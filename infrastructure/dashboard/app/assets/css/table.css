@@ -108,6 +108,6 @@ table.sortable th:not([aria-sort]) button:hover span::after {
 
 /* Override Gov style */
 
-.idc-main-wrapper {
+.govuk-main-wrapper {
     padding-top: 0px;
 }
