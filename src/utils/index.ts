@@ -39,8 +39,7 @@ export const getGitOrgData = async (what: WhatEnum, org: string, page = 1): Prom
 export const setTeamsData = async ( ): Promise<void> => {
     try {
         for (const team of ORG_DATA.teams) {
-            const members: string = team["members_url"];
-            const membersData = await fetch(members.slice(0, -9), HEADERS);
+            const membersData = await fetch(`${team["url"]}/members`, HEADERS);
             const repositoriesData = await fetch(team["repositories_url"], HEADERS);
 
             TEAMS_DATA[team["name"]] = {
