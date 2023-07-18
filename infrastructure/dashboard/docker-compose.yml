@@ -17,7 +17,7 @@ services:
     ports:
       - 8080:80
     volumes:
-      - ../repos:/idc/repos
+      - ../repos:/usr/share/nginx/html/assets/data
   
 volumes:
     reports:

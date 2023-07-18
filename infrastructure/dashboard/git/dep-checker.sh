@@ -29,7 +29,7 @@ do
   if test -n "$(git rev-list -n1 --all)"; then
     {
       echo '{"'"${repo_folder}"'": ['
-      for branch in $(git branch -r | awk '{print $1}' ); do git log --first-parent --pretty=format:'{%n  "commit": "%H",%n  "email": "%aE",%n  "timestamp": "%at"%n},' "$branch"; done | sed '$ s/,$//'
+      for branch in $(git branch -r | awk '{print $1}' | grep -vE "origin/(dependabot|HEAD)"); do git log --first-parent --pretty=format:'{%n  "commit": "%H",%n  "email": "%aE",%n  "timestamp": "%at"%n},' "$branch"; done | sed '$ s/,$//'
       echo ']}'
     } > "${git_commits_report_file_name}"
   else
