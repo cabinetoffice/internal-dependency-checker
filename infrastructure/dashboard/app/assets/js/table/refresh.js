@@ -1,55 +1,55 @@
-function mapContent(data, dataKey) {
-    const ul = document.createElement('ul');
-    for (const [key, content] of Object.entries(data)) {
-        let li = document.createElement('li');
-        li.innerText = content[dataKey]
-        ul.appendChild(li);
-    }
-    return ul
+const setTableContent = (template, tbodyEl, name, description, memberContent, repositorieContent) => {
+    const clone = template.content.cloneNode(true);
+    const td = clone.querySelectorAll("td");
+
+    td[0].textContent = name;
+    td[1].textContent = description
+    td[2].appendChild(memberContent);
+    td[3].appendChild(repositorieContent);
+
+    tbodyEl.appendChild(clone);
 }
 
-function searchTable() {
-    // Declare variables
-    var filter, table, tr, i, innerText;
-    filter = inputFilter.value.toUpperCase();
-    table = document.getElementById("teams_table");
-    tr = table.getElementsByTagName("tr");
- 
-    // Loop through all table rows, and hide those who don't match the search query
-    for (i = 1; i < tr.length; i++) {
-        innerText = tr[i].innerText;
-        if (innerText) {
-            if (innerText.toUpperCase().indexOf(filter) > -1) {
-                tr[i].style.display = "";
-            } else {
-                tr[i].style.display = "none";
-            }
-        }
-    }
-}
-
-function updateTable(data) { 
-    var tbodyEl = document.querySelector("tbody");
+const updateTable = (teams, repos) => {
+    const tbodyEl = document.querySelector("tbody");
     while (tbodyEl.rows.length > 0) {
         tbodyEl.deleteRow(0);
     }
-    var template = document.querySelector('#table-template');
+    const template = document.querySelector('#table-template');
 
-    for (const [name, content] of Object.entries(data)) {
-        var clone = template.content.cloneNode(true);
-        var td = clone.querySelectorAll("td");
-        td[0].textContent = name;
-        td[1].textContent = content.description || "";
-        td[2].appendChild(mapContent(content["members"], "login"));
-        td[3].appendChild(mapContent(content["repositories"], "name"));
+    for (const [name, content] of Object.entries(teams)) {
+        const memberContent = createTableContentDetails(
+            `${Object.keys(content["members"]).length} member/s`,
+            mapTableContent(content["members"], "login")
+        );
+        const repositorieContent = createTableContentDetails(
+            `${Object.keys(content["repositories"]).length} repository/ies`,
+            mapTableContent(content["repositories"], "name")
+        );
+        const description = content.description || "";
 
-        tbodyEl.appendChild(clone);
+        setTableContent(template, tbodyEl, name, description, memberContent, repositorieContent);
+
+        (Object.entries(content["repositories"])).forEach( e => {
+            repos = repos.filter( r => r.name !== e[1].name );
+        });
     }
+
+    const description = "Unassigned Repositories";
+    const memberContent = createTableContentDetails( "0 member/s", mapTableContent([], ""));
+    const repositorieContent = createTableContentDetails(
+        `${repos.length} repository/ies`, mapTableContent(repos, "name")
+    );
+
+    setTableContent(template, tbodyEl, "_NA", description, memberContent, repositorieContent);
 
     inputFilter = document.getElementById("search_team");
     inputFilter.oninput = searchTable;
 }
 
-( async () => {
-    updateTable(await setTableData());
+(async () => {
+    updateTable(
+        await getData(TEAMS_PATH),
+        await getRepos()
+    );
 })()

@@ -1,34 +1,6 @@
-#tooltip {
-    position: absolute;
-    display: none;
-    background-color: rgba(0, 0, 0, 0.8);
-    color: #fff;
-    padding: 8px;
-    border-radius: 4px;
-}
-
-.legend {
-    display: inline-block;
-}
-
-.legend-item {
-    display: flex;
-    align-items: center;
-    margin: 10px 10px 25px 40px;
-}
-
-.legend-color {
-    display: inline-block;
-    width: 12px;
-    height: 12px;
-    margin-right: 5px;
-}
-
-.legend-label {
-    font-size: 14px;
-}
-
-
-.govuk-main-wrapper {
-    padding-top: 0px;
-}
+.chart-container {
+    position: relative;
+    margin: auto;
+    height: 80vh;
+    width: 80vw;
+  }

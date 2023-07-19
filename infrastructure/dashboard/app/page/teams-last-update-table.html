@@ -52,7 +52,7 @@
   <div class="govuk-width-container">
     <a href="../index.html" class="govuk-back-link">Back</a>
     <main class="govuk-main-wrapper idc-main-wrapper" id="main-content">
-      <h1 class="govuk-heading-l">Repositories and Members per Teams</h1>
+      <h1 class="govuk-heading-l">Teams last updated Repository</h1>
 
       <input class="govuk-input govuk-input--width-30" name="width-30" type="text" id="search_team"
         placeholder="Search text">
@@ -65,16 +65,15 @@
                 <span aria-hidden="true"></span>
               </button>
             </th>
-            <th>Description</th>
             <th>
               <button>
-                Members
+                Repository
                 <span aria-hidden="true"></span>
               </button>
             </th>
             <th>
               <button>
-                Repositories
+                Last Update
                 <span aria-hidden="true"></span>
               </button>
             </th>
@@ -85,7 +84,6 @@
         <template id="table-template">
           <tr>
             <td style="font-weight: bold"></td>
-            <td></td>
             <td></td>
             <td></td>
           </tr>
@@ -123,7 +121,7 @@
 
   <script src="../assets/js/utils.js"></script>
 
-  <script src="../assets/js/table/refresh.js"></script>
+  <script src="../assets/js/table/last_update.js"></script>
   <script src="../assets/js/table/sort.js"></script>
 
 </body>

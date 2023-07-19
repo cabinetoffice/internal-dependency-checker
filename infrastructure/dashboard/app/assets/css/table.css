@@ -5,9 +5,9 @@
 
 table.sortable td,
 table.sortable th {
-    padding: 0.125em 0.25em;
+    padding: 1.125em 0.5em;
     margin-bottom: 10px;
-    min-width: 8em;
+    min-width: 10em;
     width: -webkit-fill-available;
 }
 
@@ -106,8 +106,16 @@ table.sortable th:not([aria-sort]) button:hover span::after {
     margin-bottom: 30px;
 }
 
-/* Override Gov style */
-
 .govuk-main-wrapper {
     padding-top: 0px;
+}
+
+.govuk-details__text {
+    padding: 1px;
+    padding-left: 0px;
+}
+
+a {
+    text-decoration: none;
+    color: inherit;
 }

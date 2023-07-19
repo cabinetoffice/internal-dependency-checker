@@ -25,6 +25,7 @@
 
   <meta property="og:image" content="../assets/images/govuk-opengraph-image.png">
 
+  <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
 </head>
 
 <body class="govuk-template__body ">
@@ -51,18 +52,12 @@
 
   <div class="govuk-width-container">
     <a href="../index.html" class="govuk-back-link">Back</a>
-    <main class="govuk-main-wrapper idc-main-wrapper" id="main-content">
-      <h1 class="govuk-heading-l">Cabinet Office's Teams Chart</h1>
+    <br><br>
+  </div>
 
-      <h2 class="govuk-heading-m">Pie chart - Members per team (Ascending Order)</h2>
-      <div id='teams_pie_chart'></div>
-
-      <br><br>
-
-      <h2 class="govuk-heading-m">Bar chart - Members per team (Ascending Order)</h2>
-      <div id='teams_bar_chart'></div>
-
-    </main>
+  <div class="chart-container">
+    <canvas id="teams_stacked_chart"></canvas>  
+    <br><br>
   </div>
 
   <footer class="govuk-footer">
@@ -91,15 +86,8 @@
     </div>
   </footer>
 
-  <script src="../assets/app.min.js"></script>
-  <script>
-    window.GOVUKFrontend.initAll()
-  </script>
-
   <script src="../assets/js/utils.js"></script>
-
-  <script src="../assets/js/d3/d3.v7.min.js"></script>
-  <script src="../assets/js/d3/charts.js"></script>
+  <script src="../assets/js/charts/teams.js"></script>
 
 </body>
 
