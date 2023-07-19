@@ -13,17 +13,17 @@
 
   <meta http-equiv="X-UA-Compatible" content="IE=edge">
 
-  <link rel="shortcut icon" sizes="16x16 32x32 48x48" href="../assets/images/favicon.ico" type="image/x-icon">
-  <link rel="mask-icon" href="../assets/images/govuk-mask-icon.svg" color="#0b0c0c">
-  <link rel="apple-touch-icon" sizes="180x180" href="../assets/images/govuk-apple-touch-icon-180x180.png">
-  <link rel="apple-touch-icon" sizes="167x167" href="../assets/images/govuk-apple-touch-icon-167x167.png">
-  <link rel="apple-touch-icon" sizes="152x152" href="../assets/images/govuk-apple-touch-icon-152x152.png">
-  <link rel="apple-touch-icon" href="../assets/images/govuk-apple-touch-icon.png">
+  <link rel="shortcut icon" sizes="16x16 32x32 48x48" href="../../assets/images/favicon.ico" type="image/x-icon">
+  <link rel="mask-icon" href="../../assets/images/govuk-mask-icon.svg" color="#0b0c0c">
+  <link rel="apple-touch-icon" sizes="180x180" href="../../assets/images/govuk-apple-touch-icon-180x180.png">
+  <link rel="apple-touch-icon" sizes="167x167" href="../../assets/images/govuk-apple-touch-icon-167x167.png">
+  <link rel="apple-touch-icon" sizes="152x152" href="../../assets/images/govuk-apple-touch-icon-152x152.png">
+  <link rel="apple-touch-icon" href="../../assets/images/govuk-apple-touch-icon.png">
 
-  <link href="../assets/app.min.css" rel="stylesheet">
-  <link href="../assets/css/table.css" rel="stylesheet">
+  <link href="../../assets/app.min.css" rel="stylesheet">
+  <link href="../../assets/css/table.css" rel="stylesheet">
 
-  <meta property="og:image" content="../assets/images/govuk-opengraph-image.png">
+  <meta property="og:image" content="../../assets/images/govuk-opengraph-image.png">
 
 </head>
 
@@ -50,9 +50,9 @@
   </header>
 
   <div class="govuk-width-container">
-    <a href="../index.html" class="govuk-back-link">Back</a>
+    <a href="../../index.html" class="govuk-back-link">Back</a>
     <main class="govuk-main-wrapper idc-main-wrapper" id="main-content">
-      <h1 class="govuk-heading-l">Repositories and Members per Teams</h1>
+      <h1 class="govuk-heading-l">Teams last updated Repository</h1>
 
       <input class="govuk-input govuk-input--width-30" name="width-30" type="text" id="search_team"
         placeholder="Search text">
@@ -65,16 +65,15 @@
                 <span aria-hidden="true"></span>
               </button>
             </th>
-            <th>Description</th>
             <th>
               <button>
-                Members
+                Repository
                 <span aria-hidden="true"></span>
               </button>
             </th>
             <th>
               <button>
-                Repositories
+                Last Update
                 <span aria-hidden="true"></span>
               </button>
             </th>
@@ -85,7 +84,6 @@
         <template id="table-template">
           <tr>
             <td style="font-weight: bold"></td>
-            <td></td>
             <td></td>
             <td></td>
           </tr>
@@ -121,10 +119,10 @@
     </div>
   </footer>
 
-  <script src="../assets/js/utils.js"></script>
+  <script src="../../assets/js/utils.js"></script>
 
-  <script src="../assets/js/table/refresh.js"></script>
-  <script src="../assets/js/table/sort.js"></script>
+  <script src="../../assets/js/table/last_update.js"></script>
+  <script src="../../assets/js/table/sort.js"></script>
 
 </body>
 

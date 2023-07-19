@@ -13,19 +13,18 @@
 
   <meta http-equiv="X-UA-Compatible" content="IE=edge">
 
-  <link rel="shortcut icon" sizes="16x16 32x32 48x48" href="../assets/images/favicon.ico" type="image/x-icon">
-  <link rel="mask-icon" href="../assets/images/govuk-mask-icon.svg" color="#0b0c0c">
-  <link rel="apple-touch-icon" sizes="180x180" href="../assets/images/govuk-apple-touch-icon-180x180.png">
-  <link rel="apple-touch-icon" sizes="167x167" href="../assets/images/govuk-apple-touch-icon-167x167.png">
-  <link rel="apple-touch-icon" sizes="152x152" href="../assets/images/govuk-apple-touch-icon-152x152.png">
-  <link rel="apple-touch-icon" href="../assets/images/govuk-apple-touch-icon.png">
+  <link rel="shortcut icon" sizes="16x16 32x32 48x48" href="../../assets/images/favicon.ico" type="image/x-icon">
+  <link rel="mask-icon" href="../../assets/images/govuk-mask-icon.svg" color="#0b0c0c">
+  <link rel="apple-touch-icon" sizes="180x180" href="../../assets/images/govuk-apple-touch-icon-180x180.png">
+  <link rel="apple-touch-icon" sizes="167x167" href="../../assets/images/govuk-apple-touch-icon-167x167.png">
+  <link rel="apple-touch-icon" sizes="152x152" href="../../assets/images/govuk-apple-touch-icon-152x152.png">
+  <link rel="apple-touch-icon" href="../../assets/images/govuk-apple-touch-icon.png">
 
-  <link href="../assets/app.min.css" rel="stylesheet">
-  <link href="../assets/css/chart.css" rel="stylesheet">
+  <link href="../../assets/app.min.css" rel="stylesheet">
+  <link href="../../assets/css/table.css" rel="stylesheet">
 
-  <meta property="og:image" content="../assets/images/govuk-opengraph-image.png">
+  <meta property="og:image" content="../../assets/images/govuk-opengraph-image.png">
 
-  <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
 </head>
 
 <body class="govuk-template__body ">
@@ -51,13 +50,49 @@
   </header>
 
   <div class="govuk-width-container">
-    <a href="../index.html" class="govuk-back-link">Back</a>
-    <br><br>
-  </div>
+    <a href="../../index.html" class="govuk-back-link">Back</a>
+    <main class="govuk-main-wrapper idc-main-wrapper" id="main-content">
+      <h1 class="govuk-heading-l">Repositories and Members per Teams</h1>
 
-  <div class="chart-container">
-    <canvas id="teams_stacked_chart"></canvas>  
-    <br><br>
+      <input class="govuk-input govuk-input--width-30" name="width-30" type="text" id="search_team"
+        placeholder="Search text">
+      <table class="sortable" id="teams_table">
+        <thead>
+          <tr>
+            <th>
+              <button>
+                Team Name
+                <span aria-hidden="true"></span>
+              </button>
+            </th>
+            <th>Description</th>
+            <th>
+              <button>
+                Members
+                <span aria-hidden="true"></span>
+              </button>
+            </th>
+            <th>
+              <button>
+                Repositories
+                <span aria-hidden="true"></span>
+              </button>
+            </th>
+          </tr>
+        </thead>
+        <tbody id="table-tbody">
+        </tbody>
+        <template id="table-template">
+          <tr>
+            <td style="font-weight: bold"></td>
+            <td></td>
+            <td></td>
+            <td></td>
+          </tr>
+        </template>
+      </table>
+
+    </main>
   </div>
 
   <footer class="govuk-footer">
@@ -86,8 +121,10 @@
     </div>
   </footer>
 
-  <script src="../assets/js/utils.js"></script>
-  <script src="../assets/js/charts/teams.js"></script>
+  <script src="../../assets/js/utils.js"></script>
+
+  <script src="../../assets/js/table/refresh.js"></script>
+  <script src="../../assets/js/table/sort.js"></script>
 
 </body>
 
