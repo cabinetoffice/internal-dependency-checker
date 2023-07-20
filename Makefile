@@ -1,4 +1,4 @@
-.PHONY: build start clone state docker-up docker-build test coverage
+.PHONY: build start clone state docker-up docker-build start-dashboard test coverage
 
 NODE_VERSION := v18.16.0
 PREFIX := repos
@@ -32,6 +32,10 @@ docker-build:
 docker-up:
 	$(info === docker compose up - vulnerabilities/dependencies checks started)
 	docker compose -f infrastructure/docker-compose.yml up &> $(DOCKER_COMPOSE_OUT_FILE_NAME)
+
+start-dashboard:
+	docker compose -f infrastructure/dashboard/docker-compose.yml build && \
+	docker compose -f infrastructure/dashboard/docker-compose.yml up &> $(DOCKER_COMPOSE_OUT_FILE_NAME)
 
 test:
 	npm run test
