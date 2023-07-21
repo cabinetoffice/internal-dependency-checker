@@ -45,6 +45,22 @@ make docker-up
 make start-dashboard # build and start the POC Dashboard (on localhost:8080)
 ```
 
+### Test
+
+```bash
+make test
+or
+make coverage
+```
+
+### Create a Github token
+
+1. Get a Github Token `https://github.com/settings/profile` then click 'developer settings'
+2. Select personal access tokens and choose a classic token
+3. Allow it to only have: `read:packages`, `read:org`, `read:repo_hook`, `read:public_key`, `read:user` and `repo`
+4. Make the expiry short and keep renewing
+5. Add this `export GITHUB_KEY="YOUR_KEY"` to your bash/zsh environments, `~/.bashrc` or `~/.zshrc`
+
 ## CLI usage
 
 Run `npm run help` for guide on how to run the tool through the CLI, remember to build the project first with `npm run build` (or `make build`).
@@ -75,18 +91,6 @@ Examples:
 Copyright (c) 2023 Cabinet Office - MIT License
 ```
 
-### Test
+### DOCs
 
-```bash
-make test
-or
-make coverage
-```
-
-### Create a Github token
-
-1. Get a Github Token `https://github.com/settings/profile` then click 'developer settings'
-2. Select personal access tokens and choose a classic token
-3. Allow it to only have: `read:packages`, `read:org`, `read:repo_hook`, `read:public_key`, `read:user` and `repo`
-4. Make the expiry short and keep renewing
-5. Add this `export GITHUB_KEY="YOUR_KEY"` to your bash/zsh environments, `~/.bashrc` or `~/.zshrc`
+Further documentation and code overview can be found [here](https://github.com/cabinetoffice/internal-dependency-checker/tree/main/docs).
