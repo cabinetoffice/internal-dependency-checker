@@ -10,7 +10,7 @@ Here is a breakdown of what the code does:
 
 1. It sources the utility functions from `./utils/script.sh`:
 
-   - `source ./utils/script.sh` 
+   - `source ./utils/script.sh`
 
 2. It sets up some variables for language name, file names and folder name:
 
@@ -64,9 +64,9 @@ Here is a breakdown of what the code does:
       - `npm audit --json > "${report_file_name}""` is run, which analyses the packages and checks for security vulnerabilities. It then outputs the report to `{report_file_name}`
       - `rm -rf ./node_modules` is run to delete all installed dependencies.
 
-11. It prints a message indicating node modules has been deleted and prints the location where the report file is saved. 
+11. It prints a message indicating node modules has been deleted and prints the location where the report file is saved.
 
-**Dockerfile** used to build a Docker image for a Maven application. Here is a breakdown of what the code does:
+**Dockerfile** used to build a Docker image for a Node application. Here is a breakdown of what the code does:
 
 1. It sets the base image to `node:14`.
    - The image contains node 14
