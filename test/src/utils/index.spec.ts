@@ -4,7 +4,8 @@ import {
     getTechFile,
     updateStateFile,
     getGitOrgData,
-    setTimeOut
+    setTimeOut,
+    setTeamsData
 } from "../../../src/utils/index";
 
 import {
@@ -15,7 +16,8 @@ import {
 import {
     CLONE_TIMEOUT,
     ORG_DATA,
-    STATE_DEPENDENCIES
+    STATE_DEPENDENCIES,
+    TEAMS_DATA
 } from '../../../src/config';
 
 import {
@@ -27,7 +29,13 @@ import {
     MOCK_REPO_URL,
     MOCK_REPOS_INFO_EMPTY,
     MOCK_REPOS_DATA,
-    MOCK_ORGANIZATION
+    MOCK_ORGANIZATION,
+    MOCK_REPOS_TEAMS_DATA,
+    MOCK_TEAMS_DATA,
+    MOCK_REPOS_TEAMS_NAME,
+    MOCK_TEAMS_REPOSITORIES,
+    MOCK_TEAMS_MEMBERS,
+    MOCK_REPOS_TEAMS_DESCRIPTION
 } from '../../mock/repos_info';
 
 const spyConsoleLog = jest.spyOn(console, 'log');
@@ -181,6 +189,72 @@ describe("UTILS Index tests suites", () => {
             expect(spyConsoleLog).toHaveBeenCalledTimes(1);
             expect(spyConsoleLog).toHaveBeenCalledWith(logMsg);
             expect(spyConsoleError).toHaveBeenCalledTimes(0);
+        });
+    });
+
+    // ************************************************************ //
+
+    describe("setTeamsData(...)", () => {
+
+        const membersUrl = `${MOCK_REPOS_TEAMS_DATA[0]["url"]}/members`;
+        const repositoriesUrl = MOCK_REPOS_TEAMS_DATA[0]["repositories_url"];
+
+        beforeEach(() => {
+            ORG_DATA["teams"] = MOCK_REPOS_TEAMS_DATA;
+        });
+
+        test('should set TEAMS_DATA object with no members or repositories', async () => {
+            const emptyValue = {};
+            const teamsData = { ... MOCK_TEAMS_DATA } as any;
+            teamsData[MOCK_REPOS_TEAMS_NAME]["members"] = emptyValue;
+            teamsData[MOCK_REPOS_TEAMS_NAME]["repositories"] = emptyValue;
+
+            spyFetchCall
+                .mockImplementationOnce(() => Promise.resolve({ json: () => Promise.resolve(emptyValue) } as any))
+                .mockImplementationOnce(() => Promise.resolve({ json: () => Promise.resolve(emptyValue) } as any));
+
+            await setTeamsData();
+
+            expect(TEAMS_DATA).toEqual(teamsData);
+
+            expect(spyFetchCall).toHaveBeenCalledTimes(2);
+            expect(spyFetchCall).toHaveBeenCalledWith(membersUrl, MOCK_HEADERS);
+            expect(spyFetchCall).toHaveBeenCalledWith(repositoriesUrl, MOCK_HEADERS);
+
+            expect(spyConsoleLog).toHaveBeenCalledTimes(1);
+            expect(spyConsoleLog).toHaveBeenCalledWith(`Get members info for ${MOCK_REPOS_TEAMS_NAME} team`);
+            expect(spyConsoleError).toHaveBeenCalledTimes(0);
+        });
+
+        test('should set TEAMS_DATA correctly', async () => {
+            spyFetchCall
+                .mockImplementationOnce(() => Promise.resolve({ json: () => Promise.resolve(MOCK_TEAMS_MEMBERS) } as any))
+                .mockImplementationOnce(() => Promise.resolve({ json: () => Promise.resolve(MOCK_TEAMS_REPOSITORIES) } as any));
+
+            await setTeamsData();
+
+            expect(Object.keys(TEAMS_DATA).length).toEqual(1);
+            expect(TEAMS_DATA[MOCK_REPOS_TEAMS_NAME]["members"]).toEqual(MOCK_TEAMS_MEMBERS);
+            expect(TEAMS_DATA[MOCK_REPOS_TEAMS_NAME]["repositories"]).toEqual(MOCK_TEAMS_REPOSITORIES);
+            expect(TEAMS_DATA[MOCK_REPOS_TEAMS_NAME]["description"]).toEqual(MOCK_REPOS_TEAMS_DESCRIPTION);
+
+            expect(spyFetchCall).toHaveBeenCalledTimes(2);
+
+            expect(spyConsoleLog).toHaveBeenCalledTimes(1);
+            expect(spyConsoleLog).toHaveBeenCalledWith(`Get members info for ${MOCK_REPOS_TEAMS_NAME} team`);
+            expect(spyConsoleError).toHaveBeenCalledTimes(0);
+        });
+
+        test('should catch the promise reject call', async () => {
+            spyFetchCall.mockRejectedValueOnce(new Error("Api call Error"));
+
+            await setTeamsData();
+
+            expect(spyFetchCall).toHaveBeenCalledTimes(1);
+            expect(spyFetchCall).toHaveBeenCalledWith(membersUrl, MOCK_HEADERS);
+
+            expect(spyConsoleLog).toHaveBeenCalledTimes(0);
+            expect(spyConsoleError).toHaveBeenCalledTimes(1);
         });
     });
 

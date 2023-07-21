@@ -69,3 +69,39 @@ export const MOCK_REPOS_DATA = [
         clone_url: "https://github.com/org1/repo8"
     }
 ];
+
+export const MOCK_REPOS_TEAMS_NAME = "cool-team-name";
+export const MOCK_REPOS_TEAMS_DESCRIPTION = "Teams Description";
+export const MOCK_REPOS_TEAMS_DATA: any = [
+    {
+        "name": MOCK_REPOS_TEAMS_NAME,
+        "description": MOCK_REPOS_TEAMS_DESCRIPTION,
+        "url": "https://api.github.com/organizations/00000/team/22222",
+        "html_url": `https://api.github.com/orgs/${MOCK_ORGANIZATION}/teams/${MOCK_REPOS_TEAMS_NAME}`,
+        "members_url": "https://api.github.com/organizations/11111/team/22222/members{/member}",
+        "repositories_url": "https://api.github.com/organizations/11111/team/22222/repos"
+    }
+];
+export const MOCK_TEAMS_MEMBERS_NAME = "robot";
+export const MOCK_TEAMS_MEMBERS = {
+    "0": {
+        "url": `https://api.github.com/users/${MOCK_TEAMS_MEMBERS_NAME}`,
+        "html_url": `https://github.com/${MOCK_TEAMS_MEMBERS_NAME}`
+    }
+};
+export const MOCK_TEAMS_REPO = "mr_repo";
+export const MOCK_TEAMS_REPOSITORIES = {
+    "0": {
+        "name": MOCK_TEAMS_REPO,
+        "full_name": `${MOCK_ORGANIZATION}/${MOCK_TEAMS_REPO}`,
+        "html_url": `https://github.com/${MOCK_ORGANIZATION}/${MOCK_TEAMS_REPO}`,
+        "description": "Something"
+    }
+};
+export const MOCK_TEAMS_DATA = {
+    [MOCK_REPOS_TEAMS_NAME]: {
+        "members": MOCK_TEAMS_MEMBERS,
+        "repositories": MOCK_TEAMS_REPOSITORIES,
+        "description": MOCK_REPOS_TEAMS_DESCRIPTION
+    }
+};
