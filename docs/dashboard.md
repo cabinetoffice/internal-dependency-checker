@@ -22,26 +22,26 @@ The sortable table is created in plain JS, while the charts are generated using 
 - If a repository has no commits, an error message indicating that fact is included in the JSON report.
 - The node script process the JSON files containing commit information for different repositories. It updates and organizes the data using the REPOS, MEMBERS, and TEAMS objects and writes the final result to a new JSON file `commits_info.json`.
 
-```json
+```txt
 {
     "REPOS": {
         "repo_name": {
             "members": [
-               // ...
+               ...
             ],
             "last": "..."
         }
-        // ...
+        ...
     },
     "MEMBERS": {
         "member_name": {
             "count": 0,
             "last": "...",
             "repos": [
-               //...
+               ...
             ]
         }
-        // ...
+        ...
     },
     "TEAMS": {
         "team_name": {
@@ -49,7 +49,7 @@ The sortable table is created in plain JS, while the charts are generated using 
             "repo": "...",
             "html_url": "..."
         }
-        // ...
+        ...
     }
 }
 ```
