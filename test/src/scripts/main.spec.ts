@@ -5,13 +5,15 @@ import { describe, expect, test, jest, afterEach, beforeEach } from '@jest/globa
 
 import { main } from "../../../src/scripts/main";
 import { saveToFile } from "../../../src/utils/fs";
-import { getGitOrgData } from "../../../src/utils/index";
+import { getGitOrgData, setTeamsData } from "../../../src/utils/index";
 
 import { MOCK_ORGANIZATION } from '../../mock/repos_info';
+import { REPOS_FILE_PATH, TEAMS_FILE_PATH } from '../../../src/config';
 
 const spyConsoleError = jest.spyOn(console, 'error');
 
 const mockGetGitOrgData = getGitOrgData as jest.Mock;
+const mockSetTeamsData = setTeamsData as jest.Mock;
 const mockSaveToFile = saveToFile as jest.Mock;
 
 describe("Main tests suites", () => {
@@ -24,12 +26,17 @@ describe("Main tests suites", () => {
         jest.resetAllMocks();
     });
 
-    test("should call the mockGetGitOrgData and saveToFile functions", async () => {
+    test("should call getGitOrgData, setTeamsData and saveToFile functions", async () => {
 
         await main(MOCK_ORGANIZATION);
 
         expect(mockGetGitOrgData).toHaveBeenCalledTimes(3);
-        expect(mockSaveToFile).toHaveBeenCalledTimes(1);
+        expect(mockSetTeamsData).toHaveBeenCalledTimes(1);
+
+        expect(mockSaveToFile).toHaveBeenCalledTimes(2);
+        expect(mockSaveToFile).toHaveBeenCalledWith(REPOS_FILE_PATH, expect.anything());
+        expect(mockSaveToFile).toHaveBeenCalledWith(TEAMS_FILE_PATH, expect.anything());
+
         expect(spyConsoleError).toHaveBeenCalledTimes(0);
     });
 

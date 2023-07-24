@@ -43,3 +43,11 @@ export interface StateDependency {
 export type StateDependencies = {
   [key in TechEnum]?: StateDependency;
 };
+
+export interface TeamsData{
+  [team_name: string]: {
+    members: {},
+    repositories: {},
+    description: string;
+  }
+}

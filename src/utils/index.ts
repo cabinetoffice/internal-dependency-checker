@@ -6,7 +6,8 @@ import {
     PER_PAGE,
     ORG_DATA,
     HEADERS,
-    CLONE_TIMEOUT
+    CLONE_TIMEOUT,
+    TEAMS_DATA
 } from "../config/index";
 
 // ************************************************************ //
@@ -27,6 +28,26 @@ export const getGitOrgData = async (what: WhatEnum, org: string, page = 1): Prom
         if (data?.length) {
             ORG_DATA[what] = ORG_DATA[what].concat(data);
             await getGitOrgData(what, org, page + 1);
+        }
+    } catch (error: any) {
+        console.error(`Error: ${error.message}`);
+    }
+};
+
+// ************************************************************ //
+
+export const setTeamsData = async ( ): Promise<void> => {
+    try {
+        for (const team of ORG_DATA.teams) {
+            const membersData = await fetch(`${team["url"]}/members`, HEADERS);
+            const repositoriesData = await fetch(team["repositories_url"], HEADERS);
+
+            TEAMS_DATA[team["name"]] = {
+                "members": { ... await membersData.json() },
+                "repositories": { ... await repositoriesData.json() },
+                "description": team["description"]
+            };
+            console.log(`Get members info for ${team["name"]} team`);
         }
     } catch (error: any) {
         console.error(`Error: ${error.message}`);

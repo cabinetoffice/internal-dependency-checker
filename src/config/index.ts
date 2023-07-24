@@ -1,4 +1,8 @@
-import { OrgData, StateDependencies } from '../types/config.js';
+import {
+    OrgData,
+    TeamsData,
+    StateDependencies
+} from '../types/config.js';
 
 export const GITHUB_KEY = process.env.GITHUB_KEY;
 
@@ -17,6 +21,10 @@ export const REPOS_LIST_FILE_PATH = `${REPOS_DIRECTORY_PATH}/${REPOS_LIST_FILE_N
 export const STATE_DEPENDENCIES: StateDependencies = {};
 export const STATE_FILE_NAME = "state.json";
 export const STATE_FILE_PATH = `${REPOS_DIRECTORY_PATH}/${STATE_FILE_NAME}`;
+
+export const TEAMS_DATA: TeamsData = {};
+export const TEAMS_FILE_NAME = "teams.json";
+export const TEAMS_FILE_PATH = `${REPOS_DIRECTORY_PATH}/${TEAMS_FILE_NAME}`;
 
 export const ORG_DATA: OrgData = { "repos": [], "members": [], "teams": [] };
 export const HEADERS = { 'headers': { 'Authorization': `Bearer ${GITHUB_KEY}` } };

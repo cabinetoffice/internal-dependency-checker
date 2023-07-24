@@ -1,0 +1,25 @@
+version: '3'
+
+services:
+
+  git:
+    build: ./git
+    volumes:
+      - ../reports:/idc/reports
+      - ../repos:/idc/repos
+      - ../utils:/idc/utils
+
+  app:
+    build: ./app
+    depends_on:
+      git:
+        condition: service_completed_successfully
+    ports:
+      - 8080:80
+    volumes:
+      - ../repos:/usr/share/nginx/html/assets/data
+  
+volumes:
+    reports:
+    repos:
+    utils:

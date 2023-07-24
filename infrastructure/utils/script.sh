@@ -1,10 +1,15 @@
 #!/bin/bash
 
+export STATE_FILE_NAME=state.json
+export REPOS_LIST_FILE_NAME=repos_list.json
+export TEAMS_FILE_NAME=teams.json
+
 export REPORTS_FOLDER=reports
+export REPOS_FOLDER=repos
 export WORKDIR=/idc
 
-STATE_FILE_PATH=./repos/state.json
-REPO_FILE_PATH=./repos/repos_list.json
+STATE_FILE_PATH="./${REPOS_FOLDER}/${STATE_FILE_NAME}"
+REPO_FILE_PATH="./${REPOS_FOLDER}/${REPOS_LIST_FILE_NAME}"
 
 set_state_object() {
   state=$(jq -c '.'"$1"'[] | {
