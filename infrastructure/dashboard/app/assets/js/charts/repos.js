@@ -1,4 +1,4 @@
-const createPiecharts = (repos) => {
+const createRepoPiecharts = (repos) => {
 
     const reposForkedData = { forked: 0, not_forked: 0 };
     const reposArchivedData = { archived: 0, not_archived: 0 };
@@ -58,8 +58,56 @@ const createPiecharts = (repos) => {
 
 }
 
+const languageBarChartOptions = {
+    scales: {
+        x: {
+            display: true,
+            title: {
+                display: true,
+                text: 'Main languages of Repositories'
+            }
+        },
+        y: {
+            display: true,
+            title: {
+                display: true,
+                text: 'Number of Repositories'
+            }
+        }
+    }
+};
+
+const createRepoLanguageBarChart = (repos) => {
+
+    const languagesData = repos.reduce((acc, repo) => {
+        if (repo.language === null) {
+            acc['No Main Language'] = acc['No Main Language'] + 1 || 1;
+        } else {
+            acc[repo.language] = acc[repo.language] + 1 || 1;
+        }
+        return acc;
+    }, {});
+
+    const languageCtx = document.getElementById('repos-language-chart').getContext('2d');
+
+    const languageBarChart = new Chart(languageCtx, {
+        type: "bar",
+        data: {
+            labels: Object.keys(languagesData),
+            datasets: [{
+                backgroundColor: 'rgb(75, 192, 192)',
+                label: '# of Repositories',
+                data: Object.values(languagesData)
+            }]
+        },
+        options: languageBarChartOptions
+    });
+
+}
+
 (async () => {
     const reposData = await getRepos();
     const reposChartData = reposData.map(extractRepoVisualisationData);
-    createPiecharts(reposChartData);
+    createRepoPiecharts(reposChartData);
+    createRepoLanguageBarChart(reposChartData);
 })()
