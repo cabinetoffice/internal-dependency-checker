@@ -198,6 +198,7 @@ describe("UTILS Index tests suites", () => {
 
         const membersUrl = `${MOCK_REPOS_TEAMS_DATA[0]["url"]}/members`;
         const repositoriesUrl = MOCK_REPOS_TEAMS_DATA[0]["repositories_url"];
+        const consoleLogMessage = `Get members info for ${MOCK_REPOS_TEAMS_NAME} team`;
 
         beforeEach(() => {
             ORG_DATA["teams"] = MOCK_REPOS_TEAMS_DATA;
@@ -222,7 +223,7 @@ describe("UTILS Index tests suites", () => {
             expect(spyFetchCall).toHaveBeenCalledWith(repositoriesUrl, MOCK_HEADERS);
 
             expect(spyConsoleLog).toHaveBeenCalledTimes(1);
-            expect(spyConsoleLog).toHaveBeenCalledWith(`Get members info for ${MOCK_REPOS_TEAMS_NAME} team`);
+            expect(spyConsoleLog).toHaveBeenCalledWith(consoleLogMessage);
             expect(spyConsoleError).toHaveBeenCalledTimes(0);
         });
 
@@ -241,7 +242,7 @@ describe("UTILS Index tests suites", () => {
             expect(spyFetchCall).toHaveBeenCalledTimes(2);
 
             expect(spyConsoleLog).toHaveBeenCalledTimes(1);
-            expect(spyConsoleLog).toHaveBeenCalledWith(`Get members info for ${MOCK_REPOS_TEAMS_NAME} team`);
+            expect(spyConsoleLog).toHaveBeenCalledWith(consoleLogMessage);
             expect(spyConsoleError).toHaveBeenCalledTimes(0);
         });
 
