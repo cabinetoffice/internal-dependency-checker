@@ -105,9 +105,81 @@ const createRepoLanguageBarChart = (repos) => {
 
 }
 
+const createRepoScatterChart = (repos) => {
+
+    const repoScatterChartData = repos.map(repo => ({
+        name: repo.name,
+        x: repo.created_at,
+        y: repo.updated_at
+    }));
+
+    const config = {
+        type: 'scatter',
+        data: {
+            datasets: [{
+                label: 'Date created vs updated',
+                data: repoScatterChartData,
+                borderColor: 'red',
+                backgroundColor: 'red',
+            }],
+        },
+        options: {
+            plugins: {
+                title: {
+                    display: true,
+                    text: 'Dates of Repositories created vs updated',
+                },
+                tooltip: {
+                    mode: 'index',
+                    callbacks: {
+                        label: (context) => {
+                            const repoName = context.dataset.data[context.dataIndex].name;
+                            return `Repository: ${repoName}`;
+                        }
+                    }
+                }
+            },
+            scales: {
+                x: {
+                    type: 'time',
+                    time: {
+                        unit: 'month',
+                        stepSize: 6,
+                        displayFormats: {
+                            month: 'MMM yyyy',
+                        }
+                    },
+                    title: {
+                        display: true,
+                        text: 'Date Repository Created',
+                    }
+                },
+                y: {
+                    type: 'time',
+                    time: {
+                        unit: 'month',
+                        stepSize: 6,
+                        displayFormats: {
+                            month: 'MMM yyyy',
+                        }
+                    },
+                    title: {
+                        display: true,
+                        text: 'Date Repository Updated',
+                    }
+                }
+            },
+        },
+    };
+
+    const ctx = document.getElementById('repos-scatter-chart').getContext('2d');
+    new Chart(ctx, config);
+}
+
 (async () => {
     const reposData = await getRepos();
     const reposChartData = reposData.map(extractRepoVisualisationData);
     createRepoPiecharts(reposChartData);
     createRepoLanguageBarChart(reposChartData);
+    createRepoScatterChart(reposChartData);
 })()
