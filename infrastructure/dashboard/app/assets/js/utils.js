@@ -114,9 +114,9 @@ const searchTable = () => {
 
 const extractRepoVisualisationData = (repoData) => {
     const propertiesToExtract = ["name", "html_url", "description", "created_at", "updated_at", "language", "fork", "archived", "visibility"];
-    const visualisationData = {};
-    propertiesToExtract.forEach((property) => {
-        visualisationData[property] = repoData[property];
-    });
+    const visualisationData = propertiesToExtract.reduce((acc, property) => {
+        acc[property] = repoData[property];
+        return acc;
+    }, {});
     return visualisationData;
 }
