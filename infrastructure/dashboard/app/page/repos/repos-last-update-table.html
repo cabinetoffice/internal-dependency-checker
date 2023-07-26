@@ -4,32 +4,30 @@
 
 <head>
   <meta charset="utf-8">
-  <title>GOV.UK - Github Dasboard</title>
+  <title>GOV.UK - Github Teams</title>
   <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
   <meta name="theme-color" content="#0b0c0c">
 
-  <meta name="description" content="Github Dasboard">
+  <meta name="description" content="Github Repositories">
   <meta name="author" content="X-CO Developers">
 
   <meta http-equiv="X-UA-Compatible" content="IE=edge">
 
-  <link rel="shortcut icon" sizes="16x16 32x32 48x48" href="assets/images/favicon.ico" type="image/x-icon">
-  <link rel="mask-icon" href="assets/images/govuk-mask-icon.svg" color="#0b0c0c">
-  <link rel="apple-touch-icon" sizes="180x180" href="assets/images/govuk-apple-touch-icon-180x180.png">
-  <link rel="apple-touch-icon" sizes="167x167" href="assets/images/govuk-apple-touch-icon-167x167.png">
-  <link rel="apple-touch-icon" sizes="152x152" href="assets/images/govuk-apple-touch-icon-152x152.png">
-  <link rel="apple-touch-icon" href="assets/images/govuk-apple-touch-icon.png">
+  <link rel="shortcut icon" sizes="16x16 32x32 48x48" href="../../assets/images/favicon.ico" type="image/x-icon">
+  <link rel="mask-icon" href="../../assets/images/govuk-mask-icon.svg" color="#0b0c0c">
+  <link rel="apple-touch-icon" sizes="180x180" href="../../assets/images/govuk-apple-touch-icon-180x180.png">
+  <link rel="apple-touch-icon" sizes="167x167" href="../../assets/images/govuk-apple-touch-icon-167x167.png">
+  <link rel="apple-touch-icon" sizes="152x152" href="../../assets/images/govuk-apple-touch-icon-152x152.png">
+  <link rel="apple-touch-icon" href="../../assets/images/govuk-apple-touch-icon.png">
 
-  <link href="assets/app.min.css" rel="stylesheet">
+  <link href="../../assets/app.min.css" rel="stylesheet">
+  <link href="../../assets/css/table.css" rel="stylesheet">
 
-  <meta property="og:image" content="assets/images/govuk-opengraph-image.png">
+  <meta property="og:image" content="../../assets/images/govuk-opengraph-image.png">
 
 </head>
 
 <body class="govuk-template__body ">
-  <script> document.body.className = ((document.body.className) ? document.body.className + ' js-enabled' : 'js-enabled'); </script>
-
-  <a href="#main-content" class="govuk-skip-link" data-module="govuk-skip-link">Skip to main content</a>
 
   <header class="govuk-header" data-module="govuk-header">
     <div class="govuk-header__container govuk-width-container">
@@ -52,61 +50,38 @@
   </header>
 
   <div class="govuk-width-container">
-    <main class="govuk-main-wrapper " id="main-content">
+    <a href="../../index.html" class="govuk-back-link">Back</a>
+    <main class="govuk-main-wrapper idc-main-wrapper" id="main-content">
+      <h1 class="govuk-heading-l">Repository last updated</h1>
 
-      <div class="govuk-grid-row">
-        <div class="govuk-grid-two-thirds">
-
-          <h1 class="govuk-heading-l">
-            POC - Github Dasboard
-          </h1>
-
-          <h3 class="govuk-heading-m">Github Teams</h3>
-          <ul class="govuk-list govuk-list--bullet">
-            <li>
-              <a href="./page/teams/teams-chart.html">Repositories and Members per Teams - Chart</a>
-            </li>
-            <li>
-              <a href="./page/teams/teams-table.html">Repositories and Members per Teams - List</a>
-            </li>
-            <li>
-              <a href="./page/teams/teams-last-update-table.html">Teams last updated Repository - List</a>
-            </li>
-          </ul>
-
-          <h3 class="govuk-heading-m">Github Members</h3>
-          <ul class="govuk-list govuk-list--bullet">
-            <li>
-              <a href="">Members List (WIP)</a>
-            </li>
-            <li>
-              <a href="">Members Chart (WIP)</a>
-            </li>
-            <li>
-              <a href="">Last commit from Members - List (WIP)</a>
-            </li>
-          </ul>
-
-          <h3 class="govuk-heading-m">Github Repositories</h3>
-          <ul class="govuk-list govuk-list--bullet">
-            <li>
-              <a href="./page/repos/repos-table.html">Repositories List</a>
-            </li>
-            <li>
-              <a href="./page/repos/repos-chart.html">Repositories Chart</a>
-            </li>
-            <li>
-              <a href="./page/repos/repos-last-update-table.html">Last commit for Repositories</a>
-            </li>
-          </ul>
-
-          <h3 class="govuk-heading-m">IDC Kibana Dashboard</h3>
-          <ul class="govuk-list govuk-list--bullet">
-            <li>Link to Kibana (WIP)</li>
-          </ul>
-
-        </div>
-      </div>
+      <input class="govuk-input govuk-input--width-30" name="width-30" type="text" id="search_team"
+        placeholder="Search text">
+      <table class="sortable" id="teams_table">
+        <thead>
+          <tr>
+            <th>
+              <button>
+                Repository Name
+                <span aria-hidden="true"></span>
+              </button>
+            </th>
+            <th>
+              <button>
+                Last Update
+                <span aria-hidden="true"></span>
+              </button>
+            </th>
+          </tr>
+        </thead>
+        <tbody id="table-tbody">
+        </tbody>
+        <template id="table-template">
+          <tr>
+            <td style="font-weight: bold"></td>
+            <td></td>
+          </tr>
+        </template>
+      </table>
 
     </main>
   </div>
@@ -136,6 +111,10 @@
       </div>
     </div>
   </footer>
+
+  <script src="../../assets/js/utils.js"></script>
+  <script src="../../assets/js/table/last_update_repos.js"></script>
+  <script src="../../assets/js/table/sort.js"></script>
 
 </body>
 
