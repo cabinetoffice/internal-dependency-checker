@@ -4,10 +4,3 @@
     height: 80vh;
     width: 80vw;
   }
-
-.repos-pie-chart-container {
-  margin: auto;
-  display: flex;
-  flex-wrap: wrap;
-  border: 1px solid black;
-}
