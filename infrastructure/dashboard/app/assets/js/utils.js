@@ -1,31 +1,8 @@
-const TEAMS_PATH = "../../assets/data/teams.json";
-const COMMITS_INFO_PATH = "../../assets/data/commits_info.json";
-const REPOS_INFO_PATH = "../../assets/data/repos_info.json";
-
-const loadFile = async (file) => {
-    try {
-        const response = await fetch(file);
-        return await response.json();
-    } catch (error) {
-        console.error("There has been a problem with your fetch operation:", error);
-        return {};
-    }
-}
-
-const getData = async (file) => {
-    return await loadFile(file);
-}
+/** CHART */
 
 const sorting = (ascending, key) => {
     return (ascending) ? (a, b) => a[key] - b[key] : (a, b) => b[key] - a[key];
 }
-
-const getRepos = async () => {
-    const reposInfo = await loadFile(REPOS_INFO_PATH);
-    return reposInfo["repos"];
-}
-
-/** CHART */
 
 const sortChartData = async (file, ascending = true, key = "members") => {
     const data = await loadFile(file);
@@ -94,7 +71,7 @@ const searchTable = () => {
     // Declare variables
     let filter, table, tr, i, innerText;
     filter = inputFilter.value;
-    table = document.getElementById("teams_table");
+    table = document.getElementById("sortable_table");
     tr = table.getElementsByTagName("tr");
 
     // Loop through all table rows, and hide those who don't match the search query

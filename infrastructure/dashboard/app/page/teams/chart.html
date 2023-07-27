@@ -21,10 +21,11 @@
   <link rel="apple-touch-icon" href="../../assets/images/govuk-apple-touch-icon.png">
 
   <link href="../../assets/app.min.css" rel="stylesheet">
-  <link href="../../assets/css/table.css" rel="stylesheet">
+  <link href="../../assets/css/chart.css" rel="stylesheet">
 
   <meta property="og:image" content="../../assets/images/govuk-opengraph-image.png">
 
+  <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
 </head>
 
 <body class="govuk-template__body ">
@@ -51,46 +52,12 @@
 
   <div class="govuk-width-container">
     <a href="../../index.html" class="govuk-back-link">Back</a>
-    <main class="govuk-main-wrapper idc-main-wrapper" id="main-content">
-      <h1 class="govuk-heading-l">Teams last updated Repository</h1>
+    <br><br>
+  </div>
 
-      <input class="govuk-input govuk-input--width-30" name="width-30" type="text" id="search_team"
-        placeholder="Search text">
-      <table class="sortable" id="teams_table">
-        <thead>
-          <tr>
-            <th>
-              <button>
-                Team Name
-                <span aria-hidden="true"></span>
-              </button>
-            </th>
-            <th>
-              <button>
-                Repository
-                <span aria-hidden="true"></span>
-              </button>
-            </th>
-            <th>
-              <button>
-                Last Update
-                <span aria-hidden="true"></span>
-              </button>
-            </th>
-          </tr>
-        </thead>
-        <tbody id="table-tbody">
-        </tbody>
-        <template id="table-template">
-          <tr>
-            <td style="font-weight: bold"></td>
-            <td></td>
-            <td></td>
-          </tr>
-        </template>
-      </table>
-
-    </main>
+  <div class="chart-container">
+    <canvas id="teams_stacked_chart"></canvas>  
+    <br><br>
   </div>
 
   <footer class="govuk-footer">
@@ -119,10 +86,9 @@
     </div>
   </footer>
 
+  <script src="../../assets/js/data.js"></script>
   <script src="../../assets/js/utils.js"></script>
-
-  <script src="../../assets/js/table/last_update.js"></script>
-  <script src="../../assets/js/table/sort.js"></script>
+  <script src="../../assets/js/charts/teams.js"></script>
 
 </body>
 

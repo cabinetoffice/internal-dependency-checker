@@ -102,7 +102,7 @@ table.sortable th:not([aria-sort]) button:hover span::after {
     top: 0;
 }
 
-#search_team {
+#search_table {
     margin-bottom: 30px;
 }
 
