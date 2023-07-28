@@ -15,13 +15,13 @@ const updateTable = (commitsData) => {
             td[1].innerHTML = `<a href="${repo["html_url"]}">${repo.repo}</a>`;
             td[2].innerHTML = `Timestamp: ${date} <br> Date: ${new Date( date * 1000 ).toLocaleString('en-GB', { timeZone: 'UTC' })}`;
         } else {
-            td[1].textContent = "NA";
-            td[2].textContent = "NA";
+            td[1].textContent = "N/A";
+            td[2].textContent = "N/A";
         }
 
         tbodyEl.appendChild(clone);
     }
-    inputFilter = document.getElementById("search_team");
+    inputFilter = document.getElementById("search_table");
     inputFilter.oninput = searchTable;
 }
 

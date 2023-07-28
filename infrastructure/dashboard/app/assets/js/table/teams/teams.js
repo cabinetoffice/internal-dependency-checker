@@ -10,7 +10,8 @@ const setTableContent = (template, tbodyEl, name, description, memberContent, re
     tbodyEl.appendChild(clone);
 }
 
-const updateTable = (teams, repos) => {
+const updateTable = (teams, reposInfo) => {
+    let repos = reposInfo["repos"];
     const tbodyEl = document.querySelector("tbody");
     while (tbodyEl.rows.length > 0) {
         tbodyEl.deleteRow(0);
@@ -43,13 +44,13 @@ const updateTable = (teams, repos) => {
 
     setTableContent(template, tbodyEl, "_NA", description, memberContent, repositorieContent);
 
-    inputFilter = document.getElementById("search_team");
+    inputFilter = document.getElementById("search_table");
     inputFilter.oninput = searchTable;
 }
 
 (async () => {
     updateTable(
         await getData(TEAMS_PATH),
-        await getRepos()
+        await getData(REPOS_INFO_PATH),
     );
 })()
