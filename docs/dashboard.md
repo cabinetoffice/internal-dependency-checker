@@ -59,3 +59,15 @@ The sortable table is created in plain JS, while the charts are generated using 
 - The "docker-compose.yml" file defines the services and volumes required to run the application using Docker Compose.
 - It is a separate compose file from the main one, designed to quickly bootstrap the dashboard, reduce complexity in the main file, and improve maintainability.
 - The "app" service has a condition `service_completed_successfully`, which means the Git script (dep-checker.sh) needs to complete successfully before running the "app" service.
+
+## Potential Issues
+
+### Dubious Ownership
+
+- After running `make start-dashboard` due to unknown circumstances (It may potentially be a linux specific issue) it can sometimes output the following error: `fatal: detected dubious ownership in repository at REPO_DIRECTORY`
+- This error prevents the `commits_info.json` file from being properly populated with data.
+- This can be fixed by editing the git script at: `/infrastructure/dashboard/git/dep-checker.sh`
+- Go to line 25 after `git_commits_report_file_name=$(set_file_name "${GIT_REPORTS_FOLDER_NAME}" "git")` and before `if test -n "$(git rev-list -n1 --all)"; then`
+- Add the following code to line 25: `git config --global --add safe.directory "${WORKDIR}/${repo_path}"`
+- Delete old `commits_info.json` file.
+- Run `make start-dashboard` again.
