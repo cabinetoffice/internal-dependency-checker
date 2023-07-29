@@ -3,9 +3,40 @@ export enum WhatEnum {
   members = "members",
   teams = "teams"
 }
+export interface RepoDetails {
+  description: string;
+  full_name: string;
+  visibility: string;
+  url: string;
+  html_url: string;
+  created_at: string;
+  archived: string;
+  members: string[];
+  teams: string[];
+};
+
+export interface MemberDetails {
+  url: string;
+  html_url: string;
+  repos: string[];
+  teams: string[];
+};
+
+export interface TeamDetails {
+  description: string;
+  url: string;
+  html_url: string;
+  repos: string[];
+  members: string[];
+};
 
 export type OrgData = {
-  [key in WhatEnum]: any[];
+  [key in WhatEnum]: {
+    list: any[];
+    details: {
+      [key_name: string]: RepoDetails | MemberDetails | TeamDetails
+    }
+  };
 };
 
 export enum TechEnum {
@@ -43,11 +74,3 @@ export interface StateDependency {
 export type StateDependencies = {
   [key in TechEnum]?: StateDependency;
 };
-
-export interface TeamsData{
-  [team_name: string]: {
-    members: {},
-    repositories: {},
-    description: string;
-  }
-}
