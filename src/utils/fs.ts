@@ -2,17 +2,16 @@ import { writeFile, readFile } from 'node:fs/promises';
 import fs from 'node:fs';
 import path from 'node:path';
 
-import { RepoList, JsonData } from '../types/utils';
+import { OrgData, REPOS_KEY, RepoDetails } from '../types/config';
 
 import {
-    REPOS_KEY,
     REPOS_DIRECTORY_PATH,
     REPOS_FILE_PATH,
     FILES_NAME,
     FILES_BY_EXTENSIONS,
     EXCLUDE_SUBDIRECTORY,
     REPOS_SUB_DIRECTORY_PATH,
-    REPOS_LIST_FILE_PATH
+    REPOS_LIST
 } from "../config/index";
 
 import { exec_command } from "./exec";
@@ -23,22 +22,22 @@ import { updateStateFile, setTimeOut } from "./index";
 export const cloneRepos = async (): Promise<void> => {
     try {
         const data = await readFile(REPOS_FILE_PATH, 'utf8');
-        const jsonData: JsonData = JSON.parse(data);
-        const jsonDataLength = jsonData[REPOS_KEY].length;
+        const jsonData: OrgData = JSON.parse(data);
 
         let index = 1;
-        const repoList: RepoList = { [REPOS_KEY]: {} };
+        const reposData = jsonData[REPOS_KEY];
+        const reposDataLength = reposData.list.length;
 
-        for (const element of jsonData[REPOS_KEY]) {
-            const destPath = `${REPOS_DIRECTORY_PATH}/${element.full_name}`;
-            const repo_path = `${REPOS_SUB_DIRECTORY_PATH}/${element.full_name}`;
-            const file_name = `${REPOS_SUB_DIRECTORY_PATH}__${element.full_name.replace('/', '__')}`;
-            repoList[REPOS_KEY][file_name] = { repo_path, file_name };
+        for (const repoName of reposData.list) {
+            const repo = reposData.details[repoName] as RepoDetails;
+            const destPath = `${REPOS_DIRECTORY_PATH}/${repo.full_name}`;
+            const repo_path = `${REPOS_SUB_DIRECTORY_PATH}/${repo.full_name}`;
+            const file_name = `${REPOS_SUB_DIRECTORY_PATH}__${repo.full_name.replace('/', '__')}`;
+            REPOS_LIST[REPOS_KEY][file_name] = { repo_path, file_name };
 
-            await exec_command(`git clone ${element.clone_url} ${destPath}`, index++, jsonDataLength);
+            await exec_command(`git clone ${repo.html_url}.git ${destPath}`, index++, reposDataLength);
             await setTimeOut();
         }
-        await saveToFile(REPOS_LIST_FILE_PATH, repoList);
     } catch (error: any) {
         console.error(`Error: ${error.message}`);
     }

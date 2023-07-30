@@ -1,5 +1,7 @@
 import {
+    REPOS_KEY,
     OrgData,
+    RepoList,
     StateDependencies
 } from '../types/config.js';
 
@@ -8,12 +10,12 @@ export const GITHUB_KEY = process.env.GITHUB_KEY;
 export const PER_PAGE = 100;
 export const CLONE_TIMEOUT = 5000;
 
-export const REPOS_KEY = "repos";
 export const REPOS_FILE_NAME = "repos_info.json";
 export const REPOS_SUB_DIRECTORY_PATH = "repos";
 export const REPOS_DIRECTORY_PATH = `infrastructure/${REPOS_SUB_DIRECTORY_PATH}`;
 export const REPOS_FILE_PATH = `${REPOS_DIRECTORY_PATH}/${REPOS_FILE_NAME}`;
 
+export const REPOS_LIST: RepoList = { [REPOS_KEY]: {} };
 export const REPOS_LIST_FILE_NAME = "repos_list.json";
 export const REPOS_LIST_FILE_PATH = `${REPOS_DIRECTORY_PATH}/${REPOS_LIST_FILE_NAME}`;
 

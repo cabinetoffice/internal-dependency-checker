@@ -1,3 +1,5 @@
+export const REPOS_KEY = "repos";
+
 export interface RepoDetails {
   description: string;
   full_name: string;
@@ -91,3 +93,17 @@ export interface StateDependency {
 export type StateDependencies = {
   [key in TechEnum]?: StateDependency;
 };
+
+export interface RepoList {
+  [REPOS_KEY]: {
+    [key: string]: {
+      repo_path: string;
+      file_name: string;
+    };
+  };
+}
+
+export interface TechFile {
+  tech: TechEnum;
+  key: KeyEnum;
+}

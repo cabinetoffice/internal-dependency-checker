@@ -7,9 +7,10 @@ import {
     ReposPerTeam,
     MembersPerTeam,
     MemberPerTeam,
-    RepoPerTeam
+    RepoPerTeam,
+    TechFile,
+    KeyEnum
 } from '../types/config';
-import { KeyEnum, TechFile } from '../types/utils';
 import {
     FILES_BY_EXTENSIONS,
     STATE_DEPENDENCIES,
