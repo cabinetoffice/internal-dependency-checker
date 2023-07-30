@@ -1,8 +1,3 @@
-export enum WhatEnum {
-  repos = "repos",
-  members = "members",
-  teams = "teams"
-}
 export interface RepoDetails {
   description: string;
   full_name: string;
@@ -13,14 +8,14 @@ export interface RepoDetails {
   archived: string;
   members: string[];
   teams: string[];
-};
+}
 
 export interface MemberDetails {
   url: string;
   html_url: string;
   repos: string[];
   teams: string[];
-};
+}
 
 export interface TeamDetails {
   description: string;
@@ -28,16 +23,38 @@ export interface TeamDetails {
   html_url: string;
   repos: string[];
   members: string[];
-};
+}
+
+export enum WhatEnum {
+  repos = "repos",
+  members = "members",
+  teams = "teams"
+}
 
 export type OrgData = {
   [key in WhatEnum]: {
-    list: any[];
+    list: string[];
     details: {
       [key_name: string]: RepoDetails | MemberDetails | TeamDetails
     }
   };
 };
+
+export interface MemberPerTeam {
+  login: string;
+}
+
+export interface MembersPerTeam {
+  [team_name: string]: MemberPerTeam[]
+}
+
+export interface RepoPerTeam {
+  name: string;
+}
+
+export interface ReposPerTeam {
+  [team_name: string]: RepoPerTeam[]
+}
 
 export enum TechEnum {
   python = "python",
