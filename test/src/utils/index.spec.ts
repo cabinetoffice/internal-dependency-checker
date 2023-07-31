@@ -3,9 +3,12 @@ import { describe, expect, test, jest, afterEach, beforeEach } from '@jest/globa
 import {
     getTechFile,
     updateStateFile,
-    getGitOrgData,
     setTimeOut,
-    setTeamsData
+    getTeamsData,
+    mapData,
+    getInfo,
+    getOrgData,
+    setOrgData
 } from "../../../src/utils/index";
 
 import {
@@ -15,9 +18,11 @@ import {
 
 import {
     CLONE_TIMEOUT,
+    MEMBERS_PER_TEAM_KEY,
     ORG_DATA,
+    REPOS_PER_TEAM_KEY,
     STATE_DEPENDENCIES,
-    TEAMS_DATA
+    TMP_DATA
 } from '../../../src/config';
 
 import {
@@ -27,16 +32,19 @@ import {
     MOCK_WHAT,
     MOCK_HEADERS,
     MOCK_REPO_URL,
-    MOCK_REPOS_INFO_EMPTY,
     MOCK_REPOS_DATA,
     MOCK_ORGANIZATION,
     MOCK_REPOS_TEAMS_DATA,
-    MOCK_TEAMS_DATA,
     MOCK_REPOS_TEAMS_NAME,
-    MOCK_TEAMS_REPOSITORIES,
-    MOCK_TEAMS_MEMBERS,
-    MOCK_REPOS_TEAMS_DESCRIPTION
+    MOCK_REPOS_REPOSITORIES,
+    MOCK_REPOS_MEMBERS,
+    MOCK_JSON_FETCH_RESPONSE,
+    MOCK_REPOS_MEMBERS_NAME,
+    MOCK_REPOS_REPO_NAME,
+    MOCK_ORG_DATA,
+    MOCK_PER_TEAM_DATA
 } from '../../mock/repos_info';
+import { MemberDetails, RepoDetails } from '../../../src/types/config';
 
 const spyConsoleLog = jest.spyOn(console, 'log');
 const spyConsoleError = jest.spyOn(console, 'error');
@@ -117,150 +125,6 @@ describe("UTILS Index tests suites", () => {
 
     // ************************************************************ //
 
-    describe("getGitOrgData(...)", () => {
-
-        afterEach(() => {
-            // Reset object data
-            ORG_DATA["members"] = []; ORG_DATA["repos"] = []; ORG_DATA["teams"] = [];
-        });
-
-        test('should return empty list', async () => {
-            spyFetchCall.mockImplementationOnce(
-                () => Promise.resolve({ json: () => Promise.resolve(ORG_DATA[MOCK_WHAT]) } as any)
-            );
-
-            await getGitOrgData(MOCK_WHAT, MOCK_ORGANIZATION);
-
-            expect(ORG_DATA).toEqual(MOCK_REPOS_INFO_EMPTY);
-
-            expect(spyFetchCall).toHaveBeenCalledWith(MOCK_REPO_URL, MOCK_HEADERS);
-            expect(spyFetchCall).toHaveBeenCalledTimes(1);
-
-            expect(spyConsoleLog).toHaveBeenCalledTimes(1);
-            expect(spyConsoleError).toHaveBeenCalledTimes(0);
-        });
-
-        test('should return correct list', async () => {
-            spyFetchCall
-                .mockImplementationOnce(() => Promise.resolve({ json: () => Promise.resolve(MOCK_REPOS_DATA) } as any))
-                .mockImplementationOnce(() => Promise.resolve({ json: () => Promise.resolve([]) } as any));
-
-            await getGitOrgData(MOCK_WHAT, MOCK_ORGANIZATION);
-
-            expect(Object.keys(ORG_DATA).length).toEqual(3);
-            expect(ORG_DATA["members"]).toEqual([]);
-            expect(ORG_DATA["teams"]).toEqual([]);
-            expect(ORG_DATA["repos"]).toEqual(MOCK_REPOS_DATA);
-
-            expect(spyFetchCall).toHaveBeenCalledWith(MOCK_REPO_URL, MOCK_HEADERS);
-            expect(spyFetchCall).toHaveBeenCalledTimes(2);
-
-            expect(spyConsoleLog).toHaveBeenCalledTimes(2);
-            expect(spyConsoleError).toHaveBeenCalledTimes(0);
-        });
-
-        test('should catch the promise reject call', async () => {
-            spyFetchCall.mockRejectedValueOnce(new Error("Api call Error"));
-
-            await getGitOrgData(MOCK_WHAT, MOCK_ORGANIZATION);
-
-            expect(ORG_DATA).toEqual(MOCK_REPOS_INFO_EMPTY);
-
-            expect(spyFetchCall).toHaveBeenCalledWith(MOCK_REPO_URL, MOCK_HEADERS);
-            expect(spyFetchCall).toHaveBeenCalledTimes(1);
-
-            expect(spyConsoleLog).toHaveBeenCalledTimes(0);
-            expect(spyConsoleError).toHaveBeenCalledTimes(1);
-        });
-
-        test('should return a null object from fetch call', async () => {
-            const logMsg = `Get ${MOCK_WHAT} from ${MOCK_ORGANIZATION}, page 1, retrieved undefined`;
-            spyFetchCall.mockImplementationOnce(
-                () => Promise.resolve({ json: () => Promise.resolve(null) } as any)
-            );
-
-            await getGitOrgData(MOCK_WHAT, MOCK_ORGANIZATION);
-
-            expect(ORG_DATA).toEqual(MOCK_REPOS_INFO_EMPTY);
-
-            expect(spyFetchCall).toHaveBeenCalledWith(MOCK_REPO_URL, MOCK_HEADERS);
-            expect(spyFetchCall).toHaveBeenCalledTimes(1);
-
-            expect(spyConsoleLog).toHaveBeenCalledTimes(1);
-            expect(spyConsoleLog).toHaveBeenCalledWith(logMsg);
-            expect(spyConsoleError).toHaveBeenCalledTimes(0);
-        });
-    });
-
-    // ************************************************************ //
-
-    describe("setTeamsData(...)", () => {
-
-        const membersUrl = `${MOCK_REPOS_TEAMS_DATA[0]["url"]}/members`;
-        const repositoriesUrl = MOCK_REPOS_TEAMS_DATA[0]["repositories_url"];
-        const consoleLogMessage = `Get members info for ${MOCK_REPOS_TEAMS_NAME} team`;
-
-        beforeEach(() => {
-            ORG_DATA["teams"] = MOCK_REPOS_TEAMS_DATA;
-        });
-
-        test('should set TEAMS_DATA object with no members or repositories', async () => {
-            const emptyValue = {};
-            const teamsData = { ... MOCK_TEAMS_DATA } as any;
-            teamsData[MOCK_REPOS_TEAMS_NAME]["members"] = emptyValue;
-            teamsData[MOCK_REPOS_TEAMS_NAME]["repositories"] = emptyValue;
-
-            spyFetchCall
-                .mockImplementationOnce(() => Promise.resolve({ json: () => Promise.resolve(emptyValue) } as any))
-                .mockImplementationOnce(() => Promise.resolve({ json: () => Promise.resolve(emptyValue) } as any));
-
-            await setTeamsData();
-
-            expect(TEAMS_DATA).toEqual(teamsData);
-
-            expect(spyFetchCall).toHaveBeenCalledTimes(2);
-            expect(spyFetchCall).toHaveBeenCalledWith(membersUrl, MOCK_HEADERS);
-            expect(spyFetchCall).toHaveBeenCalledWith(repositoriesUrl, MOCK_HEADERS);
-
-            expect(spyConsoleLog).toHaveBeenCalledTimes(1);
-            expect(spyConsoleLog).toHaveBeenCalledWith(consoleLogMessage);
-            expect(spyConsoleError).toHaveBeenCalledTimes(0);
-        });
-
-        test('should set TEAMS_DATA correctly', async () => {
-            spyFetchCall
-                .mockImplementationOnce(() => Promise.resolve({ json: () => Promise.resolve(MOCK_TEAMS_MEMBERS) } as any))
-                .mockImplementationOnce(() => Promise.resolve({ json: () => Promise.resolve(MOCK_TEAMS_REPOSITORIES) } as any));
-
-            await setTeamsData();
-
-            expect(Object.keys(TEAMS_DATA).length).toEqual(1);
-            expect(TEAMS_DATA[MOCK_REPOS_TEAMS_NAME]["members"]).toEqual(MOCK_TEAMS_MEMBERS);
-            expect(TEAMS_DATA[MOCK_REPOS_TEAMS_NAME]["repositories"]).toEqual(MOCK_TEAMS_REPOSITORIES);
-            expect(TEAMS_DATA[MOCK_REPOS_TEAMS_NAME]["description"]).toEqual(MOCK_REPOS_TEAMS_DESCRIPTION);
-
-            expect(spyFetchCall).toHaveBeenCalledTimes(2);
-
-            expect(spyConsoleLog).toHaveBeenCalledTimes(1);
-            expect(spyConsoleLog).toHaveBeenCalledWith(consoleLogMessage);
-            expect(spyConsoleError).toHaveBeenCalledTimes(0);
-        });
-
-        test('should catch the promise reject call', async () => {
-            spyFetchCall.mockRejectedValueOnce(new Error("Api call Error"));
-
-            await setTeamsData();
-
-            expect(spyFetchCall).toHaveBeenCalledTimes(1);
-            expect(spyFetchCall).toHaveBeenCalledWith(membersUrl, MOCK_HEADERS);
-
-            expect(spyConsoleLog).toHaveBeenCalledTimes(0);
-            expect(spyConsoleError).toHaveBeenCalledTimes(1);
-        });
-    });
-
-    // ************************************************************ //
-
     describe("setTimeOut(...)", () => {
 
         test('should call global setTimeout', async () => {
@@ -277,5 +141,184 @@ describe("UTILS Index tests suites", () => {
             expect(spySetTimeoutCall).toHaveBeenCalledWith(expect.any(Function), CLONE_TIMEOUT);
         });
     });
+
+    // ************************************************************ //
+
+    describe("mapData(...)", () => {
+
+        test(`should call mapData and correctly mapping data`, () => {
+            const data = [{ "a": 1, "b": 2, "c": 3 }, { "a": 3, "b": 4, "r": 6 }, { "a": 5, "b": 6 }];
+            const expected = [{ "a": 1, "b": 2 }, { "a": 3, "b": 4 }, { "a": 5, "b": 6 }];
+            const keys = ["a", "b"];
+            expect(mapData(data, keys)).toEqual(expected);
+        });
+
+    });
+
+    // ************************************************************ //
+
+    describe("getInfo(...)", () => {
+
+        afterEach(() => {
+            // Reset object data
+            TMP_DATA["repos"]["list"] = [];
+        });
+
+        test('should TMP_DATA["repos"]["list"] be empty if no data fetched', async () => {
+            spyFetchCall.mockImplementationOnce(
+                () => Promise.resolve({ json: () => Promise.resolve([]) } as any)
+            );
+
+            await getInfo(MOCK_WHAT, "list", MOCK_REPO_URL);
+
+            expect(TMP_DATA["repos"]["list"]).toEqual([]);
+
+            expect(spyFetchCall).toHaveBeenCalledWith(`${MOCK_REPO_URL}?page=1&per_page=100`, MOCK_HEADERS);
+            expect(spyFetchCall).toHaveBeenCalledTimes(1);
+
+            expect(spyConsoleLog).toHaveBeenCalledTimes(1);
+            expect(spyConsoleError).toHaveBeenCalledTimes(0);
+        });
+
+        test('should return correct list', async () => {
+            spyFetchCall.mockImplementationOnce(
+                () => Promise.resolve({ json: () => Promise.resolve(MOCK_JSON_FETCH_RESPONSE) } as any)
+            );
+
+            await getInfo(MOCK_WHAT, "list", MOCK_REPO_URL);
+
+            expect(TMP_DATA["members"]["list"]).toEqual([]);
+            expect(TMP_DATA["teams"]["list"]).toEqual([]);
+
+            const lengthList = TMP_DATA["repos"]["list"].length;
+            expect(lengthList).toEqual(Object.keys(MOCK_REPOS_DATA["repos"]["list"]).length);
+
+            expect(spyFetchCall).toHaveBeenCalledTimes(1);
+
+            expect(spyConsoleLog).toHaveBeenCalledTimes(1);
+            expect(spyConsoleLog).toHaveBeenCalledWith(`${MOCK_REPO_URL}?page=1&per_page=100, page 1, retrieved ${lengthList}`);
+            expect(spyConsoleError).toHaveBeenCalledTimes(0);
+        });
+
+        test('should catch the promise reject call', async () => {
+            spyFetchCall.mockRejectedValueOnce(new Error("Api call Error"));
+
+            await getInfo(MOCK_WHAT, "list", MOCK_REPO_URL);
+
+            expect(spyFetchCall).toHaveBeenCalledTimes(1);
+            expect(spyConsoleLog).toHaveBeenCalledTimes(0);
+            expect(spyConsoleError).toHaveBeenCalledTimes(1);
+        });
+    });
+
+    // ************************************************************ //
+
+    describe("getOrgData(...)", () => {
+
+        test(`should fetch repos, members and teams data`, async () => {
+
+            await getOrgData(MOCK_ORGANIZATION);
+
+            expect(spyConsoleLog).toHaveBeenCalledTimes(6);
+
+            expect(spyConsoleLog).toHaveBeenCalledWith(`GET repos data:`);
+            expect(spyConsoleLog).toHaveBeenCalledWith(`https://api.github.com/orgs/${MOCK_ORGANIZATION}/repos?page=1&per_page=100, page 1, retrieved 0`);
+
+            expect(spyConsoleLog).toHaveBeenCalledWith(`GET members data:`);
+            expect(spyConsoleLog).toHaveBeenCalledWith(`https://api.github.com/orgs/${MOCK_ORGANIZATION}/members?page=1&per_page=100, page 1, retrieved 0`);
+
+            expect(spyConsoleLog).toHaveBeenCalledWith(`GET teams data:`);
+            expect(spyConsoleLog).toHaveBeenCalledWith(`https://api.github.com/orgs/${MOCK_ORGANIZATION}/teams?page=1&per_page=100, page 1, retrieved 0`);
+
+        });
+
+    });
+
+    // ************************************************************ //
+
+    describe("getTeamsData(...)", () => {
+
+        test(`should correctly populate TMP_DATA with members and repos per team`, async () => {
+            TMP_DATA["teams"]["list"] = MOCK_REPOS_TEAMS_DATA;
+            TMP_DATA[MEMBERS_PER_TEAM_KEY] = {};
+            TMP_DATA[REPOS_PER_TEAM_KEY] = {};
+
+            spyFetchCall
+                .mockImplementationOnce(() => Promise.resolve({ json: () => Promise.resolve([MOCK_REPOS_MEMBERS[0]]) } as any))
+                .mockImplementationOnce(() => Promise.resolve({ json: () => Promise.resolve([MOCK_REPOS_REPOSITORIES[0]]) } as any));
+
+            await getTeamsData();
+
+            expect(TMP_DATA["repos"]["list"]).toEqual([]);
+            expect(TMP_DATA["members"]["list"]).toEqual([]);
+            expect(TMP_DATA[MEMBERS_PER_TEAM_KEY][MOCK_REPOS_TEAMS_NAME][0].login).toEqual(MOCK_REPOS_MEMBERS_NAME);
+            expect(TMP_DATA[REPOS_PER_TEAM_KEY][MOCK_REPOS_TEAMS_NAME][0].name).toEqual(MOCK_REPOS_REPO_NAME);
+        });
+
+    });
+
+    // ************************************************************ //
+
+    describe("setOrgData(...)", () => {
+
+        beforeEach(() => {
+            // Reset objects
+            TMP_DATA["repos"] = { "list": [] };
+            TMP_DATA["members"] = { "list": [] };
+            TMP_DATA["teams"] = { "list": [] };
+            TMP_DATA[MEMBERS_PER_TEAM_KEY] = {};
+            TMP_DATA[REPOS_PER_TEAM_KEY] = {};
+
+            ORG_DATA["repos"] =  { "list": [], "details": {} };
+            ORG_DATA["members"] =  { "list": [], "details": {} };
+            ORG_DATA["teams"] =  { "list": [], "details": {} };
+        });
+
+        test(`should correctly populate ORG_DATA with repos information`, () => {
+            TMP_DATA["repos"]["list"] = [MOCK_REPOS_REPOSITORIES[0]];
+
+            setOrgData();
+
+            MOCK_ORG_DATA["repos"]["details"][MOCK_REPOS_REPO_NAME]["members"] = [];
+            MOCK_ORG_DATA["repos"]["details"][MOCK_REPOS_REPO_NAME]["teams"] = [];
+            expect(ORG_DATA["repos"]).toEqual(MOCK_ORG_DATA["repos"]);
+            expect(ORG_DATA["members"]).toEqual({ "list": [], "details": {} });
+            expect(ORG_DATA["teams"]).toEqual({ "list": [], "details": {} });
+        });
+
+        test(`should correctly populate ORG_DATA with members data`, () => {
+            TMP_DATA["members"]["list"] = [MOCK_REPOS_MEMBERS[0]];
+
+            setOrgData();
+
+            MOCK_ORG_DATA["members"]["details"][MOCK_REPOS_MEMBERS_NAME]["repos"] = [];
+            MOCK_ORG_DATA["members"]["details"][MOCK_REPOS_MEMBERS_NAME]["teams"] = [];
+            expect(ORG_DATA["members"]).toEqual(MOCK_ORG_DATA["members"]);
+            expect(ORG_DATA["repos"]).toEqual({ "list": [], "details": {} });
+            expect(ORG_DATA["teams"]).toEqual({ "list": [], "details": {} });
+        });
+
+        test(`should correctly populate ORG_DATA with teams data without duplication`, () => {
+            TMP_DATA["teams"]["list"] = [MOCK_REPOS_TEAMS_DATA[0]];
+            TMP_DATA[MEMBERS_PER_TEAM_KEY] = MOCK_PER_TEAM_DATA[MEMBERS_PER_TEAM_KEY];
+            TMP_DATA[REPOS_PER_TEAM_KEY] = MOCK_PER_TEAM_DATA[REPOS_PER_TEAM_KEY];
+
+            ORG_DATA["repos"] = MOCK_ORG_DATA["repos"];
+            ORG_DATA["members"] = MOCK_ORG_DATA["members"];
+
+            setOrgData();
+
+            expect(ORG_DATA["repos"]).toEqual( MOCK_ORG_DATA["repos"] );
+            expect(ORG_DATA["members"]).toEqual( MOCK_ORG_DATA["members"] );
+            expect(ORG_DATA["teams"]).toEqual( MOCK_ORG_DATA["teams"] );
+
+            // Check duplication removed
+            expect((ORG_DATA["members"]["details"][MOCK_REPOS_MEMBERS_NAME] as MemberDetails)["repos"].length).toBe( 1 );
+            expect((ORG_DATA["repos"]["details"][MOCK_REPOS_REPO_NAME] as RepoDetails)["members"].length).toBe( 1 );
+        });
+
+    });
+
+    // ************************************************************ //
 
 });
