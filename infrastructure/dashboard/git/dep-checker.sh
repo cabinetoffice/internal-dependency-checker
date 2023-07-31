@@ -22,6 +22,7 @@ do
 
   repo_folder=${repo_path##*/}
   git_commits_report_file_name=$(set_file_name "${GIT_REPORTS_FOLDER_NAME}" "git")
+  git config --global --add safe.directory "${WORKDIR}/${repo_path}"
 
   if test -n "$(git rev-list -n1 --all)"; then
     {
