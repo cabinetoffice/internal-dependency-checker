@@ -7,7 +7,7 @@ export interface RepoDetails {
   url: string;
   html_url: string;
   created_at: string;
-  archived: string;
+  archived: boolean;
   members: string[];
   teams: string[];
 }

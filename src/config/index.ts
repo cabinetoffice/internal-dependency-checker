@@ -3,7 +3,7 @@ import {
     OrgData,
     RepoList,
     StateDependencies
-} from '../types/config.js';
+} from '../types/config';
 
 export const GITHUB_KEY = process.env.GITHUB_KEY;
 

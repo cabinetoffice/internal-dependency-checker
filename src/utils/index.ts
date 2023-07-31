@@ -32,7 +32,7 @@ export const setTimeOut = async (): Promise<void> => {
 
 // ************************************************************ //
 
-export const mapData = (data = [], keys: string[]) => data.map(d =>
+export const mapData = (data: any[] = [], keys: string[]) => data.map( (d: any) =>
     keys.reduce((o, key) => ({ ...o, [key]: d[key] }), {})
 );
 
@@ -45,7 +45,7 @@ export const getInfo = async (what: string, dataKey: string, dataUrl: string, pa
         const data = await jsonData.json();
         const dataLength = data?.length || 0;
 
-        console.log(`Get ${url}, page ${page}, retrieved ${dataLength}`);
+        console.log(`${url}, page ${page}, retrieved ${dataLength}`);
 
         if (dataLength) {
             TMP_DATA[what][dataKey] = TMP_DATA[what][dataKey].concat(mapData(data, MAP_KEYS[what]));
@@ -62,6 +62,7 @@ export const getInfo = async (what: string, dataKey: string, dataUrl: string, pa
 
 export const getOrgData = async (org: string, dataKey = "list"): Promise<void> => {
     for (const what of Object.keys(ORG_DATA)) {
+        console.log(`GET ${what} data:`);
         const url = `https://api.github.com/orgs/${org}/${what}`;
         await getInfo(what, dataKey, url);
     }
@@ -108,23 +109,31 @@ export const setOrgData = (): void => {
     });
 
     for (const [team, members] of Object.entries(TMP_DATA[MEMBERS_PER_TEAM_KEY] as MembersPerTeam)) {
-        (members).forEach((member) => {
+        members.forEach((member) => {
             const memberName = member.login;
             const data = ORG_DATA["members"]["details"][memberName] as MemberDetails;
             data["teams"].push(team);
-            data["repos"] = data["repos"]
-                .concat(TMP_DATA[REPOS_PER_TEAM_KEY][team]
-                    .map((r: RepoPerTeam) => r.name));
+            // Concat repos list and remove duplication
+            data["repos"] = [
+                ...new Set([
+                    ...data["repos"],
+                    ...TMP_DATA[REPOS_PER_TEAM_KEY][team].map((r: RepoPerTeam) => r.name)
+                ])
+            ];
         });
     }
     for (const [team, repos] of Object.entries(TMP_DATA[REPOS_PER_TEAM_KEY] as ReposPerTeam)) {
-        (repos).forEach((repo) => {
+        repos.forEach((repo) => {
             const repoName = repo.name;
             const data = ORG_DATA["repos"]["details"][repoName] as RepoDetails;
             data["teams"].push(team);
-            data["members"] = data["members"]
-                .concat(TMP_DATA[MEMBERS_PER_TEAM_KEY][team]
-                    .map((m: MemberPerTeam) => m.login));
+            // Concat members list and remove duplication
+            data["members"] = [
+                ...new Set([
+                    ...data["members"],
+                    ...TMP_DATA[MEMBERS_PER_TEAM_KEY][team].map((m: MemberPerTeam) => m.login)
+                ])
+            ];
         });
     }
 };
