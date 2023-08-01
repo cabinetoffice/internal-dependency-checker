@@ -3,65 +3,69 @@ const path = require('node:path');
 
 const GIT_REPORTS_FOLDER_NAME = process.argv[2];
 const COMMITS_FILE_PATH = process.argv[3];
-const TEAMS_FILE_NAME = process.argv[4];
-const COMMITS = [];
+const REPOS_INFO_FILE_NAME = process.argv[4];
+
 const MEMBERS = {};
 const REPOS = {};
 const TEAMS = {};
 
-const latestCommit = (timestamp1, timestamp2) => (timestamp1 > timestamp2) ? timestamp1 : timestamp2;
+const addUniqueElement = (array, item) => {
+    if (array.indexOf(item) === -1) { array.push(item); }
+};
 
 const updateMembers = (name, commit) => {
+    const timestamp = commit.timestamp;
     if (MEMBERS[commit.email]) {
-        MEMBERS[commit.email]["count"]++;
-        MEMBERS[commit.email]["last"] = latestCommit(commit.timestamp, MEMBERS[commit.email]["last"]);
-        if (MEMBERS[commit.email]["repos"].indexOf(name) === -1) {
-            MEMBERS[commit.email]["repos"].push(name);
+        if (timestamp > MEMBERS[commit.email]["last_commit"]) {
+            MEMBERS[commit.email]["last_commit"] = timestamp;
+            MEMBERS[commit.email]["last_repo"] = name;
         }
+        addUniqueElement(MEMBERS[commit.email]["repos"], name);
     } else {
-        MEMBERS[commit.email] = {
-            "count": 1,
-            "last": commit.timestamp,
-            "repos": [name]
-        };
+        MEMBERS[commit.email] = { "last_commit": timestamp, "last_repo": name, "repos": [name] };
     }
-}
+};
 
 const updateRepos = (name, commit) => {
-    REPOS[name]["last"] = latestCommit(commit.timestamp, REPOS[name]["last"]);
-    if (REPOS[name]["members"].indexOf(commit.email) === -1) {
-        REPOS[name]["members"].push(commit.email);
+    if (commit.timestamp > REPOS[name]["last_commit"]) {
+        REPOS[name]["last_commit"] = commit.timestamp;
+        REPOS[name]["last_member"] = commit.email;
     }
-}
+    addUniqueElement(REPOS[name]["members"], commit.email);
+};
 
 const updateTeams = async () => {
-    const data = await readFile(TEAMS_FILE_NAME, 'utf8');
+    const data = await readFile(REPOS_INFO_FILE_NAME, 'utf8');
     const jsonData = JSON.parse(data);
-    const reposList = [];
+    const teamData = jsonData["teams"];
 
-    for (const [team, content] of Object.entries(jsonData)) {
-        TEAMS[team] = { "last": "", "repo": "NA", "html_url": "" };
+    const reposAssigned = [];
 
-        for (const [key, repo] of Object.entries(content["repositories"])) {
-            if (reposList.indexOf(repo.name) === -1) {
-                reposList.push(repo.name);
-            }
-            if (REPOS[repo.name] && REPOS[repo.name]["last"] > TEAMS[team]["last"]) {
+    for (const team of teamData["list"]) {
+        TEAMS[team] = { "last_member": "N/A", "last_repo": "N/A", "last_commit": "" };
+        for (const repo of teamData["details"][team]["repos"]) {
+            // Unfortunately, so far has been impossible to have the last commit done by the members in the team.
+            // There is no direct association between a member's login and the different activities that the user
+            // is interacting with on GitHub (eg. `GITHUB` user, `user@*.local` email, `*@users.noreply.github.com` email ...)
+            // Reference: https://git-scm.com/docs/git-log#Documentation/git-log.txt-emaNem
+            // The last commit done by the team is linked to the last commit done on the repositories assigned to the team.
+            if (REPOS[repo] && REPOS[repo]["last_commit"] > TEAMS[team]["last_commit"]) {
                 TEAMS[team] = {
-                    "last": REPOS[repo.name]["last"],
-                    "repo": repo.name,
-                    "html_url": repo.html_url
+                    "last_member": REPOS[repo]["last_member"],
+                    "last_repo": repo,
+                    "last_commit": REPOS[repo]["last_commit"]
                 };
             }
+            addUniqueElement(reposAssigned, repo);
         }
     }
 
-    const countRepos = Object.keys(REPOS).length;
-    if (countRepos !== reposList.length) {
-        TEAMS["NA"] = { "last": "", "repo": "NA", "html_url": "" };
-        console.log(`${countRepos - reposList.length} unassigned repos.`);
+    const reposLength = Object.keys(REPOS).length;
+    if (reposLength !== reposAssigned.length) {
+        TEAMS["N/A"] = { "last_member": "N/A", "last_repo": "N/A", "last_commit": "" };
+        console.log(`${reposLength - reposAssigned.length} unassigned repos.`);
     }
-}
+};
 
 const init = async () => {
     try {
@@ -75,18 +79,20 @@ const init = async () => {
                 const data = await readFile(filePath, 'utf8');
                 const jsonData = JSON.parse(data);
 
-                for (const [name, commits] of Object.entries(jsonData)) {
-                    REPOS[name] = { "members": [], "last": "" };
-                    for (const commit of commits) {
-                        if (commit.error) {
-                            REPOS[name]["error"] = commit.error;
-                        } else if (COMMITS.indexOf(commit.commit) === -1) {
-                            COMMITS.push(commit.commit);
-                            updateMembers(name, commit);
-                            updateRepos(name, commit);
-                        }
+                const content = Object.entries(jsonData)[0];
+                const repoName = content[0];
+                const commits = content[1];
+
+                REPOS[repoName] = { "members": [], "last_commit": "", "last_member": "" };
+
+                for (const commit of commits) {
+                    if (commit.error) {
+                        REPOS[repoName]["error"] = commit.error;
+                    } else {
+                        updateMembers(repoName, commit);
+                        updateRepos(repoName, commit);
                     }
-                };
+                }
             } catch (error) {
                 REPOS[file] = { "error": `${error.message}` };
                 console.error('Error parsing JSON:', file, error);
@@ -99,6 +105,6 @@ const init = async () => {
     } catch (error) {
         console.error('Error:', error);
     }
-}
+};
 
 init();
