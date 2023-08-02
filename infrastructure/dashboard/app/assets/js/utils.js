@@ -1,4 +1,3 @@
-const TEAMS_PATH = "../../assets/data/teams.json";
 const COMMITS_INFO_PATH = "../../assets/data/commits_info.json";
 const REPOS_INFO_PATH = "../../assets/data/repos_info.json";
 
@@ -31,13 +30,13 @@ const sortChartData = async (file, ascending = true, key = "members") => {
     const data = await loadFile(file);
     const response = [];
 
-    Object.entries(data).forEach(e => {
-        const numMembers = Object.keys(e[1]["members"]).length;
-        const numRepositories = Object.keys(e[1]["repositories"]).length;
+    data["teams"]["list"].forEach( teamName => {
+        const numMembers = data["teams"]["details"][teamName]["members"].length;
+        const numRepos = data["teams"]["details"][teamName]["repos"].length;
         response.push({
-            label: e[0],
+            label: teamName,
             members: numMembers,
-            repositories: numRepositories,
+            repos: numRepos,
         });
     });
 
@@ -45,19 +44,19 @@ const sortChartData = async (file, ascending = true, key = "members") => {
 }
 
 const setChartData = async () => {
-    const teams = await sortChartData(TEAMS_PATH, false);
+    const teams = await sortChartData(REPOS_INFO_PATH, false);
 
     const labels = [];
     const members = [];
-    const repositories = [];
+    const repos = [];
 
     teams.forEach(team => {
         labels.push(team.label);
         members.push(team.members);
-        repositories.push(team.repositories);
+        repos.push(team.repos);
     });
 
-    return { labels, members, repositories };
+    return { labels, members, repos };
 }
 
 /** TABLE */
@@ -79,12 +78,11 @@ const createTableContentDetails = (text, content) => {
     return details;
 }
 
-const mapTableContent = (data, dataKey) => {
+const mapTableContent = (iterator, content) => {
     const ul = document.createElement('ul');
-    for (const [key, content] of Object.entries(data)) {
+    for (const name of iterator) {
         const li = document.createElement('li');
-        const liContent = (dataKey) ? content[dataKey] : content;
-        li.innerHTML = `<a href="${content["html_url"]}">${liContent}</a>`;
+        li.innerHTML = `<a href="${content[name]["html_url"]}">${name}</a>`;
         ul.appendChild(li);
     }
     return ul

@@ -36,7 +36,7 @@ const chartOptionsData = (data) => {
             },
             {
                 label: '# of Repositories',
-                data: data.repositories,
+                data: data.repos,
                 backgroundColor: 'rgb(75, 192, 192)',
                 borderWidth: 1,
                 stack: 'Stack 0'
