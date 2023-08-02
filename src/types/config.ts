@@ -1,3 +1,32 @@
+export const REPOS_KEY = "repos";
+
+export interface RepoDetails {
+  description: string;
+  full_name: string;
+  visibility: string;
+  url: string;
+  html_url: string;
+  created_at: string;
+  archived: boolean;
+  members: string[];
+  teams: string[];
+}
+
+export interface MemberDetails {
+  url: string;
+  html_url: string;
+  repos: string[];
+  teams: string[];
+}
+
+export interface TeamDetails {
+  description: string;
+  url: string;
+  html_url: string;
+  repos: string[];
+  members: string[];
+}
+
 export enum WhatEnum {
   repos = "repos",
   members = "members",
@@ -5,8 +34,29 @@ export enum WhatEnum {
 }
 
 export type OrgData = {
-  [key in WhatEnum]: any[];
+  [key in WhatEnum]: {
+    list: string[];
+    details: {
+      [key_name: string]: RepoDetails | MemberDetails | TeamDetails
+    }
+  };
 };
+
+export interface MemberPerTeam {
+  login: string;
+}
+
+export interface MembersPerTeam {
+  [team_name: string]: MemberPerTeam[]
+}
+
+export interface RepoPerTeam {
+  name: string;
+}
+
+export interface ReposPerTeam {
+  [team_name: string]: RepoPerTeam[]
+}
 
 export enum TechEnum {
   python = "python",
@@ -44,10 +94,16 @@ export type StateDependencies = {
   [key in TechEnum]?: StateDependency;
 };
 
-export interface TeamsData{
-  [team_name: string]: {
-    members: {},
-    repositories: {},
-    description: string;
-  }
+export interface RepoList {
+  [REPOS_KEY]: {
+    [key: string]: {
+      repo_path: string;
+      file_name: string;
+    };
+  };
+}
+
+export interface TechFile {
+  tech: TechEnum;
+  key: KeyEnum;
 }

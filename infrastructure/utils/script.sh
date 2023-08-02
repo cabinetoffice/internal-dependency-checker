@@ -2,7 +2,7 @@
 
 export STATE_FILE_NAME=state.json
 export REPOS_LIST_FILE_NAME=repos_list.json
-export TEAMS_FILE_NAME=teams.json
+export REPOS_INFO_FILE_NAME=repos_info.json
 
 export REPORTS_FOLDER=reports
 export REPOS_FOLDER=repos

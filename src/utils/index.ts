@@ -1,5 +1,16 @@
-import { WhatEnum, TechEnum, DependencyObject } from '../types/config';
-import { KeyEnum, TechFile } from '../types/utils';
+import {
+    TechEnum,
+    DependencyObject,
+    RepoDetails,
+    MemberDetails,
+    TeamDetails,
+    ReposPerTeam,
+    MembersPerTeam,
+    MemberPerTeam,
+    RepoPerTeam,
+    TechFile,
+    KeyEnum
+} from '../types/config';
 import {
     FILES_BY_EXTENSIONS,
     STATE_DEPENDENCIES,
@@ -7,7 +18,10 @@ import {
     ORG_DATA,
     HEADERS,
     CLONE_TIMEOUT,
-    TEAMS_DATA
+    TMP_DATA,
+    MAP_KEYS,
+    MEMBERS_PER_TEAM_KEY,
+    REPOS_PER_TEAM_KEY
 } from "../config/index";
 
 // ************************************************************ //
@@ -18,16 +32,26 @@ export const setTimeOut = async (): Promise<void> => {
 
 // ************************************************************ //
 
-export const getGitOrgData = async (what: WhatEnum, org: string, page = 1): Promise<void> => {
-    const repoUrl = `https://api.github.com/orgs/${org}/${what}?page=${page}&per_page=${PER_PAGE}`;
-    try {
-        const jsonData = await fetch(repoUrl, HEADERS);
-        const data = await jsonData.json();
+export const mapData = (data: any[] = [], keys: string[]) => data.map( (d: any) =>
+    keys.reduce((o, key) => ({ ...o, [key]: d[key] }), {})
+);
 
-        console.log(`Get ${what} from ${org}, page ${page}, retrieved ${data?.length}`);
-        if (data?.length) {
-            ORG_DATA[what] = ORG_DATA[what].concat(data);
-            await getGitOrgData(what, org, page + 1);
+// ************************************************************ //
+
+export const getInfo = async (what: string, dataKey: string, dataUrl: string, page = 1): Promise<void> => {
+    const url = `${dataUrl}?page=${page}&per_page=${PER_PAGE}`;
+    try {
+        const jsonData = await fetch(url, HEADERS);
+        const data = await jsonData.json();
+        const dataLength = data?.length || 0;
+
+        console.log(`${url}, page ${page}, retrieved ${dataLength}`);
+
+        if (dataLength) {
+            TMP_DATA[what][dataKey] = TMP_DATA[what][dataKey].concat(mapData(data, MAP_KEYS[what]));
+            if (dataLength === PER_PAGE) {
+                await getInfo(what, dataKey, dataUrl, page + 1);
+            }
         }
     } catch (error: any) {
         console.error(`Error: ${error.message}`);
@@ -36,21 +60,81 @@ export const getGitOrgData = async (what: WhatEnum, org: string, page = 1): Prom
 
 // ************************************************************ //
 
-export const setTeamsData = async ( ): Promise<void> => {
-    try {
-        for (const team of ORG_DATA.teams) {
-            const membersData = await fetch(`${team["url"]}/members`, HEADERS);
-            const repositoriesData = await fetch(team["repositories_url"], HEADERS);
+export const getOrgData = async (org: string, dataKey = "list"): Promise<void> => {
+    for (const what of Object.keys(ORG_DATA)) {
+        console.log(`GET ${what} data:`);
+        const url = `https://api.github.com/orgs/${org}/${what}`;
+        await getInfo(what, dataKey, url);
+    }
+};
 
-            TEAMS_DATA[team["name"]] = {
-                "members": { ... await membersData.json() },
-                "repositories": { ... await repositoriesData.json() },
-                "description": team["description"]
-            };
-            console.log(`Get members info for ${team["name"]} team`);
-        }
-    } catch (error: any) {
-        console.error(`Error: ${error.message}`);
+// ************************************************************ //
+
+export const getTeamsData = async (): Promise<void> => {
+    for (const team of TMP_DATA["teams"]["list"]) {
+        const memberUrl = `${team["url"]}/members`;
+        const teamUrl = team["repositories_url"];
+        const teamName = team["name"];
+
+        TMP_DATA[MEMBERS_PER_TEAM_KEY][teamName] = [];
+        TMP_DATA[REPOS_PER_TEAM_KEY][teamName] = [];
+
+        await getInfo(MEMBERS_PER_TEAM_KEY, teamName, memberUrl);
+        await getInfo(REPOS_PER_TEAM_KEY, teamName, teamUrl);
+    }
+};
+
+// ************************************************************ //
+
+export const setOrgData = (): void => {
+
+    TMP_DATA["repos"]["list"].forEach((repo: any) => {
+        const { name, ...rest } = repo;
+        ORG_DATA["repos"]["list"].push(name);
+        ORG_DATA["repos"]["details"][name] = { ...rest, members: [], teams: [] };
+    });
+    TMP_DATA["members"]["list"].forEach((member: any) => {
+        const { login, ...rest } = member;
+        ORG_DATA["members"]["list"].push(login);
+        ORG_DATA["members"]["details"][login] = { ...rest, repos: [], teams: [] };
+    });
+    TMP_DATA["teams"]["list"].forEach((team: any) => {
+        const { name, ...rest } = team;
+        ORG_DATA["teams"]["list"].push(name);
+        ORG_DATA["teams"]["details"][name] = {
+            ...rest,
+            repos: TMP_DATA[REPOS_PER_TEAM_KEY][name].map((r: RepoPerTeam) => r.name),
+            members: TMP_DATA[MEMBERS_PER_TEAM_KEY][name].map((m: MemberPerTeam) => m.login)
+        } as TeamDetails;
+    });
+
+    for (const [team, members] of Object.entries(TMP_DATA[MEMBERS_PER_TEAM_KEY] as MembersPerTeam)) {
+        members.forEach((member) => {
+            const memberName = member.login;
+            const data = ORG_DATA["members"]["details"][memberName] as MemberDetails;
+            data["teams"].push(team);
+            // Concat repos list and remove duplication
+            data["repos"] = [
+                ...new Set([
+                    ...data["repos"],
+                    ...TMP_DATA[REPOS_PER_TEAM_KEY][team].map((r: RepoPerTeam) => r.name)
+                ])
+            ];
+        });
+    }
+    for (const [team, repos] of Object.entries(TMP_DATA[REPOS_PER_TEAM_KEY] as ReposPerTeam)) {
+        repos.forEach((repo) => {
+            const repoName = repo.name;
+            const data = ORG_DATA["repos"]["details"][repoName] as RepoDetails;
+            data["teams"].push(team);
+            // Concat members list and remove duplication
+            data["members"] = [
+                ...new Set([
+                    ...data["members"],
+                    ...TMP_DATA[MEMBERS_PER_TEAM_KEY][team].map((m: MemberPerTeam) => m.login)
+                ])
+            ];
+        });
     }
 };
 

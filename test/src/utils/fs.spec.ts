@@ -11,6 +11,8 @@ import {
     checkFileExists,
     cloneRepos
 } from "../../../src/utils/fs";
+import { MOCK_REPOS_DATA } from '../../mock/repos_info';
+import { REPOS_KEY } from '../../../src/types/config';
 
 const spyConsoleLog = jest.spyOn(console, 'log');
 const spyConsoleError = jest.spyOn(console, 'error');
@@ -39,7 +41,7 @@ describe("UTILS fs tests suites", () => {
         const fileName = "mock_name.json";
 
         test('should call writeFile and log saved data', async () => {
-            spyWriteFileCall.mockImplementationOnce( () => Promise.resolve() );
+            spyWriteFileCall.mockImplementationOnce(() => Promise.resolve());
 
             await saveToFile(fileName, {});
 
@@ -106,23 +108,28 @@ describe("UTILS fs tests suites", () => {
     describe("cloneRepos(...)", () => {
 
         test('should call readFile and log saved data with empty object', async () => {
-            const json = `{"repos": [
-                {"full_name": "org1/repo1", "clone_url": "https://github.com/org1/repo1"},
-                {"full_name": "org1/repo2", "clone_url": "https://github.com/org1/repo2"},
-                {"full_name": "org1/repo3", "clone_url": "https://github.com/org1/repo3"}
-            ]}`;
+            const mockReposDataLength = MOCK_REPOS_DATA[REPOS_KEY].list.length;
 
             spyReadFileCall.mockImplementationOnce(
-                () => Promise.resolve(json)
+                () => Promise.resolve(JSON.stringify(MOCK_REPOS_DATA) as any)
             );
 
             await cloneRepos();
 
-            expect(mockExecCommandCall).toHaveBeenCalledTimes(3);
-            expect(mockSetTimeOutCall).toHaveBeenCalledTimes(3);
-            expect(mockExecCommandCall).toHaveBeenCalledWith(`git clone https://github.com/org1/repo1 infrastructure/repos/org1/repo1`, 1, 3);
-            expect(mockExecCommandCall).toHaveBeenCalledWith(`git clone https://github.com/org1/repo2 infrastructure/repos/org1/repo2`, 2, 3);
-            expect(mockExecCommandCall).toHaveBeenCalledWith(`git clone https://github.com/org1/repo3 infrastructure/repos/org1/repo3`, 3, 3);
+            expect(mockExecCommandCall).toHaveBeenCalledTimes(mockReposDataLength);
+            expect(mockSetTimeOutCall).toHaveBeenCalledTimes(mockReposDataLength);
+            expect(mockExecCommandCall).toHaveBeenCalledWith(
+                `git clone https://github.com/org1/repo1.git infrastructure/repos/org1/repo1`, 1,
+                mockReposDataLength);
+            expect(mockExecCommandCall).toHaveBeenCalledWith(
+                `git clone https://github.com/org1/repo2.git infrastructure/repos/org1/repo2`, 2,
+                mockReposDataLength);
+            expect(mockExecCommandCall).toHaveBeenCalledWith(
+                `git clone https://github.com/org1/repo3.git infrastructure/repos/org1/repo3`, 3,
+                mockReposDataLength);
+            expect(mockExecCommandCall).toHaveBeenCalledWith(
+                `git clone https://github.com/org1/repo4.git infrastructure/repos/org1/repo4`, 4,
+                mockReposDataLength);
         });
 
         test('should call readFile and return reject promise object', async () => {
