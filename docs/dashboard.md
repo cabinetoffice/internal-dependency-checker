@@ -26,28 +26,25 @@ The sortable table is created in plain JS, while the charts are generated using 
 {
     "REPOS": {
         "repo_name": {
-            "members": [
-               ...
-            ],
-            "last": "..."
+            "members": [ ... ],
+            "last_commit": "1633452667",
+            "last_member": "member_name"
         }
         ...
     },
     "MEMBERS": {
         "member_name": {
-            "count": 0,
-            "last": "...",
-            "repos": [
-               ...
-            ]
-        }
+            "last_commit": "1660161009",
+            "last_repo": "repo_name1",
+            "repos": [ "repo_name", "repo_name1", "repo_name2"]
+        },
         ...
     },
     "TEAMS": {
         "team_name": {
-            "last": "...",
-            "repo": "...",
-            "html_url": "..."
+            "last_member": "member_name",
+            "last_repo": "repo_name",
+            "last_commit": "1690828695"
         }
         ...
     }

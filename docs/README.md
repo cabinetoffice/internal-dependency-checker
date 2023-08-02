@@ -37,28 +37,35 @@ Repos info file, `repos_info.json`
 
 ```txt
 {
-    "repos": [
-        ...
-        {
-          "name": "internal-dependency-checker",
-          "full_name": "cabinetoffice/internal-dependency-checker",
-          "owner": {
-            "login": "cabinetoffice",
-            "url": "https://api.github.com/users/cabinetoffice",
-            "html_url": "https://github.com/cabinetoffice",
+    "repos": {
+        "list": [ ... ],
+        "details": {
+            {
+                "full_name": "cabinetoffice/internal-dependency-checker",
+                "visibility": "public",
+                "html_url": "https://github.com/cabinetoffice/internal-dependency-checker",
+                "url": "https://api.github.com/repos/cabinetoffice/internal-dependency-checker",
+                "description": "",
+                "created_at": "2014-02-13T17:16:03Z",
+                "archived": false,
+                "members": [],
+                "teams": []
+            }
             ...
-          },
-          "private": false,
-          ...
         }
-        ...
-    ],
-    "members": [
-        { ... }
-    ],
-    "teams": [
-        { ... }
-    ]
+    },
+    "members": {
+        "list": [ ... ],
+        "details": {
+            ...
+        }
+    },
+    "teams": {
+        "list": [ ... ],
+        "details": {
+            ...
+        }
+    }
 }
 ```
 
