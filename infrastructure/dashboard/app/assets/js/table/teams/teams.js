@@ -10,39 +10,38 @@ const setTableContent = (template, tbodyEl, name, description, memberContent, re
     tbodyEl.appendChild(clone);
 }
 
-const updateTable = (teams, reposInfo) => {
-    let repos = reposInfo["repos"];
+const updateTable = (reposInfo) => {
+    let unassignedRepos = reposInfo["repos"]["list"];
     const tbodyEl = document.querySelector("tbody");
     while (tbodyEl.rows.length > 0) {
         tbodyEl.deleteRow(0);
     }
     const template = document.querySelector('#table-template');
 
-    for (const [name, content] of Object.entries(teams)) {
+    reposInfo["teams"]["list"].forEach(teamName => {
+        const teamData = reposInfo["teams"]["details"][teamName];
         const memberContent = createTableContentDetails(
-            `${Object.keys(content["members"]).length} member/s`,
-            mapTableContent(content["members"], "login")
+            `${teamData["members"].length} member/s`,
+            mapTableContent(teamData["members"], reposInfo["members"]["details"])
         );
         const repositorieContent = createTableContentDetails(
-            `${Object.keys(content["repositories"]).length} repository/ies`,
-            mapTableContent(content["repositories"], "name")
+            `${teamData["repos"].length} repository/ies`,
+            mapTableContent(teamData["repos"], reposInfo["repos"]["details"])
         );
-        const description = content.description || "";
+        const description = teamData["description"] || "";
 
-        setTableContent(template, tbodyEl, name, description, memberContent, repositorieContent);
+        setTableContent(template, tbodyEl, teamName, description, memberContent, repositorieContent);
 
-        (Object.entries(content["repositories"])).forEach( e => {
-            repos = repos.filter( r => r.name !== e[1].name );
-        });
-    }
+        unassignedRepos = unassignedRepos.filter(x => !teamData["repos"].includes(x));
+    });
 
     const description = "Unassigned Repositories";
-    const memberContent = createTableContentDetails( "0 member/s", mapTableContent([], ""));
+    const memberContent = createTableContentDetails("0 member/s", mapTableContent([], ""));
     const repositorieContent = createTableContentDetails(
-        `${repos.length} repository/ies`, mapTableContent(repos, "name")
+        `${unassignedRepos.length} repository/ies`, mapTableContent(unassignedRepos, reposInfo["repos"]["details"])
     );
 
-    setTableContent(template, tbodyEl, "_NA", description, memberContent, repositorieContent);
+    setTableContent(template, tbodyEl, "_N/A", description, memberContent, repositorieContent);
 
     inputFilter = document.getElementById("search_table");
     inputFilter.oninput = searchTable;
@@ -50,7 +49,6 @@ const updateTable = (teams, reposInfo) => {
 
 (async () => {
     updateTable(
-        await getData(TEAMS_PATH),
-        await getData(REPOS_INFO_PATH),
+        await loadFile(REPOS_INFO_PATH)
     );
 })()

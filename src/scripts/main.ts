@@ -1,22 +1,22 @@
-import { getGitOrgData, setTeamsData } from "../utils/index";
 import { saveToFile } from "../utils/fs";
-import { WhatEnum } from "../types/config";
 import {
     REPOS_FILE_PATH,
-    ORG_DATA,
-    TEAMS_FILE_PATH,
-    TEAMS_DATA
+    ORG_DATA
 } from "../config/index";
+import {
+    getOrgData,
+    getTeamsData,
+    setOrgData
+} from "../utils/index";
 
 export const main = async (org: string): Promise<void> => {
     try {
-        for (const getWhat of Object.keys(ORG_DATA)) {
-            await getGitOrgData(getWhat as WhatEnum, org);
-        }
-        await setTeamsData();
+        await getOrgData(org);
+        await getTeamsData();
+
+        setOrgData();
 
         await saveToFile(REPOS_FILE_PATH, ORG_DATA);
-        await saveToFile(TEAMS_FILE_PATH, TEAMS_DATA);
     } catch (error: any) {
         console.error(`Error: ${error.message}`);
     }

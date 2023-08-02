@@ -22,6 +22,7 @@ do
 
   repo_folder=${repo_path##*/}
   git_commits_report_file_name=$(set_file_name "${GIT_REPORTS_FOLDER_NAME}" "git")
+  git config --global --add safe.directory "${WORKDIR}/${repo_path}"
 
   if test -n "$(git rev-list -n1 --all)"; then
     {
@@ -34,4 +35,4 @@ do
   fi
 done
 
-node "${WORKDIR}/update_git_info.js" "${WORKDIR}/${GIT_REPORTS_FOLDER_NAME}" "${WORKDIR}/${REPOS_FOLDER}/${COMMITS_FILE_NAME}" "${WORKDIR}/${REPOS_FOLDER}/${TEAMS_FILE_NAME}"
+node "${WORKDIR}/update_git_info.js" "${WORKDIR}/${GIT_REPORTS_FOLDER_NAME}" "${WORKDIR}/${REPOS_FOLDER}/${COMMITS_FILE_NAME}" "${WORKDIR}/${REPOS_FOLDER}/${REPOS_INFO_FILE_NAME}"

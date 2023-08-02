@@ -18,6 +18,7 @@ The sortable table is created in plain JS, while the charts are generated using 
   - `Dockerfile`: used to build an image containing the necessary environment for the "dep-checker.sh" script to run.
   - `update_git_info.js` (Node Script): performs additional Git-related operations or data processing.
 - The script generates a JSON report containing details about each repository's commits, including commit hash, author email, and commit timestamp.
+- The script contains the following line of code: `git config --global --add safe.directory "${WORKDIR}/${repo_path}"`. This is to prevent the potenital Dubious Ownership bug. More context around this bug can be found [here](https://stackoverflow.com/a/73100228).
 - The JSON reports are saved in the `reports/git/commits` folder.
 - If a repository has no commits, an error message indicating that fact is included in the JSON report.
 - The node script process the JSON files containing commit information for different repositories. It updates and organizes the data using the REPOS, MEMBERS, and TEAMS objects and writes the final result to a new JSON file `commits_info.json`.
@@ -26,28 +27,25 @@ The sortable table is created in plain JS, while the charts are generated using 
 {
     "REPOS": {
         "repo_name": {
-            "members": [
-               ...
-            ],
-            "last": "..."
+            "members": [ ... ],
+            "last_commit": "1633452667",
+            "last_member": "member_name"
         }
         ...
     },
     "MEMBERS": {
         "member_name": {
-            "count": 0,
-            "last": "...",
-            "repos": [
-               ...
-            ]
-        }
+            "last_commit": "1660161009",
+            "last_repo": "repo_name1",
+            "repos": [ "repo_name", "repo_name1", "repo_name2"]
+        },
         ...
     },
     "TEAMS": {
         "team_name": {
-            "last": "...",
-            "repo": "...",
-            "html_url": "..."
+            "last_member": "member_name",
+            "last_repo": "repo_name",
+            "last_commit": "1690828695"
         }
         ...
     }
