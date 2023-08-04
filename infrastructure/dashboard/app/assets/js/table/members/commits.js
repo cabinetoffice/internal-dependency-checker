@@ -22,8 +22,8 @@ const updateTable = (commitsData, reposInfoData) => {
         }
         tbodyEl.appendChild(clone);
     }
-    inputFilter = document.getElementById("search_table");
-    inputFilter.oninput = searchTable;
+    // inputFilter = document.getElementById("search_table");
+    // inputFilter.oninput = searchTable;
 }
 
 (async () => {

@@ -1,4 +1,3 @@
-const TEAMS_PATH = "../../assets/data/teams.json";
 const COMMITS_INFO_PATH = "../../assets/data/commits_info.json";
 const REPOS_INFO_PATH = "../../assets/data/repos_info.json";
 
