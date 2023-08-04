@@ -32,7 +32,7 @@ const updateTable = (reposInfo) => {
 
     });
 
-    inputFilter = document.getElementById("search_team");
+    inputFilter = document.getElementById("search_table");
     inputFilter.oninput = searchTable;
 
 }

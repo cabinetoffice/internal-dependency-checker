@@ -4,37 +4,63 @@ const sorting = (ascending, key) => {
     return (ascending) ? (a, b) => a[key] - b[key] : (a, b) => b[key] - a[key];
 }
 
-const sortChartData = async (file, ascending = true, key = "members") => {
-    const data = await loadFile(file);
-    const response = [];
+const chartOptions = (title) => {
+    return {
+        plugins: {
+            title: {
+                display: true,
+                text: title,
+                font: { size: 24 }
+            },
+            legend: { labels: { font: { size: 12 } } }
+        },
+        scales: { y: { beginAtZero: true } }
+    };
+};
 
-    data["teams"]["list"].forEach( teamName => {
-        const numMembers = data["teams"]["details"][teamName]["members"].length;
-        const numRepos = data["teams"]["details"][teamName]["repos"].length;
-        response.push({
-            label: teamName,
-            members: numMembers,
-            repos: numRepos,
-        });
+const chartOptionsData = (data, label1, label2) => {
+    return {
+        labels: data.labels,
+        datasets: [
+            {
+                label: label1,
+                data: data.data1,
+                backgroundColor: 'rgb(54, 162, 235)',
+                borderWidth: 1,
+                stack: 'Stack 0'
+            },
+            {
+                label: label2,
+                data: data.data2,
+                backgroundColor: 'rgb(75, 192, 192)',
+                borderWidth: 1,
+                stack: 'Stack 0'
+            }
+        ]
+    };
+};
+
+const stackedBarChart = (data, title, label1, label2, id) => {
+    const ctx = document.getElementById(id);
+    new Chart(ctx, {
+        type: 'bar',
+        data: chartOptionsData(data, label1, label2),
+        options: chartOptions(title)
     });
-
-    return response.sort(sorting(ascending, key));
 }
 
-const setChartData = async () => {
-    const teams = await sortChartData(REPOS_INFO_PATH, false);
-
+const setChartData = async (data) => {
     const labels = [];
-    const members = [];
-    const repos = [];
+    const data1 = [];
+    const data2 = [];
 
-    teams.forEach(team => {
-        labels.push(team.label);
-        members.push(team.members);
-        repos.push(team.repos);
+    data.forEach(d => {
+        labels.push(d.label);
+        data1.push(d.data1);
+        data2.push(d.data2);
     });
 
-    return { labels, members, repos };
+    return { labels, data1, data2 };
 }
 
 /** TABLE */

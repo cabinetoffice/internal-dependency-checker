@@ -8,7 +8,7 @@
   <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
   <meta name="theme-color" content="#0b0c0c">
 
-  <meta name="description" content="Github Teams">
+  <meta name="description" content="Github Members">
   <meta name="author" content="X-CO Developers">
 
   <meta http-equiv="X-UA-Compatible" content="IE=edge">
@@ -52,28 +52,28 @@
   <div class="govuk-width-container">
     <a href="../../index.html" class="govuk-back-link">Back</a>
     <main class="govuk-main-wrapper idc-main-wrapper" id="main-content">
-      <h1 class="govuk-heading-l">Members List</h1>
+      <h1 class="govuk-heading-l">Last Commit Per User</h1>
 
-      <input class="govuk-input govuk-input--width-30" name="width-30" type="text" id="search_team"
-        placeholder="Search text">
-      <table class="sortable" id="teams_table">
+      <!-- <input class="govuk-input govuk-input--width-30" name="width-30" type="text" id="search_table"
+        placeholder="Search text"> -->
+      <table class="sortable" id="sortable_table">
         <thead>
           <tr>
             <th>
               <button>
-                Member
+                User Email
                 <span aria-hidden="true"></span>
               </button>
             </th>
             <th>
               <button>
-                Teams
+                Repository Updated
                 <span aria-hidden="true"></span>
               </button>
             </th>
             <th>
               <button>
-                Repositories
+                Last Commit
                 <span aria-hidden="true"></span>
               </button>
             </th>
@@ -122,7 +122,7 @@
   <script src="../../assets/js/data.js"></script>
   <script src="../../assets/js/utils.js"></script>
 
-  <script src="../../assets/js/table/members/members.js"></script>
+  <script src="../../assets/js/table/members/commits.js"></script>
   <script src="../../assets/js/table/sort.js"></script>
 
 </body>
