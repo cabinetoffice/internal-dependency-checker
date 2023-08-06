@@ -11,16 +11,22 @@ const updateRepoCommitTable = (commitsData) => {
         const td = clone.querySelectorAll("td");
         td[0].textContent = name;
 
+        const memberContent = createTableContentDetails(
+            `${repo["members"].length} contributor/s`,
+            mapTableContent(repo["members"], null, false)
+        );
+        td[1].appendChild(memberContent);
+
         if (repo.last_commit) {
             const date = +repo.last_commit;
-            td[1].innerHTML = `Timestamp: ${date} <br> Date: ${new Date(date * 1000).toLocaleString('en-GB', { timeZone: 'UTC' })}`;
+            td[2].innerHTML = `Timestamp: ${date} <br> Date: ${new Date(date * 1000).toLocaleString('en-GB', { timeZone: 'UTC' })}`;
         } else {
-            td[1].textContent = "N/A";
+            td[2].textContent = "N/A";
         }
 
         tbodyEl.appendChild(clone);
     }
-    inputFilter = document.getElementById("repos_last_commit_table");
+    inputFilter = document.getElementById("search_table");
     inputFilter.oninput = searchTable;
 }
 

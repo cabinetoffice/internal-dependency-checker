@@ -82,11 +82,15 @@ const createTableContentDetails = (text, content) => {
     return details;
 }
 
-const mapTableContent = (iterator, content) => {
+const mapTableContent = (iterator, content, addLink = true) => {
     const ul = document.createElement('ul');
     for (const name of iterator) {
         const li = document.createElement('li');
-        li.innerHTML = `<a href="${content[name]["html_url"]}">${name}</a>`;
+        if (addLink){
+            li.innerHTML = `<a href="${content[name]["html_url"]}">${name}</a>`;
+        } else {
+            li.innerHTML = name;
+        }
         ul.appendChild(li);
     }
     return ul

@@ -52,35 +52,28 @@
   <div class="govuk-width-container">
     <a href="../../index.html" class="govuk-back-link">Back</a>
     <main class="govuk-main-wrapper idc-main-wrapper" id="main-content">
-      <h1 class="govuk-heading-l">Repositories information</h1>
+      <h1 class="govuk-heading-l">Repository last updated</h1>
 
-      <input class="govuk-input govuk-input--width-30" name="width-30" type="text" id="search_team"
+      <input class="govuk-input govuk-input--width-30" name="width-30" type="text" id="search_table"
         placeholder="Search text">
-      <table class="sortable" id="repos_table">
+      <table class="sortable" id="sortable_table">
         <thead>
           <tr>
             <th>
               <button>
-                Repository
-                <span aria-hidden="true"></span>
-              </button>
-            </th>
-            <th>Description</th>
-            <th>
-              <button>
-                Year Created
+                Repository Name
                 <span aria-hidden="true"></span>
               </button>
             </th>
             <th>
               <button>
-                Archived?
+                Contributors
                 <span aria-hidden="true"></span>
               </button>
             </th>
             <th>
               <button>
-                Public or Private?
+                Last Update
                 <span aria-hidden="true"></span>
               </button>
             </th>
@@ -90,14 +83,13 @@
         </tbody>
         <template id="table-template">
           <tr>
-            <td style="font-weight: bold"><a target='_blank'></a></td>
-            <td></td>
-            <td></td>
+            <td style="font-weight: bold"></td>
             <td></td>
             <td></td>
           </tr>
         </template>
       </table>
+
     </main>
   </div>
 
@@ -129,7 +121,8 @@
 
   <script src="../../assets/js/data.js"></script>
   <script src="../../assets/js/utils.js"></script>
-  <script src="../../assets/js/table/repos/repos.js"></script>
+
+  <script src="../../assets/js/table/repos/commits.js"></script>
   <script src="../../assets/js/table/sort.js"></script>
 
 </body>

@@ -4,7 +4,7 @@
 
 <head>
   <meta charset="utf-8">
-  <title>GOV.UK - Github Teams</title>
+  <title>GOV.UK - Github Repositories</title>
   <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
   <meta name="theme-color" content="#0b0c0c">
 
@@ -51,41 +51,65 @@
 
   <div class="govuk-width-container">
     <a href="../../index.html" class="govuk-back-link">Back</a>
-    <main class="govuk-main-wrapper idc-main-wrapper" id="main-content">
-      <h1 class="govuk-heading-l">Repository last updated</h1>
+    <main class="idc-main-wrapper" id="main-content">
+      <h1 class="govuk-heading-l">Repositories information</h1>
 
-      <input class="govuk-input govuk-input--width-30" name="width-30" type="text" id="search_team"
+      <input class="govuk-input govuk-input--width-30" name="width-30" type="text" id="search_table"
         placeholder="Search text">
-      <table class="sortable" id="repos_last_commit_table">
-        <thead>
-          <tr>
-            <th>
-              <button>
-                Repository Name
-                <span aria-hidden="true"></span>
-              </button>
-            </th>
-            <th>
-              <button>
-                Last Update
-                <span aria-hidden="true"></span>
-              </button>
-            </th>
-          </tr>
-        </thead>
-        <tbody id="table-tbody">
-        </tbody>
-        <template id="table-template">
-          <tr>
-            <td style="font-weight: bold"></td>
-            <td></td>
-          </tr>
-        </template>
-      </table>
-
     </main>
   </div>
 
+  <div id="table-container">
+    <table class="sortable" id="sortable_table">
+      <thead>
+        <tr>
+          <th>
+            <button>
+              Repository
+              <span aria-hidden="true"></span>
+            </button>
+          </th>
+          <th>Description</th>
+          <th>
+            <button>
+              Year Created
+              <span aria-hidden="true"></span>
+            </button>
+          </th>
+          <th>
+            <button>
+              Last Commit
+              <span aria-hidden="true"></span>
+            </button>
+          </th>
+          <th>
+            <button>
+              Archived?
+              <span aria-hidden="true"></span>
+            </button>
+          </th>
+          <th>
+            <button>
+              Public or Private?
+              <span aria-hidden="true"></span>
+            </button>
+          </th>
+        </tr>
+      </thead>
+      <tbody id="table-tbody">
+      </tbody>
+      <template id="table-template">
+        <tr>
+          <td style="font-weight: bold"><a target='_blank'></a></td>
+          <td></td>
+          <td></td>
+          <td></td>
+          <td></td>
+          <td></td>
+        </tr>
+      </template>
+    </table>
+  </div>
   <footer class="govuk-footer">
     <div class="govuk-width-container ">
       <div class="govuk-footer__meta">
@@ -114,7 +138,7 @@
 
   <script src="../../assets/js/data.js"></script>
   <script src="../../assets/js/utils.js"></script>
-  <script src="../../assets/js/table/repos/repos_last_commit.js"></script>
+  <script src="../../assets/js/table/repos/repos.js"></script>
   <script src="../../assets/js/table/sort.js"></script>
 
 </body>

@@ -122,3 +122,8 @@ a {
 a:hover {
     color: blue;
 }
+
+#table-container {
+    margin-left: 5%;
+    margin-right: 5%;
+}
