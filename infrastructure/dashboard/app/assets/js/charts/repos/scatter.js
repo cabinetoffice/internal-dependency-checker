@@ -1,6 +1,8 @@
 const createRepoScatterChart = (repos, reposCommits) => {
 
-    const repoScatterChartData = repos.list.map(repo => ({
+    const repoScatterChartData = repos.list
+    .filter( repo => reposCommits[repo].last_commit !== "" )
+    .map(repo => ({
         name: repo,
         x: repos.details[repo].created_at,
         y: +reposCommits[repo].last_commit * 1000
@@ -13,8 +15,8 @@ const createRepoScatterChart = (repos, reposCommits) => {
                 label: 'Date created vs last updated',
                 data: repoScatterChartData,
                 borderColor: 'red',
-                backgroundColor: 'red',
-            }],
+                backgroundColor: 'red'
+            }]
         },
         options: {
             plugins: {
@@ -23,7 +25,7 @@ const createRepoScatterChart = (repos, reposCommits) => {
                     text: 'Dates of Repositories created vs last updated',
                     font: {
                         size: 24
-                    },
+                    }
                 },
                 tooltip: {
                     mode: 'index',
@@ -33,7 +35,7 @@ const createRepoScatterChart = (repos, reposCommits) => {
                             return `Repository: ${repoName}`;
                         }
                     }
-                },
+                }
             },
             scales: {
                 x: {
@@ -42,7 +44,7 @@ const createRepoScatterChart = (repos, reposCommits) => {
                         unit: 'month',
                         stepSize: 6,
                         displayFormats: {
-                            month: 'MMM yyyy',
+                            month: 'MMM yyyy'
                         }
                     },
                     title: {
@@ -70,8 +72,8 @@ const createRepoScatterChart = (repos, reposCommits) => {
                         }
                     }
                 }
-            },
-        },
+            }
+        }
     };
 
     const ctx = document.getElementById('repos-scatter-chart').getContext('2d');
