@@ -4,11 +4,11 @@
 
 <head>
   <meta charset="utf-8">
-  <title>GOV.UK - Github Teams</title>
+  <title>GOV.UK - Github Members</title>
   <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
   <meta name="theme-color" content="#0b0c0c">
 
-  <meta name="description" content="Github Teams">
+  <meta name="description" content="Github Members">
   <meta name="author" content="X-CO Developers">
 
   <meta http-equiv="X-UA-Compatible" content="IE=edge">
@@ -52,34 +52,28 @@
   <div class="govuk-width-container">
     <a href="../../index.html" class="govuk-back-link">Back</a>
     <main class="govuk-main-wrapper idc-main-wrapper" id="main-content">
-      <h1 class="govuk-heading-l">Teams last updated Repository</h1>
+      <h1 class="govuk-heading-l">Last Commit Per User</h1>
 
-      <input class="govuk-input govuk-input--width-30" name="width-30" type="text" id="search_team"
-        placeholder="Search text">
-      <table class="sortable" id="teams_table">
+      <!-- <input class="govuk-input govuk-input--width-30" name="width-30" type="text" id="search_table"
+        placeholder="Search text"> -->
+      <table class="sortable" id="sortable_table">
         <thead>
           <tr>
             <th>
               <button>
-                Team Name
+                User Email
                 <span aria-hidden="true"></span>
               </button>
             </th>
             <th>
               <button>
-                Repository
+                Repository Updated
                 <span aria-hidden="true"></span>
               </button>
             </th>
             <th>
               <button>
-                User email
-                <span aria-hidden="true"></span>
-              </button>
-            </th>
-            <th>
-              <button>
-                Last Update
+                Last Commit
                 <span aria-hidden="true"></span>
               </button>
             </th>
@@ -89,8 +83,7 @@
         </tbody>
         <template id="table-template">
           <tr>
-            <td style="font-weight: bold"></td>
-            <td></td>
+            <td style="font-weight: bold"><a target="_blank"></a></td>
             <td></td>
             <td></td>
           </tr>
@@ -126,9 +119,10 @@
     </div>
   </footer>
 
+  <script src="../../assets/js/data.js"></script>
   <script src="../../assets/js/utils.js"></script>
 
-  <script src="../../assets/js/table/last_update.js"></script>
+  <script src="../../assets/js/table/members/commits.js"></script>
   <script src="../../assets/js/table/sort.js"></script>
 
 </body>

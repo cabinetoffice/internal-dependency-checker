@@ -43,7 +43,7 @@ const updateTable = (reposInfo) => {
 
     setTableContent(template, tbodyEl, "_N/A", description, memberContent, repositorieContent);
 
-    inputFilter = document.getElementById("search_team");
+    inputFilter = document.getElementById("search_table");
     inputFilter.oninput = searchTable;
 }
 

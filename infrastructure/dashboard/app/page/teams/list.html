@@ -54,9 +54,9 @@
     <main class="govuk-main-wrapper idc-main-wrapper" id="main-content">
       <h1 class="govuk-heading-l">Repositories and Members per Teams</h1>
 
-      <input class="govuk-input govuk-input--width-30" name="width-30" type="text" id="search_team"
+      <input class="govuk-input govuk-input--width-30" name="width-30" type="text" id="search_table"
         placeholder="Search text">
-      <table class="sortable" id="teams_table">
+      <table class="sortable" id="sortable_table">
         <thead>
           <tr>
             <th>
@@ -121,9 +121,10 @@
     </div>
   </footer>
 
+  <script src="../../assets/js/data.js"></script>
   <script src="../../assets/js/utils.js"></script>
 
-  <script src="../../assets/js/table/refresh.js"></script>
+  <script src="../../assets/js/table/teams/teams.js"></script>
   <script src="../../assets/js/table/sort.js"></script>
 
 </body>
