@@ -1,0 +1,95 @@
+version: '3'
+
+services:
+
+  elasticsearch:
+    image: docker.elastic.co/elasticsearch/elasticsearch:${STACK_VERSION}
+    container_name: elasticsearch
+    ports:
+      - ${ES_PORT}:9200
+    environment:
+      - cluster.name=${CLUSTER_NAME}
+      - discovery.type=single-node
+      - ELASTIC_USERNAME=elastic
+      - ELASTIC_PASSWORD=${ELASTIC_PASSWORD}
+      # - ...
+      # ELASTIC_PASSWORD: /run/secrets/elastic_password
+    mem_limit: ${ES_MEM_LIMIT}
+    # volumes:
+    #   - ...
+    # secrets:
+    #   - elastic_password
+    healthcheck:
+      test:
+        [
+          "CMD-SHELL",
+          "curl -s http://elasticsearch:9200 >/dev/null || exit 1",
+        ]
+      interval: 30s
+      timeout: 10s
+      retries: 50
+
+  kibana:
+    image: docker.elastic.co/kibana/kibana:${STACK_VERSION}
+    container_name: kibana
+    depends_on:
+      elasticsearch:
+        condition: service_healthy
+    ports:
+      - ${KIBANA_PORT}:5601
+    environment:
+      - SERVERNAME=kibana
+      - ELASTICSEARCH_HOSTS=http://elasticsearch:9200
+      - ELASTICSEARCH_USERNAME=elastic
+      - ELASTICSEARCH_PASSWORD=${KIBANA_PASSWORD}
+      # - ...
+    mem_limit: ${KB_MEM_LIMIT}
+    # volumes:
+    #   - ...
+    healthcheck:
+      test:
+        [
+          "CMD-SHELL",
+          "curl -s -I http://kibana:5601 | grep -q 'HTTP/1.1 302 Found'",
+        ]
+      interval: 10s
+      timeout: 10s
+      retries: 120
+
+  filebeat:
+    image: docker.elastic.co/beats/filebeat:${STACK_VERSION}
+    container_name: filebeat
+    depends_on:
+      elasticsearch:
+        condition: service_healthy
+    user: root
+    # volumes:
+    #   - ...
+    environment:
+      - ELASTIC_USER=elastic
+      - ELASTIC_PASSWORD=${ELASTIC_PASSWORD}
+      - ELASTIC_HOSTS=http://elasticsearch:9200
+      - KIBANA_HOSTS=http://kibana:5601
+      - LOGSTASH_HOSTS=http://logstash:9600
+
+  logstash:
+    image: docker.elastic.co/logstash/logstash:${STACK_VERSION}
+    container_name: logstash
+    depends_on:
+      elasticsearch:
+        condition: service_healthy
+      kibana:
+        condition: service_healthy
+    environment:
+      # - ...
+      - ELASTIC_USER=elastic
+      - ELASTIC_PASSWORD=${ELASTIC_PASSWORD}
+      - ELASTIC_HOSTS=http://elasticsearch:9200
+
+# volumes:
+#     reports:
+#     configs:
+
+# secrets:
+#    elastic_password:
+#      file: ./configs/elastic_password.txt
