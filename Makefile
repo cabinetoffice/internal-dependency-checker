@@ -1,10 +1,10 @@
-.PHONY: build start clone state docker-up docker-build start-dashboard test coverage
+.PHONY: build start clone state docker-up docker-build start-dashboard start-elasticsearch test coverage
 
 NODE_VERSION := v18.16.0
-PREFIX := repos
+PREFIX := idc
 TIMESTAMP := $(shell date +"%Y-%m-%d_%H-%M-%S")
 
-DOCKER_COMPOSE_OUT_FILE_NAME := ./infrastructure/output/$(PREFIX)__docker__compose__output__$(TIMESTAMP).txt
+DOCKER_COMPOSE_OUT_FILE_NAME := ./infrastructure/output/$(PREFIX)__docker__compose__output__$(TIMESTAMP).log
 
 build:
 	$(info Node version: $(NODE_VERSION))
@@ -26,16 +26,20 @@ state:
 	$(info === state file created)
 
 docker-build:
-	$(info === docker build started)
+	$(info === docker build starting)
 	docker compose -f infrastructure/docker-compose.yml build
 
 docker-up:
-	$(info === docker compose up - vulnerabilities/dependencies checks started)
+	$(info === docker compose up - vulnerabilities/dependencies checks starting)
 	docker compose -f infrastructure/docker-compose.yml up &> $(DOCKER_COMPOSE_OUT_FILE_NAME)
 
 start-dashboard:
 	docker compose -f infrastructure/dashboard/docker-compose.yml build && \
 	docker compose -f infrastructure/dashboard/docker-compose.yml up &> $(DOCKER_COMPOSE_OUT_FILE_NAME)
+
+start-elasticsearch:
+	$(info === docker compose up - elasticsearch starting)
+	docker compose -f infrastructure/elasticsearch/docker-compose.yml up &> $(DOCKER_COMPOSE_OUT_FILE_NAME)
 
 test:
 	npm run test
