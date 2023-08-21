@@ -1,0 +1,113 @@
+{
+    "version": 1,
+    "description": "IDC - Node Audit Pipeline",
+    "processors": [
+        {
+            "grok": {
+                "field": "log.file.path",
+                "patterns": [
+                    "repos__%{DATA:idc_audit.org}__%{GREEDYDATA:idc_audit.repo_path}__%{DATA:idc_audit.tech}__%{DATA:idc_audit.timestamp}.json"
+                ]
+            }
+        },
+        {
+            "date": {
+                "field": "idc_audit.timestamp",
+                "formats": [
+                    "yyyy-MM-dd_HH-mm-ss"
+                ]
+            }
+        },
+        {
+            "remove": {
+                "field": [
+                    "idc_audit.timestamp"
+                ],
+                "ignore_missing": true,
+                "ignore_failure": true
+            }
+        },
+        {
+            "split": {
+                "field": "idc_audit.repo_path",
+                "separator": "__"
+            }
+        },
+        {
+            "set": {
+                "field": "idc_audit.repo",
+                "value": "{{ idc_audit.repo_path.0 }}",
+                "override": false
+            }
+        },
+        {
+            "join": {
+                "field": "idc_audit.repo_path",
+                "separator": "/"
+            }
+        },
+        {
+            "rename": {
+                "field": "message.error.code",
+                "target_field": "idc_audit.error.code",
+                "ignore_missing": true
+            }
+        },
+        {
+            "rename": {
+                "field": "message.error.summary",
+                "target_field": "idc_audit.error.summary",
+                "ignore_missing": true
+            }
+        },
+        {
+            "rename": {
+                "field": "message.error.detail",
+                "target_field": "idc_audit.error.detail",
+                "ignore_missing": true
+            }
+        },
+        {
+            "rename": {
+                "field": "message.metadata",
+                "target_field": "idc_audit.metadata",
+                "ignore_missing": true
+            }
+        },
+        {
+            "rename": {
+                "field": "message.advisories",
+                "target_field": "idc_audit.advisories"
+            }
+        },
+        {
+            "remove": {
+                "field": [
+                    "agent",
+                    "ecs",
+                    "event",
+                    "host",
+                    "input",
+                    "log.offset",
+                    "log.flags",
+                    "message.error",
+                    "message.runId",
+                    "message.muted",
+                    "message.actions",
+                    "message.metadata",
+                    "message.advisories"
+                ],
+                "ignore_missing": true
+            }
+        }
+    ],
+    "on_failure": [
+        {
+            "set": {
+                "field": "error.message",
+                "value": "{{ _ingest.on_failure_message }}",
+                "ignore_empty_value": true
+            }
+        }
+    ]
+}
