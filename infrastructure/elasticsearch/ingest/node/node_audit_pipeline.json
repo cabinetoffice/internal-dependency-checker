@@ -48,22 +48,8 @@
         },
         {
             "rename": {
-                "field": "message.error.code",
-                "target_field": "idc_audit.error.code",
-                "ignore_missing": true
-            }
-        },
-        {
-            "rename": {
-                "field": "message.error.summary",
-                "target_field": "idc_audit.error.summary",
-                "ignore_missing": true
-            }
-        },
-        {
-            "rename": {
-                "field": "message.error.detail",
-                "target_field": "idc_audit.error.detail",
+                "field": "message.error",
+                "target_field": "idc_audit.error",
                 "ignore_missing": true
             }
         },
@@ -77,7 +63,8 @@
         {
             "rename": {
                 "field": "message.advisories",
-                "target_field": "idc_audit.advisories"
+                "target_field": "idc_audit.advisories",
+                "ignore_missing": true
             }
         },
         {
@@ -88,8 +75,7 @@
                     "event",
                     "host",
                     "input",
-                    "log.offset",
-                    "log.flags",
+                    "log",
                     "message.error",
                     "message.runId",
                     "message.muted",
