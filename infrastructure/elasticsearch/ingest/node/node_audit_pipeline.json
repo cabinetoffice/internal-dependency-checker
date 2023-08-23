@@ -54,17 +54,17 @@
             }
         },
         {
-            "rename": {
-                "field": "message.metadata",
-                "target_field": "idc_audit.metadata",
-                "ignore_missing": true
+            "script": {
+                "lang": "painless",
+                "source": "int sum = 0;\nif( ctx.message?.metadata?.vulnerabilities != null){\n    for( key in ctx.message.metadata.vulnerabilities.keySet()){\n        sum += ctx.message.metadata.vulnerabilities[key];\n    }\n}\nctx.idc_audit.totalVulnerabilities = sum;"
             }
         },
         {
-            "rename": {
-                "field": "message.advisories",
-                "target_field": "idc_audit.advisories",
-                "ignore_missing": true
+            "set": {
+                "field": "idc_audit.totalDependencies",
+                "value": "{{ message.metadata.totalDependencies }}",
+                "ignore_empty_value": true,
+                "if": "ctx.message?.metadata != null"
             }
         },
         {
@@ -76,12 +76,7 @@
                     "host",
                     "input",
                     "log",
-                    "message.error",
-                    "message.runId",
-                    "message.muted",
-                    "message.actions",
-                    "message.metadata",
-                    "message.advisories"
+                    "message"
                 ],
                 "ignore_missing": true
             }

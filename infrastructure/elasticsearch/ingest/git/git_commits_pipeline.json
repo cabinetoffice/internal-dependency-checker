@@ -41,6 +41,13 @@
             }
         },
         {
+            "rename": {
+                "field": "idc_audit.error__detail",
+                "target_field": "idc_audit.error.detail",
+                "ignore_missing": true
+            }
+        },
+        {
             "foreach": {
                 "field": "idc_audit.message",
                 "processor": {
@@ -51,7 +58,8 @@
                         ],
                         "allow_duplicates": false
                     }
-                }
+                },
+                "if": "ctx?.idc_audit?.message != null"
             }
         },
         {
@@ -65,7 +73,8 @@
                         ],
                         "allow_duplicates": false
                     }
-                }
+                },
+                "if": "ctx?.idc_audit?.message != null"
             }
         },
         {
@@ -79,7 +88,8 @@
                         ],
                         "allow_duplicates": false
                     }
-                }
+                },
+                "if": "ctx?.idc_audit?.message != null"
             }
         },
         {
@@ -91,7 +101,8 @@
                     "host",
                     "input",
                     "log",
-                    "message"
+                    "message",
+                    "idc_audit.message"
                 ],
                 "ignore_missing": true
             }
