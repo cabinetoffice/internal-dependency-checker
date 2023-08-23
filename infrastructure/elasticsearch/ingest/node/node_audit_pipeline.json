@@ -54,17 +54,23 @@
             }
         },
         {
+            "set": {
+                "field": "idc_audit.totalDependencies",
+                "value": "{{ message.metadata.totalDependencies }}",
+                "ignore_empty_value": true,
+                "if": "ctx.message?.metadata != null"
+            }
+        },
+        {
             "script": {
                 "lang": "painless",
                 "source": "int sum = 0;\nif( ctx.message?.metadata?.vulnerabilities != null){\n    for( key in ctx.message.metadata.vulnerabilities.keySet()){\n        sum += ctx.message.metadata.vulnerabilities[key];\n    }\n}\nctx.idc_audit.totalVulnerabilities = sum;"
             }
         },
         {
-            "set": {
-                "field": "idc_audit.totalDependencies",
-                "value": "{{ message.metadata.totalDependencies }}",
-                "ignore_empty_value": true,
-                "if": "ctx.message?.metadata != null"
+            "script": {
+                "lang": "painless",
+                "source": "ArrayList vulnerabilities = new ArrayList();\nif( ctx.message?.advisories != null){\n  for (key in ctx.message.advisories.keySet()) {\n    Map vulnerability = new HashMap(); \n    int totalVulnerabilities = 0;\n    for(item in ctx.message.advisories[key].findings){\n      totalVulnerabilities += item.paths.length;\n    }\n    vulnerability.put(\"name\", ctx.message.advisories[key].module_name);\n    vulnerability.put(\"severity\", ctx.message.advisories[key].severity);\n    vulnerability.put(\"version\", ctx.message.advisories[key].vulnerable_versions);\n    vulnerability.put(\"description\", ctx.message.advisories[key].title);\n    vulnerability.put(\"cves\", ctx.message.advisories[key].cves);\n    vulnerability.put(\"cvss\", ctx.message.advisories[key].cvss);\n    vulnerability.put(\"cwe\", ctx.message.advisories[key].cwe);\n    vulnerability.put(\"url\", ctx.message.advisories[key].url);\n    vulnerability.put(\"totalVulnerabilities\", totalVulnerabilities);\n\n    vulnerabilities.add(vulnerability);\n  }\n  ctx.idc_audit.put(\"vulnerabilities\", vulnerabilities);\n} "
             }
         },
         {
