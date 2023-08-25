@@ -1,0 +1,22 @@
+{
+    "version": 1,
+    "description": "IDC - Python Audit Pipeline",
+    "processors": [
+        {
+            "rename": {
+                "field": "message.error",
+                "target_field": "idc_audit.error",
+                "ignore_missing": true
+            }
+        }
+    ],
+    "on_failure": [
+        {
+            "set": {
+                "field": "error.message",
+                "value": "{{ _ingest.on_failure_message }}",
+                "ignore_empty_value": true
+            }
+        }
+    ]
+}
