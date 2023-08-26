@@ -49,6 +49,7 @@ fetch_arguments() {
 }
 
 set_file_name() {
+  if [[ "$3" ]]; then file_name="$3"; fi
   file_name="${WORKDIR}/${1}/${file_name}__${2}__${TIMESTAMP}.json"
   echo "$file_name"
 }
