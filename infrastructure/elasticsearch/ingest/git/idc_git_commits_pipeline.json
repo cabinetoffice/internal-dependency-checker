@@ -11,14 +11,6 @@
             }
         },
         {
-            "date": {
-                "field": "idc_audit.timestamp",
-                "formats": [
-                    "yyyy-MM-dd_HH-mm-ss"
-                ]
-            }
-        },
-        {
             "rename": {
                 "field": "message.error",
                 "target_field": "idc_audit.error",
@@ -29,6 +21,7 @@
             "script": {
                 "lang": "painless",
                 "source": "if( ctx.message[ctx.idc_audit.repo].size() == 1 && ctx.message[ctx.idc_audit.repo][0]?.error != null){\n  ctx.idc_audit.put(\"error__detail\", ctx.message[ctx.idc_audit.repo][0].error);\n} else {\n  ctx.idc_audit.put(\"message\", ctx.message[ctx.idc_audit.repo]);\n}",
+                "if": "ctx.message[ctx.idc_audit.repo] != null",
                 "ignore_failure": true
             }
         },
@@ -87,8 +80,25 @@
         {
             "script": {
                 "lang": "painless",
-                "source": "int max = 0;\nfor (t in ctx.idc_audit.timestamps) {\n  max = (int)Math.max(max, Integer.parseInt(t));\n}\nctx.idc_audit.put(\"last_commit\", max);",
+                "source": "int max = 0;\nfor (t in ctx.idc_audit.timestamps) {\n  max = (int)Math.max(max, Integer.parseInt(t));\n}\nctx.idc_audit.put(\"last_commit\", \"\" + max);",
+                "if": "ctx.idc_audit != null && ctx.idc_audit.timestamps != null",
                 "ignore_failure": true
+            }
+        },
+        {
+            "script": {
+                "lang": "painless",
+                "source": "ctx.idc_audit.put(\"link\", \"https://github.com/\" + ctx.idc_audit.org + \"/\" + ctx.idc_audit.repo);",
+                "ignore_failure": true
+            }
+        },
+        {
+            "date": {
+                "field": "idc_audit.last_commit",
+                "formats": [
+                    "UNIX"
+                ],
+                "if": "ctx.idc_audit != null && ctx.idc_audit.last_commit != null"
             }
         },
         {
