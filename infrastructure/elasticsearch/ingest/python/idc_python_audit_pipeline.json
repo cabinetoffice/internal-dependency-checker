@@ -3,9 +3,67 @@
     "description": "IDC - Python Audit Pipeline",
     "processors": [
         {
+            "grok": {
+                "field": "log.file.path",
+                "patterns": [
+                    "repos__%{DATA:idc_audit.org}__%{GREEDYDATA:idc_audit.repo_path}__%{DATA:idc_audit.tech}__%{DATA:idc_audit.timestamp}.json"
+                ]
+            }
+        },
+        {
+            "date": {
+                "field": "idc_audit.timestamp",
+                "formats": [
+                    "yyyy-MM-dd_HH-mm-ss"
+                ]
+            }
+        },
+        {
+            "split": {
+                "field": "idc_audit.repo_path",
+                "separator": "__"
+            }
+        },
+        {
+            "set": {
+                "field": "idc_audit.repo",
+                "value": "{{ idc_audit.repo_path.0 }}",
+                "override": false
+            }
+        },
+        {
+            "join": {
+                "field": "idc_audit.repo_path",
+                "separator": "/"
+            }
+        },
+        {
             "rename": {
                 "field": "message.error",
                 "target_field": "idc_audit.error",
+                "ignore_missing": true
+            }
+        },
+        {
+            "script": {
+                "lang": "painless",
+                "source": "ArrayList dependencies = new ArrayList();\nint totalDependencies = 0;\nint totalVulnerabilities = 0;\n\nif( ctx.message?.dependencies?.length != null ){\n\n  for (dep in ctx.message.dependencies) {\n    Map dependency = new HashMap();\n\n    dependency.put(\"name\", dep.name);\n    dependency.put(\"version\", dep.version);\n    dependency.put(\"totalVulnerabilities\", dep.vulns.length);\n\n    totalDependencies++;\n    totalVulnerabilities += dep.vulns.length;\n\n    if(dep.vulns.length > 0){\n      dependency.put(\"vulnerabilities\", new ArrayList());\n\n      for (vuln in dep.vulns) {\n        vuln.remove(\"fix_versions\");\n        dependency.vulnerabilities.add(vuln);\n      }\n    }\n    dependencies.add(dependency);\n  }\n\n  ctx.idc_audit.put(\"dependencies\", dependencies);\n  ctx.idc_audit.put(\"totalDependencies\", totalDependencies);\n  ctx.idc_audit.put(\"totalVulnerabilities\", totalVulnerabilities);\n} ",
+                "if": "ctx.message?.dependencies?.length != null",
+                "ignore_failure": true
+            }
+        },
+        {
+            "remove": {
+                "field": [
+                    "agent",
+                    "ecs",
+                    "event",
+                    "host",
+                    "input",
+                    "log",
+                    "message",
+                    "idc_audit.timestamp"
+                ],
                 "ignore_missing": true
             }
         }
