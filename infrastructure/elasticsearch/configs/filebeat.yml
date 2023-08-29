@@ -1,0 +1,86 @@
+filebeat.inputs:
+
+# Prospectors
+- type: filestream
+  id: nodejs-filestream
+  tags: ["nodejs"]
+  paths:
+    - ingest_data/node/*.json
+  parsers:
+    - multiline:
+        type: pattern
+        pattern: '.'
+        match: after
+        max_lines: 100000
+  pipeline: "idc_node_audit_pipeline"
+  index: "idc_node_audit_index"
+
+- type: filestream
+  id: commits-filestream
+  tags: ["commits"]
+  paths:
+    - ingest_data/git/commits/*.json
+  parsers:
+    - multiline:
+        type: pattern
+        pattern: '.'
+        match: after
+        max_lines: 10000000
+  pipeline: "idc_git_commits_pipeline"
+  index: "idc_git_commits_index"
+
+- type: filestream
+  id: git-info-filestream
+  tags: ["git-info"]
+  paths:
+    - ingest_data/git/info/*.json
+  parsers:
+    - multiline:
+        type: pattern
+        pattern: '.'
+        match: after
+        max_lines: 1000000
+  pipeline: "idc_git_info_pipeline"
+  index: "idc_git_info_index"
+
+- type: filestream
+  id: python-filestream
+  tags: ["python"]
+  paths:
+    - ingest_data/python/*.json
+  parsers:
+    - multiline:
+        type: pattern
+        pattern: '.'
+        match: after
+        max_lines: 1000000
+  pipeline: "idc_python_audit_pipeline"
+  index: "idc_python_audit_index"
+
+# https://www.elastic.co/guide/en/beats/filebeat/8.9/configuration-autodiscover.html
+filebeat.autodiscover:
+  providers:
+    - type: docker
+      # https://www.elastic.co/guide/en/beats/filebeat/current/configuration-autodiscover-hints.html
+      hints.enabled: true
+
+# https://www.elastic.co/guide/en/beats/filebeat/8.9/filtering-and-enhancing-data.html
+processors:
+  - decode_json_fields:
+      fields: [message]
+      max_depth: 2
+      add_error_key: true
+
+setup.kibana:
+  host: ${KIBANA_HOSTS}
+  username: ${ELASTIC_USER}
+  password: ${ELASTIC_PASSWORD} 
+
+output.elasticsearch:
+  hosts: ${ELASTIC_HOSTS}
+  username: ${ELASTIC_USER}
+  password: ${ELASTIC_PASSWORD}
+
+setup:
+  template.enabled: false
+  ilm.enabled: false

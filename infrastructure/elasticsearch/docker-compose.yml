@@ -10,6 +10,9 @@ services:
       - xpack.security.enabled=true
       - discovery.type=single-node
       - ELASTIC_PASSWORD=${ELASTIC_PASSWORD}
+      - "ES_JAVA_OPTS=-Xms${ES_JVM_HEAP} -Xmx${ES_JVM_HEAP}"
+      - http.max_content_length=${ES_MAX_CONTENT_LENGTH}
+      - search.max_async_search_response_size=${ES_MAX_ASYNC_SEARCH_RESPONSE_SIZE}
     mem_limit: ${ES_MEM_LIMIT}
     ulimits:
       memlock:
