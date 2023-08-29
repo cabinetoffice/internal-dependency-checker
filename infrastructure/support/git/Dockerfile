@@ -12,4 +12,4 @@ WORKDIR /idc
 COPY . /idc
 
 # Start script
-CMD ["/bin/sh", "./git-commit-info.sh"]
+CMD ["/bin/sh", "./git-commits-info.sh"]
