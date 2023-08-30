@@ -1,0 +1,101 @@
+{
+    "version": 1,
+    "description": "IDC - Git Info Pipeline",
+    "processors": [
+        {
+            "grok": {
+                "field": "log.file.path",
+                "patterns": [
+                    "git__info__%{DATA:idc_audit.timestamp}.json"
+                ]
+            }
+        },
+        {
+            "date": {
+                "field": "idc_audit.timestamp",
+                "formats": [
+                    "yyyy-MM-dd_HH-mm-ss"
+                ]
+            }
+        },
+        {
+            "set": {
+                "field": "idc_audit.repos_list",
+                "value": "{{ message.repos.list }}",
+                "ignore_empty_value": true,
+                "if": "ctx.message?.repos != null"
+            }
+        },
+        {
+            "set": {
+                "field": "idc_audit.repos_details",
+                "value": "{{ message.repos.details }}",
+                "ignore_empty_value": true,
+                "if": "ctx.message?.repos != null"
+            }
+        },
+        {
+            "set": {
+                "field": "idc_audit.teams_list",
+                "value": "{{ message.teams.list }}",
+                "ignore_empty_value": true,
+                "if": "ctx.message?.teams != null"
+            }
+        },
+        {
+            "set": {
+                "field": "idc_audit.teams_details",
+                "value": "{{ message.teams.details }}",
+                "ignore_empty_value": true,
+                "if": "ctx.message?.teams != null"
+            }
+        },
+        {
+            "set": {
+                "field": "idc_audit.members_list",
+                "value": "{{ message.members.list }}",
+                "ignore_empty_value": true,
+                "if": "ctx.message?.members != null"
+            }
+        },
+        {
+            "set": {
+                "field": "idc_audit.members_details",
+                "value": "{{ message.members.details }}",
+                "ignore_empty_value": true,
+                "if": "ctx.message?.members != null"
+            }
+        },
+        {
+            "rename": {
+                "field": "error",
+                "target_field": "idc_audit.error",
+                "ignore_missing": true
+            }
+        },
+        {
+            "remove": {
+                "field": [
+                    "agent",
+                    "ecs",
+                    "event",
+                    "host",
+                    "input",
+                    "log",
+                    "idc_audit.timestamp",
+                    "message"
+                ],
+                "ignore_missing": true
+            }
+        }
+    ],
+    "on_failure": [
+        {
+            "set": {
+                "field": "error.message",
+                "value": "{{ _ingest.on_failure_message }}",
+                "ignore_empty_value": true
+            }
+        }
+    ]
+}

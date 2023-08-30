@@ -87,6 +87,13 @@ services:
       - ./repos:/idc/repos
       - ./utils:/idc/utils
 
+  support-git-commits:
+    build: ./support/git
+    volumes:
+      - ./reports:/idc/reports
+      - ./repos:/idc/repos
+      - ./utils:/idc/utils
+
 volumes:
     reports:
     repos:

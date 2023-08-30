@@ -2,9 +2,11 @@
 
 ## Overview
 
-The following tool is used to create a snapshot of the status of our repositories within the organization will include searchable tables and interactive charts. Additionally, we will utilize Elasticsearch and Kibana services to ensure comprehensive analysis and filtering of dependencies and vulnerabilities across all the organization's repositories. This will provide us with valuable insights and enable effective monitoring and management of our codebase.
+The following tool is used to create a snapshot of the status of our repositories within the organization. To analyze and gain insights from the JSON audit files and other information (e.g., git user and repository info), the Elasticsearch and Kibana (E&K) solution has been chosen. This solution provides functionality for analyzing, aggregating, and filtering data. Furthermore, Elasticsearch can efficiently store and index this data in a way that supports fast searches.
 
-In the future, Elasticsearch and Kibana (E&K) service will continuously receive updated information on the status of our repositories. Whenever a repository is updated, a task in our CI/CD pipeline will be triggered to initiate the check. The results of this check will then be compiled into a report and sent to a dedicated storage. This setup ensures that we have real-time data on the status of our services and can access historical reports for analysis and review.
+Kibana is used to query and visualize the data stored in Elasticsearch. The Kibana dashboard serves as a user-friendly interface, allowing users to easily explore and identify vulnerabilities in the software across the organization(s). It facilitates efficient tracking and monitoring of security issues, thereby facilitating remediation efforts.
+
+In the initial stages of the IDC, information will be collected and then fed in bulk to Elasticsearch during the bootstrap process, however, in the future, the service will continuously receive updated information on the status of our repositories. Whenever a repository is updated, a task in our CI/CD pipeline will be triggered to initiate the check. The results of this check will then be compiled into a report and sent to dedicated storage. This setup ensures that we have real-time data on the status of our services and can access historical reports for analysis and review
 
 ## Required
 
@@ -25,7 +27,7 @@ Second stage, the docker-compose build and docker-compose up commands will be ex
 
 ### Third stage
 
-The IDC dashboard will serve as a platform to visualize GitHub repository details initially. Subsequently, it will integrate the visualization of dependency data obtained from previous checks through the Kibana dashboard.
+The E&K dashboard will serve as a platform to visualize GitHub repository details and search/visualization vulnerabilities obtained from previous checks on stage two, through the Kibana dashboard.
 
 ## Run
 
@@ -42,7 +44,7 @@ make state
 make docker-build
 make docker-up
 # III Stage
-make start-dashboard # build and start the POC Dashboard (on localhost:8080)
+make start-elasticsearch # Build and start Elasticsearch and Kibana on dev mode (on localhost:5601). Configurations can vary, so it's crucial to ensure that you set environment variables accordingly.
 ```
 
 ### Test

@@ -1,0 +1,100 @@
+{
+    "version": 1,
+    "description": "IDC - Node Audit Pipeline",
+    "processors": [
+        {
+            "grok": {
+                "field": "log.file.path",
+                "patterns": [
+                    "repos__%{DATA:idc_audit.org}__%{GREEDYDATA:idc_audit.repo_path}__%{DATA:idc_audit.tech}__%{DATA:idc_audit.timestamp}.json"
+                ]
+            }
+        },
+        {
+            "date": {
+                "field": "idc_audit.timestamp",
+                "formats": [
+                    "yyyy-MM-dd_HH-mm-ss"
+                ]
+            }
+        },
+        {
+            "remove": {
+                "field": [
+                    "idc_audit.timestamp"
+                ],
+                "ignore_missing": true,
+                "ignore_failure": true
+            }
+        },
+        {
+            "split": {
+                "field": "idc_audit.repo_path",
+                "separator": "__"
+            }
+        },
+        {
+            "set": {
+                "field": "idc_audit.repo",
+                "value": "{{ idc_audit.repo_path.0 }}",
+                "override": false
+            }
+        },
+        {
+            "join": {
+                "field": "idc_audit.repo_path",
+                "separator": "/"
+            }
+        },
+        {
+            "rename": {
+                "field": "message.error",
+                "target_field": "idc_audit.error",
+                "ignore_missing": true
+            }
+        },
+        {
+            "set": {
+                "field": "idc_audit.totalDependencies",
+                "value": "{{ message.metadata.totalDependencies }}",
+                "ignore_empty_value": true,
+                "if": "ctx.message?.metadata != null"
+            }
+        },
+        {
+            "script": {
+                "lang": "painless",
+                "source": "int sum = 0;\nif( ctx.message?.metadata?.vulnerabilities != null){\n    for( key in ctx.message.metadata.vulnerabilities.keySet()){\n        sum += ctx.message.metadata.vulnerabilities[key];\n    }\n}\nctx.idc_audit.totalVulnerabilities = sum;"
+            }
+        },
+        {
+            "script": {
+                "lang": "painless",
+                "source": "ArrayList vulnerabilities = new ArrayList();\nif( ctx.message?.advisories != null){\n  for (key in ctx.message.advisories.keySet()) {\n    Map vulnerability = new HashMap(); \n    int totalVulnerabilities = 0;\n    for(item in ctx.message.advisories[key].findings){\n      totalVulnerabilities += item.paths.length;\n    }\n    vulnerability.put(\"name\", ctx.message.advisories[key].module_name);\n    vulnerability.put(\"severity\", ctx.message.advisories[key].severity);\n    vulnerability.put(\"version\", ctx.message.advisories[key].vulnerable_versions);\n    vulnerability.put(\"description\", ctx.message.advisories[key].title);\n    vulnerability.put(\"cves\", ctx.message.advisories[key].cves);\n    vulnerability.put(\"cvss\", ctx.message.advisories[key].cvss.vectorString);\n    vulnerability.put(\"cwe\", ctx.message.advisories[key].cwe);\n    vulnerability.put(\"url\", ctx.message.advisories[key].url);\n    vulnerability.put(\"totalVulnerabilities\", totalVulnerabilities);\n\n    vulnerabilities.add(vulnerability);\n  }\n  ctx.idc_audit.put(\"vulnerabilities\", vulnerabilities);\n} "
+            }
+        },
+        {
+            "remove": {
+                "field": [
+                    "agent",
+                    "ecs",
+                    "event",
+                    "host",
+                    "input",
+                    "log",
+                    "message"
+                ],
+                "ignore_missing": true
+            }
+        }
+    ],
+    "on_failure": [
+        {
+            "set": {
+                "field": "error.message",
+                "value": "{{ _ingest.on_failure_message }}",
+                "ignore_empty_value": true
+            }
+        }
+    ]
+}
