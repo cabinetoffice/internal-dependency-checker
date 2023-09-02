@@ -3,7 +3,7 @@ FROM alpine:latest
 
 # Install required dependencies
 RUN apk update && \
-    apk add --no-cache git jq
+    apk add --no-cache git jq nodejs npm
 
 # Set the working directory to /idc
 WORKDIR /idc
