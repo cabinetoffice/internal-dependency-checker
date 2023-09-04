@@ -12,8 +12,8 @@ filebeat.inputs:
         pattern: '.'
         match: after
         max_lines: 100000
-  pipeline: "idc_node_audit_pipeline"
-  index: "idc_node_audit_index"
+  pipeline: "idc_node_18_audit_pipeline"
+  index: "idc_node_18_audit_index"
 
 - type: filestream
   id: commits-filestream
