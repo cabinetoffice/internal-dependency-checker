@@ -24,7 +24,7 @@ const init = async () => {
 
                 for (const commit of commits) {
                     if (commit.error) {
-                        repo[repoName]["error"] = commit.error;
+                        repo[repoName].push(commit);
                     } else if (uniqueObjects.indexOf(commit.commit) === -1) {
                         uniqueObjects.push(commit.commit);
                         repo[repoName].push(commit);
