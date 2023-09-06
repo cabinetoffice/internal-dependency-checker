@@ -40,3 +40,5 @@ done
 git_info_file_name=$(set_file_name "${GIT_INFO_REPORTS_FOLDER_NAME}" "info" "git")
 cp "${WORKDIR}/${REPOS_FOLDER}/${REPOS_INFO_FILE_NAME}" "${git_info_file_name}"
 echo "File ${REPOS_INFO_FILE_NAME} copied to ${git_info_file_name}"
+
+node "${WORKDIR}/update_git_commits.js" "${GIT_REPORTS_FOLDER_NAME}"
