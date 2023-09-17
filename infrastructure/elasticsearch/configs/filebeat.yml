@@ -44,6 +44,20 @@ filebeat.inputs:
   index: "idc_git_info_index"
 
 - type: filestream
+  id: gitleaks-filestream
+  tags: ["gitleaks"]
+  paths:
+    - ingest_data/gitleaks/*.json
+  parsers:
+    - multiline:
+        type: pattern
+        pattern: '.'
+        match: after
+        max_lines: 100000
+  pipeline: "idc_git_leaks_pipeline"
+  index: "idc_git_leaks_index"
+
+- type: filestream
   id: python-filestream
   tags: ["python"]
   paths:
