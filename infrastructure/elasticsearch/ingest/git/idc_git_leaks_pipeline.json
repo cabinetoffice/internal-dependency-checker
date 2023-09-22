@@ -1,0 +1,60 @@
+{
+    "version": 1,
+    "description": "IDC - Git Leaks Pipeline",
+    "processors": [
+        {
+            "grok": {
+                "field": "log.file.path",
+                "patterns": [
+                    "repos__%{DATA:idc_audit.org}__%{DATA:idc_audit.repo}__%{DATA:idc_audit.tech}__%{DATA:idc_audit.timestamp}.json"
+                ]
+            }
+        },
+        {
+            "date": {
+                "field": "idc_audit.timestamp",
+                "formats": [
+                    "yyyy-MM-dd_HH-mm-ss"
+                ]
+            }
+        },
+        {
+            "remove": {
+                "field": [
+                    "idc_audit.timestamp"
+                ],
+                "ignore_missing": true,
+                "ignore_failure": true
+            }
+        },
+        {
+            "rename": {
+                "field": "message",
+                "target_field": "idc_audit.leaks",
+                "ignore_missing": true
+            }
+        },
+        {
+            "remove": {
+                "field": [
+                    "agent",
+                    "ecs",
+                    "event",
+                    "host",
+                    "input",
+                    "log"
+                ],
+                "ignore_missing": true
+            }
+        }
+    ],
+    "on_failure": [
+        {
+            "set": {
+                "field": "error.message",
+                "value": "{{ _ingest.on_failure_message }}",
+                "ignore_empty_value": true
+            }
+        }
+    ]
+}
