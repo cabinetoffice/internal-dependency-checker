@@ -1,0 +1,73 @@
+{
+    "version": 1,
+    "description": "IDC - Terraform Pipeline",
+    "processors": [
+        {
+            "grok": {
+                "field": "log.file.path",
+                "patterns": [
+                    "repos__%{DATA:idc_audit.org}__%{GREEDYDATA:idc_audit.repo_path}__%{DATA:idc_audit.tech}__%{DATA:idc_audit.timestamp}.json"
+                ]
+            }
+        },
+        {
+            "date": {
+                "field": "idc_audit.timestamp",
+                "formats": [
+                    "yyyy-MM-dd_HH-mm-ss"
+                ]
+            }
+        },
+        {
+            "split": {
+                "field": "idc_audit.repo_path",
+                "separator": "__"
+            }
+        },
+        {
+            "set": {
+                "field": "idc_audit.repo",
+                "value": "{{ idc_audit.repo_path.0 }}",
+                "override": false
+            }
+        },
+        {
+            "join": {
+                "field": "idc_audit.repo_path",
+                "separator": "/"
+            }
+        },
+        {
+            "set": {
+                "field": "idc_audit.vulnerabilities",
+                "value": "{{ message.results }}",
+                "ignore_empty_value": true,
+                "if": "ctx.message?.results != null"
+            }
+        },
+        {
+            "remove": {
+                "field": [
+                    "agent",
+                    "ecs",
+                    "event",
+                    "host",
+                    "input",
+                    "log",
+                    "message",
+                    "idc_audit.timestamp"
+                ],
+                "ignore_missing": true
+            }
+        }
+    ],
+    "on_failure": [
+        {
+            "set": {
+                "field": "error.message",
+                "value": "{{ _ingest.on_failure_message }}",
+                "ignore_empty_value": true
+            }
+        }
+    ]
+}

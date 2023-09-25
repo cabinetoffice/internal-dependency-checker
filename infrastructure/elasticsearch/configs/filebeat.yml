@@ -71,6 +71,20 @@ filebeat.inputs:
   pipeline: "idc_python_audit_pipeline"
   index: "idc_python_audit_index"
 
+- type: filestream
+  id: terraform-filestream
+  tags: ["terraform"]
+  paths:
+    - ingest_data/terraform/*.json
+  parsers:
+    - multiline:
+        type: pattern
+        pattern: '.'
+        match: after
+        max_lines: 100000
+  pipeline: "idc_terraform_pipeline"
+  index: "idc_terraform_index"
+
 # https://www.elastic.co/guide/en/beats/filebeat/8.9/configuration-autodiscover.html
 filebeat.autodiscover:
   providers:
