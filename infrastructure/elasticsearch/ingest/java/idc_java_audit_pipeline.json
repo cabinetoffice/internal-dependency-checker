@@ -1,0 +1,14 @@
+{
+    "version": 1,
+    "description": "IDC - Java Audit Pipeline",
+    "processors": [],
+    "on_failure": [
+        {
+            "set": {
+                "field": "error.message",
+                "value": "{{ _ingest.on_failure_message }}",
+                "ignore_empty_value": true
+            }
+        }
+    ]
+}
