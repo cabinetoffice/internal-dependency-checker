@@ -12,8 +12,28 @@ filebeat.inputs:
         pattern: '.'
         match: after
         max_lines: 100000
+    - ndjson:
+        target: "message"
+        add_error_key: true
   pipeline: "idc_node_18_audit_pipeline"
   index: "idc_node_18_audit_index"
+
+- type: filestream
+  id: java-filestream
+  tags: ["java"]
+  paths:
+    - ingest_data/java/*.json
+  parsers:
+    - multiline:
+        type: pattern
+        pattern: '.'
+        match: after
+        max_lines: 100000
+    - ndjson:
+        target: "message"
+        add_error_key: true
+  pipeline: "idc_java_audit_pipeline"
+  index: "idc_java_audit_index"
 
 - type: filestream
   id: commits-filestream
@@ -26,6 +46,9 @@ filebeat.inputs:
         pattern: '.'
         match: after
         max_lines: 10000000
+    - ndjson:
+        target: "message"
+        add_error_key: true
   pipeline: "idc_git_commits_pipeline"
   index: "idc_git_commits_index"
 
@@ -40,6 +63,9 @@ filebeat.inputs:
         pattern: '.'
         match: after
         max_lines: 1000000
+    - ndjson:
+        target: "message"
+        add_error_key: true
   pipeline: "idc_git_info_pipeline"
   index: "idc_git_info_index"
 
@@ -68,6 +94,9 @@ filebeat.inputs:
         pattern: '.'
         match: after
         max_lines: 1000000
+    - ndjson:
+        target: "message"
+        add_error_key: true
   pipeline: "idc_python_audit_pipeline"
   index: "idc_python_audit_index"
 
@@ -82,6 +111,9 @@ filebeat.inputs:
         pattern: '.'
         match: after
         max_lines: 100000
+    - ndjson:
+        target: "message"
+        add_error_key: true
   pipeline: "idc_terraform_pipeline"
   index: "idc_terraform_index"
 
@@ -91,13 +123,6 @@ filebeat.autodiscover:
     - type: docker
       # https://www.elastic.co/guide/en/beats/filebeat/current/configuration-autodiscover-hints.html
       hints.enabled: true
-
-# https://www.elastic.co/guide/en/beats/filebeat/8.9/filtering-and-enhancing-data.html
-processors:
-  - decode_json_fields:
-      fields: [message]
-      max_depth: 2
-      add_error_key: true
 
 setup.kibana:
   host: ${KIBANA_HOSTS}
