@@ -53,6 +53,26 @@
                 "ignore_empty_value": true,
                 "if": "ctx.message?.dependencies != null"
             }
+        },
+        {
+            "script": {
+                "lang": "painless",
+                "source": "ArrayList vulnerabilities = new ArrayList();\nif( ctx.message?.dependencies != null ){\n  for(dep in ctx.message.dependencies) {\n    if( dep?.vulnerabilityIds != null ){\n      Map dependency = new HashMap();\n      dependency.put(\"fileName\", dep.fileName);\n      dependency.put(\"description\", dep.description);\n      dependency.put(\"vulnerabilities\", new HashMap());\n      for (vuln in dep.vulnerabilityIds) {\n        dependency.vulnerabilities.put(\"id\", vuln.id);\n        dependency.vulnerabilities.put(\"confidence\", vuln.confidence);\n        dependency.vulnerabilities.put(\"url\", vuln.url);\n        dependency.vulnerabilities.put(\"details\", new HashMap());\n      }\n      if( dep?.vulnerabilities != null ){\n        for (vulns in dep.vulnerabilities) {\n          dependency.vulnerabilities.details.put(\"source\", vulns.source);\n          dependency.vulnerabilities.details.put(\"name\", vulns.name);\n          dependency.vulnerabilities.details.put(\"severity\", vulns.severity);\n          dependency.vulnerabilities.details.put(\"cwes\", vulns.cwes);\n        }\n      }\n      vulnerabilities.add(dependency);\n    }\n  }\n  ctx.idc_audit.put(\"vulnerabilities\", vulnerabilities);\n}"
+            }
+        },
+        {
+            "remove": {
+                "field": [
+                    "agent",
+                    "ecs",
+                    "event",
+                    "host",
+                    "input",
+                    "log",
+                    "message"
+                ],
+                "ignore_missing": true
+            }
         }
     ],
     "on_failure": [
