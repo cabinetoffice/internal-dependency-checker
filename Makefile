@@ -1,6 +1,6 @@
 .PHONY: build start clone state docker-up docker-build start-elasticsearch test coverage
 
-NODE_VERSION := v18.16.0
+NODE_VERSION := >=20.8.0
 PREFIX := idc
 TIMESTAMP := $(shell date +"%Y-%m-%d_%H-%M-%S")
 

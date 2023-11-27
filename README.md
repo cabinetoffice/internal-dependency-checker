@@ -10,7 +10,7 @@ In the initial stages of the IDC, information will be collected and then fed in 
 
 ## Required
 
-- NodeJs v18
+- NodeJs v20
 - Docker (make sure disk space allocated to docker is enough)
 - Make (command)
 - GITHUB_KEY config (check section below)
