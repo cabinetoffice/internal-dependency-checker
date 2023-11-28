@@ -6,7 +6,7 @@ This document will describe the design, structure, and technologies used to impl
 
 |              I. Stage               |                 II. Stage                                       |     III. Stage   |
 |-------------------------------------|-----------------------------------------------------------------|-------------------|
-| NodeJs (v18)                        | Docker                                                          | Docker |
+| NodeJs (v20)                        | Docker                                                          | Docker |
 | TypeScript and Jest                 | Bash                                                            | Bash, JavaScript and NodeJS |
 | Makefile and make                   | JavaScript and NodeJS                                           | Elasticsearch, Kibana        |
 | NVM                                 | Makefile and make                                               | AWS services … |
