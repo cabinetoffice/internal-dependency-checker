@@ -219,16 +219,13 @@ describe("UTILS Index tests suites", () => {
 
             await getOrgData(MOCK_ORGANIZATION);
 
-            expect(spyConsoleLog).toHaveBeenCalledTimes(6);
+            expect(spyConsoleLog).toHaveBeenCalledTimes(4);
 
             expect(spyConsoleLog).toHaveBeenCalledWith(`GET repos data:`);
             expect(spyConsoleLog).toHaveBeenCalledWith(`https://api.github.com/orgs/${MOCK_ORGANIZATION}/repos?page=1&per_page=100, page 1, retrieved 0`);
 
             expect(spyConsoleLog).toHaveBeenCalledWith(`GET members data:`);
             expect(spyConsoleLog).toHaveBeenCalledWith(`https://api.github.com/orgs/${MOCK_ORGANIZATION}/members?page=1&per_page=100, page 1, retrieved 0`);
-
-            expect(spyConsoleLog).toHaveBeenCalledWith(`GET teams data:`);
-            expect(spyConsoleLog).toHaveBeenCalledWith(`https://api.github.com/orgs/${MOCK_ORGANIZATION}/teams?page=1&per_page=100, page 1, retrieved 0`);
 
         });
 

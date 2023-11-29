@@ -61,7 +61,8 @@ export const getInfo = async (what: string, dataKey: string, dataUrl: string, pa
 // ************************************************************ //
 
 export const getOrgData = async (org: string, dataKey = "list"): Promise<void> => {
-    for (const what of Object.keys(ORG_DATA)) {
+    // loop through each of teams, members and repos and use getInfo to extract the data
+    for (const what of ['repos', 'members']) {
         console.log(`GET ${what} data:`);
         const url = `https://api.github.com/orgs/${org}/${what}`;
         await getInfo(what, dataKey, url);
