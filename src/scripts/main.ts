@@ -5,14 +5,14 @@ import {
 } from "../config/index";
 import {
     getOrgData,
-    getTeamsData,
+    getPerTeamData,
     setOrgData
 } from "../utils/index";
 
 export const main = async (org: string): Promise<void> => {
     try {
         await getOrgData(org);
-        await getTeamsData();
+        await getPerTeamData();
 
         setOrgData();
 

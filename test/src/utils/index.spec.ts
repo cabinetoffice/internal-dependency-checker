@@ -4,7 +4,7 @@ import {
     getTechFile,
     updateStateFile,
     setTimeOut,
-    getTeamsData,
+    getPerTeamData,
     mapData,
     getInfo,
     getOrgData,
@@ -233,7 +233,7 @@ describe("UTILS Index tests suites", () => {
 
     // ************************************************************ //
 
-    describe("getTeamsData(...)", () => {
+    describe("getPerTeamData(...)", () => {
 
         test(`should correctly populate TMP_DATA with members and repos per team`, async () => {
             TMP_DATA["teams"]["list"] = MOCK_REPOS_TEAMS_DATA;
@@ -244,7 +244,7 @@ describe("UTILS Index tests suites", () => {
                 .mockImplementationOnce(() => Promise.resolve({ json: () => Promise.resolve([MOCK_REPOS_MEMBERS[0]]) } as any))
                 .mockImplementationOnce(() => Promise.resolve({ json: () => Promise.resolve([MOCK_REPOS_REPOSITORIES[0]]) } as any));
 
-            await getTeamsData();
+            await getPerTeamData();
 
             expect(TMP_DATA["repos"]["list"]).toEqual([]);
             expect(TMP_DATA["members"]["list"]).toEqual([]);

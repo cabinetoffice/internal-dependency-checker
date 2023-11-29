@@ -71,7 +71,7 @@ export const getOrgData = async (org: string, dataKey = "list"): Promise<void> =
 
 // ************************************************************ //
 
-export const getTeamsData = async (): Promise<void> => {
+export const getPerTeamData = async (): Promise<void> => {
     for (const team of TMP_DATA["teams"]["list"]) {
         const memberUrl = `${team["url"]}/members`;
         const teamUrl = team["repositories_url"];
