@@ -1,3 +1,4 @@
+import { createOAuthApiClient } from '@co-digital/api-sdk';
 import {
     REPOS_KEY,
     OrgData,
@@ -5,7 +6,7 @@ import {
     StateDependencies
 } from '../types/config';
 
-export const GITHUB_KEY = process.env.GITHUB_KEY;
+export const GITHUB_KEY = process.env.GITHUB_KEY || '';
 
 export const PER_PAGE = 100;
 export const CLONE_TIMEOUT = 5000;
@@ -24,6 +25,7 @@ export const STATE_FILE_NAME = "state.json";
 export const STATE_FILE_PATH = `${REPOS_DIRECTORY_PATH}/${STATE_FILE_NAME}`;
 
 export const HEADERS = { 'headers': { 'Authorization': `Bearer ${GITHUB_KEY}` } };
+export const API_CLIENT = createOAuthApiClient(GITHUB_KEY);
 
 export const ORG_DATA: OrgData = {
     "repos": { "list": [], "details": {} },

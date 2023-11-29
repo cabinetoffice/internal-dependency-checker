@@ -30,6 +30,7 @@
     "typescript": "^5.1.3"
   },
   "dependencies": {
+    "@co-digital/api-sdk": "^1.0.1",
     "yargs": "^17.7.2"
   }
 }
