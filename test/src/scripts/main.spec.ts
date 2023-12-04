@@ -1,18 +1,23 @@
 jest.mock('../../../src/utils/index');
 jest.mock('../../../src/utils/fs');
+jest.mock('../../../src/service/github');
 
 import { describe, expect, test, jest, afterEach, beforeEach } from '@jest/globals';
 
 import { main } from "../../../src/scripts/main";
 import { saveToFile } from "../../../src/utils/fs";
-import { getOrgData, getPerTeamData, setOrgData } from "../../../src/utils/index";
+import { getOrgData, getPerTeamData, setOrgData, setTeamsData } from "../../../src/utils/index";
 
-import { MOCK_ORGANIZATION } from '../../mock/repos_info';
+import { getTeamsData } from '../../../src/service/github';
+
+import { MOCK_ORGANIZATION, MOCK_REPOS_TEAMS_DATA } from '../../mock/repos_info';
 import { REPOS_FILE_PATH } from '../../../src/config';
 
 const spyConsoleError = jest.spyOn(console, 'error');
 
 const mockGetOrgData = getOrgData as jest.Mock;
+const mockGetTeamsData = (getTeamsData as jest.Mock<any>).mockResolvedValue(MOCK_REPOS_TEAMS_DATA);
+const mockSetTeamsData = setTeamsData as jest.Mock;
 const mockGetPerTeamData = getPerTeamData as jest.Mock;
 const mockSaveToFile = saveToFile as jest.Mock;
 const mockSetOrgData = setOrgData as jest.Mock;
@@ -27,11 +32,14 @@ describe("Main tests suites", () => {
         jest.resetAllMocks();
     });
 
-    test("should call getOrgData, getPerTeamData and saveToFile functions", async () => {
+    test("should call getOrgData, getTeamsData, setTeamsData, getPerTeamData and saveToFile functions", async () => {
 
         await main(MOCK_ORGANIZATION);
 
         expect(mockGetOrgData).toHaveBeenCalledTimes(1);
+        expect(mockGetTeamsData).toHaveBeenCalledTimes(1);
+        expect(mockSetTeamsData).toHaveBeenCalledTimes(1);
+        expect(mockSetTeamsData).toHaveBeenCalledWith(MOCK_REPOS_TEAMS_DATA);
         expect(mockGetPerTeamData).toHaveBeenCalledTimes(1);
         expect(mockSaveToFile).toHaveBeenCalledTimes(1);
         expect(mockSetOrgData).toHaveBeenCalledTimes(1);
