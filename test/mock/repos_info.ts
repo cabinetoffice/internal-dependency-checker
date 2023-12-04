@@ -131,6 +131,24 @@ export const MOCK_GET_TEAMS_API_SDK_RESPONSE = {
 
 export const MOCK_REPOS_TEAMS_DATA: GitHubTeams[] = MOCK_GET_TEAMS_API_SDK_RESPONSE.resource;
 
+export const MOCK_ORG_TEAMS = {
+    "teams": {
+        "details": {
+            [MOCK_REPOS_TEAMS_NAME]: {
+                "description": MOCK_REPOS_TEAMS_DESCRIPTION,
+                "url": "https://api.github.com/organizations/00000/team/22222",
+                "html_url": `https://api.github.com/orgs/${MOCK_ORGANIZATION}/teams/${MOCK_REPOS_TEAMS_NAME}`,
+                "repositories_url": "https://api.github.com/organizations/11111/team/22222/repos",
+                "members": [],
+                "repos": [],
+            }
+        },
+        "list": [
+            MOCK_REPOS_TEAMS_NAME
+        ]
+    }
+};
+
 export const MOCK_REPOS_MEMBERS_NAME = "cool-member";
 export const MOCK_REPOS_MEMBERS = {
     "0": {

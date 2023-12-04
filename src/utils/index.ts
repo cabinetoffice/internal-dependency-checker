@@ -23,6 +23,7 @@ import {
     MEMBERS_PER_TEAM_KEY,
     REPOS_PER_TEAM_KEY
 } from "../config/index";
+import { GitHubTeams } from '@co-digital/api-sdk/lib/api-sdk/github/type';
 
 // ************************************************************ //
 
@@ -67,6 +68,21 @@ export const getOrgData = async (org: string, dataKey = "list"): Promise<void> =
         const url = `https://api.github.com/orgs/${org}/${what}`;
         await getInfo(what, dataKey, url);
     }
+};
+
+// ************************************************************ //
+
+export const setTeamsData = (teams: GitHubTeams[]) => {
+    teams.forEach((team) => {
+        // eslint-disable-next-line @typescript-eslint/no-unused-vars
+        const { name, members_url, ...rest } = team;
+        ORG_DATA.teams.list.push(name);
+        ORG_DATA.teams.details[name] = {
+            ...rest,
+            repos: [],
+            members: [],
+        };
+    });
 };
 
 // ************************************************************ //

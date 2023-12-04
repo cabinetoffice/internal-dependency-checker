@@ -8,7 +8,8 @@ import {
     mapData,
     getInfo,
     getOrgData,
-    setOrgData
+    setOrgData,
+    setTeamsData
 } from "../../../src/utils/index";
 
 import {
@@ -42,7 +43,8 @@ import {
     MOCK_REPOS_MEMBERS_NAME,
     MOCK_REPOS_REPO_NAME,
     MOCK_ORG_DATA,
-    MOCK_PER_TEAM_DATA
+    MOCK_PER_TEAM_DATA,
+    MOCK_ORG_TEAMS
 } from '../../mock/repos_info';
 import { MemberDetails, RepoDetails } from '../../../src/types/config';
 
@@ -227,6 +229,22 @@ describe("UTILS Index tests suites", () => {
             expect(spyConsoleLog).toHaveBeenCalledWith(`GET members data:`);
             expect(spyConsoleLog).toHaveBeenCalledWith(`https://api.github.com/orgs/${MOCK_ORGANIZATION}/members?page=1&per_page=100, page 1, retrieved 0`);
 
+        });
+
+    });
+
+    // ************************************************************ //
+
+    describe("setTeamsData(...)", () => {
+
+        beforeEach(() => {
+            ORG_DATA["teams"] = { "list": [], "details": {} };
+        });
+
+        test(`should correctly populate ORG_DATA with teams data`, async () => {
+            setTeamsData(MOCK_REPOS_TEAMS_DATA);
+            
+            expect(ORG_DATA["teams"]).toEqual(MOCK_ORG_TEAMS["teams"]);
         });
 
     });
