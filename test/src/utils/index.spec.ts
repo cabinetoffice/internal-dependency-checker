@@ -4,11 +4,12 @@ import {
     getTechFile,
     updateStateFile,
     setTimeOut,
-    getTeamsData,
+    getPerTeamData,
     mapData,
     getInfo,
     getOrgData,
-    setOrgData
+    setOrgData,
+    setTeamsData
 } from "../../../src/utils/index";
 
 import {
@@ -42,7 +43,8 @@ import {
     MOCK_REPOS_MEMBERS_NAME,
     MOCK_REPOS_REPO_NAME,
     MOCK_ORG_DATA,
-    MOCK_PER_TEAM_DATA
+    MOCK_PER_TEAM_DATA,
+    MOCK_ORG_TEAMS
 } from '../../mock/repos_info';
 import { MemberDetails, RepoDetails } from '../../../src/types/config';
 
@@ -219,7 +221,7 @@ describe("UTILS Index tests suites", () => {
 
             await getOrgData(MOCK_ORGANIZATION);
 
-            expect(spyConsoleLog).toHaveBeenCalledTimes(6);
+            expect(spyConsoleLog).toHaveBeenCalledTimes(4);
 
             expect(spyConsoleLog).toHaveBeenCalledWith(`GET repos data:`);
             expect(spyConsoleLog).toHaveBeenCalledWith(`https://api.github.com/orgs/${MOCK_ORGANIZATION}/repos?page=1&per_page=100, page 1, retrieved 0`);
@@ -227,16 +229,29 @@ describe("UTILS Index tests suites", () => {
             expect(spyConsoleLog).toHaveBeenCalledWith(`GET members data:`);
             expect(spyConsoleLog).toHaveBeenCalledWith(`https://api.github.com/orgs/${MOCK_ORGANIZATION}/members?page=1&per_page=100, page 1, retrieved 0`);
 
-            expect(spyConsoleLog).toHaveBeenCalledWith(`GET teams data:`);
-            expect(spyConsoleLog).toHaveBeenCalledWith(`https://api.github.com/orgs/${MOCK_ORGANIZATION}/teams?page=1&per_page=100, page 1, retrieved 0`);
-
         });
 
     });
 
     // ************************************************************ //
 
-    describe("getTeamsData(...)", () => {
+    describe("setTeamsData(...)", () => {
+
+        beforeEach(() => {
+            ORG_DATA["teams"] = { "list": [], "details": {} };
+        });
+
+        test(`should correctly populate ORG_DATA with teams data`, async () => {
+            setTeamsData(MOCK_REPOS_TEAMS_DATA);
+            
+            expect(ORG_DATA["teams"]).toEqual(MOCK_ORG_TEAMS["teams"]);
+        });
+
+    });
+
+    // ************************************************************ //
+
+    describe("getPerTeamData(...)", () => {
 
         test(`should correctly populate TMP_DATA with members and repos per team`, async () => {
             TMP_DATA["teams"]["list"] = MOCK_REPOS_TEAMS_DATA;
@@ -247,7 +262,7 @@ describe("UTILS Index tests suites", () => {
                 .mockImplementationOnce(() => Promise.resolve({ json: () => Promise.resolve([MOCK_REPOS_MEMBERS[0]]) } as any))
                 .mockImplementationOnce(() => Promise.resolve({ json: () => Promise.resolve([MOCK_REPOS_REPOSITORIES[0]]) } as any));
 
-            await getTeamsData();
+            await getPerTeamData();
 
             expect(TMP_DATA["repos"]["list"]).toEqual([]);
             expect(TMP_DATA["members"]["list"]).toEqual([]);
