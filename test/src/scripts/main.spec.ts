@@ -6,9 +6,9 @@ import { describe, expect, test, jest, afterEach, beforeEach } from '@jest/globa
 
 import { main } from "../../../src/scripts/main";
 import { saveToFile } from "../../../src/utils/fs";
-import { getOrgData, getPerTeamData, setOrgData, setTeamsData } from "../../../src/utils/index";
+import { getOrgData, getPerTeamData, setOrgData, setTeamsData, setMembersData } from "../../../src/utils/index";
 
-import { getTeamsData } from '../../../src/service/github';
+import { getTeamsData, getMembersData } from '../../../src/service/github';
 
 import { MOCK_ORGANIZATION, MOCK_REPOS_TEAMS_DATA } from '../../mock/repos_info';
 import { REPOS_FILE_PATH } from '../../../src/config';
@@ -19,6 +19,7 @@ const mockGetOrgData = getOrgData as jest.Mock;
 const mockGetTeamsData = (getTeamsData as jest.Mock<any>).mockResolvedValue(MOCK_REPOS_TEAMS_DATA);
 const mockSetTeamsData = setTeamsData as jest.Mock;
 const mockGetPerTeamData = getPerTeamData as jest.Mock;
+const mockGetMembersData = getMembersData as jest.Mock
 const mockSaveToFile = saveToFile as jest.Mock;
 const mockSetOrgData = setOrgData as jest.Mock;
 
@@ -38,6 +39,7 @@ describe("Main tests suites", () => {
 
         expect(mockGetOrgData).toHaveBeenCalledTimes(1);
         expect(mockGetTeamsData).toHaveBeenCalledTimes(1);
+        expect(mockGetMembersData).toBeCalledTimes(1);
         expect(mockSetTeamsData).toHaveBeenCalledTimes(1);
         expect(mockSetTeamsData).toHaveBeenCalledWith(MOCK_REPOS_TEAMS_DATA);
         expect(mockGetPerTeamData).toHaveBeenCalledTimes(1);
