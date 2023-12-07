@@ -23,7 +23,7 @@ import {
     MEMBERS_PER_TEAM_KEY,
     REPOS_PER_TEAM_KEY
 } from "../config/index";
-import { GitHubTeams } from '@co-digital/api-sdk/lib/api-sdk/github/type';
+import { GitHubTeams, GitHubMembers } from '@co-digital/api-sdk/lib/api-sdk/github/type';
 
 // ************************************************************ //
 
@@ -63,7 +63,7 @@ export const getInfo = async (what: string, dataKey: string, dataUrl: string, pa
 
 export const getOrgData = async (org: string, dataKey = "list"): Promise<void> => {
     // loop through each of teams, members and repos and use getInfo to extract the data
-    for (const what of ['repos', 'members']) {
+    for (const what of ['repos']) {
         console.log(`GET ${what} data:`);
         const url = `https://api.github.com/orgs/${org}/${what}`;
         await getInfo(what, dataKey, url);
@@ -81,6 +81,20 @@ export const setTeamsData = (teams: GitHubTeams[]) => {
             ...rest,
             repos: [],
             members: [],
+        };
+    });
+};
+
+// ************************************************************ //
+
+export const setMembersData = (members: GitHubMembers[]) => {
+    members.forEach((member) => {
+        const { login, ...rest } = member;
+        ORG_DATA.members.list.push(login);
+        ORG_DATA.members.details[login] = {
+            ...rest,
+            repos: [],
+            teams: [],
         };
     });
 };
