@@ -1,4 +1,4 @@
-import { GitHubTeams } from "@co-digital/api-sdk/lib/api-sdk/github/type";
+import { GitHubTeams, GitHubMembers } from "@co-digital/api-sdk/lib/api-sdk/github/type";
 import { MEMBERS_PER_TEAM_KEY, REPOS_PER_TEAM_KEY } from "../../src/config";
 import { WhatEnum } from "../../src/types/config";
 
@@ -150,6 +150,36 @@ export const MOCK_ORG_TEAMS = {
 };
 
 export const MOCK_REPOS_MEMBERS_NAME = "cool-member";
+
+export const MOCK_GET_MEMBERS_API_SDK_RESPONSE = {
+    httpStatusCode: 200,
+    resource: [
+        {
+            "login": MOCK_REPOS_MEMBERS_NAME,
+            "url": `https://api.github.com/users/${MOCK_REPOS_MEMBERS_NAME}`,
+            "html_url": `https://github.com/${MOCK_REPOS_MEMBERS_NAME}`,
+            "repos_url": `https://api.github.com/users/${MOCK_REPOS_MEMBERS_NAME}/repos`
+        }
+    ],
+};
+
+export const MOCK_MEMBERS_TEAMS_DATA: GitHubMembers[] = MOCK_GET_MEMBERS_API_SDK_RESPONSE.resource;
+
+export const MOCK_ORG_MEMBERS = {
+    "members": {
+        "details": {
+            [MOCK_REPOS_MEMBERS_NAME]: {
+                "html_url": `https://github.com/${MOCK_REPOS_MEMBERS_NAME}`,
+                "url": `https://api.github.com/users/${MOCK_REPOS_MEMBERS_NAME}`,
+                "repos_url": `https://api.github.com/users/${MOCK_REPOS_MEMBERS_NAME}/repos`,
+                "repos": [],
+                "teams": [],
+            }
+        },
+        "list": [MOCK_REPOS_MEMBERS_NAME]
+    }
+};
+
 export const MOCK_REPOS_MEMBERS = {
     "0": {
         "login": MOCK_REPOS_MEMBERS_NAME,

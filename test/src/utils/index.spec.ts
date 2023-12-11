@@ -9,7 +9,8 @@ import {
     getInfo,
     getOrgData,
     setOrgData,
-    setTeamsData
+    setTeamsData,
+    setMembersData
 } from "../../../src/utils/index";
 
 import {
@@ -37,6 +38,7 @@ import {
     MOCK_ORGANIZATION,
     MOCK_REPOS_TEAMS_DATA,
     MOCK_REPOS_TEAMS_NAME,
+    MOCK_MEMBERS_TEAMS_DATA,
     MOCK_REPOS_REPOSITORIES,
     MOCK_REPOS_MEMBERS,
     MOCK_JSON_FETCH_RESPONSE,
@@ -44,7 +46,8 @@ import {
     MOCK_REPOS_REPO_NAME,
     MOCK_ORG_DATA,
     MOCK_PER_TEAM_DATA,
-    MOCK_ORG_TEAMS
+    MOCK_ORG_TEAMS,
+    MOCK_ORG_MEMBERS
 } from '../../mock/repos_info';
 import { MemberDetails, RepoDetails } from '../../../src/types/config';
 
@@ -217,17 +220,15 @@ describe("UTILS Index tests suites", () => {
 
     describe("getOrgData(...)", () => {
 
-        test(`should fetch repos, members and teams data`, async () => {
+        test(`should fetch repos data`, async () => {
 
             await getOrgData(MOCK_ORGANIZATION);
 
-            expect(spyConsoleLog).toHaveBeenCalledTimes(4);
+            expect(spyConsoleLog).toHaveBeenCalledTimes(2);
 
             expect(spyConsoleLog).toHaveBeenCalledWith(`GET repos data:`);
             expect(spyConsoleLog).toHaveBeenCalledWith(`https://api.github.com/orgs/${MOCK_ORGANIZATION}/repos?page=1&per_page=100, page 1, retrieved 0`);
 
-            expect(spyConsoleLog).toHaveBeenCalledWith(`GET members data:`);
-            expect(spyConsoleLog).toHaveBeenCalledWith(`https://api.github.com/orgs/${MOCK_ORGANIZATION}/members?page=1&per_page=100, page 1, retrieved 0`);
 
         });
 
@@ -245,6 +246,22 @@ describe("UTILS Index tests suites", () => {
             setTeamsData(MOCK_REPOS_TEAMS_DATA);
             
             expect(ORG_DATA["teams"]).toEqual(MOCK_ORG_TEAMS["teams"]);
+        });
+
+    });
+
+    // ************************************************************ //
+
+    describe("setMembersData(...)", () => {
+
+        beforeEach(() => {
+            ORG_DATA["members"] = { "list": [], "details": {} };
+        });
+
+        test(`should correctly populate ORG_DATA with teams data`, async () => {
+            setMembersData(MOCK_MEMBERS_TEAMS_DATA);
+            
+            expect(ORG_DATA["members"]).toEqual(MOCK_ORG_MEMBERS["members"]);
         });
 
     });
