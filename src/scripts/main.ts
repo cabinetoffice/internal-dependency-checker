@@ -4,25 +4,24 @@ import {
     ORG_DATA
 } from "../config/index";
 import {
-    getOrgData,
     getPerTeamData,
     setOrgData,
     setTeamsData,
     setMembersData,
+    setReposData,
 } from "../utils/index";
-import { getTeamsData, getMembersData } from "../service/github";
+import { getTeamsData, getMembersData, getReposData } from "../service/github";
 
 export const main = async (org: string): Promise<void> => {
     try {
-        await getOrgData(org);
-
-        // Reduce complexity of getOrgData and setOrgData by refactoring data getting and setting of repos, teams and names into their own functions. Store output of api-sdk response in variables to remove need to use TMP_DATA
 
         const teams = await getTeamsData(`https://api.github.com/orgs/${org}/teams`);
         const members = await getMembersData(`https://api.github.com/orgs/${org}/members`);
+        const repos = await getReposData(`https://api.github.com/orgs/${org}/repos`);
 
         setTeamsData(teams);
         setMembersData(members);
+        setReposData(repos);
 
         await getPerTeamData();
 
