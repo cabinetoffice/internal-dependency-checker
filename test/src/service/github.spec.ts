@@ -1,13 +1,14 @@
 import { jest, describe, beforeEach, test, expect } from '@jest/globals';
-import { getTeamsData, getMembersData} from "../../../src/service/github";
-import { MOCK_GET_TEAMS_API_SDK_RESPONSE, MOCK_GET_MEMBERS_API_SDK_RESPONSE } from "../../mock/repos_info";
+import { getTeamsData, getMembersData, getReposData} from "../../../src/service/github";
+import { MOCK_GET_TEAMS_API_SDK_RESPONSE, MOCK_GET_MEMBERS_API_SDK_RESPONSE, MOCK_GET_REPOS_API_SDK_RESPONSE } from "../../mock/repos_info";
 import { client } from "../../../src/service/api";
 
 jest.mock("@co-digital/api-sdk", () => ({
     createOAuthApiClient: jest.fn(() => ({
         gitHub: {
             getMembers: jest.fn(),
-            getTeams: jest.fn()
+            getTeams: jest.fn(),
+            getRepos: jest.fn()
         },
     })),
 }));
@@ -95,6 +96,44 @@ describe("github service test suite", () => {
     
             expect(spyConsoleError).toHaveBeenCalledTimes(1);
             expect(members).toEqual([]);
+        });
+        
+
+    });
+    describe("getReposData tests", () => {
+        test('should return value should be empty if no data fetched', async () => {
+            (client.gitHub.getRepos as jest.Mock<any>).mockResolvedValue({});
+    
+            const repos = await getReposData('');
+    
+            expect(spyConsoleLog).toHaveBeenCalledTimes(0);
+            expect(repos).toEqual([]);
+        });
+
+        test('should return resource from getRepos API SDK response if data fetched', async () => {
+            (client.gitHub.getRepos as jest.Mock<any>).mockResolvedValue(MOCK_GET_REPOS_API_SDK_RESPONSE);
+    
+            const repos = await getReposData('');
+    
+            expect(spyConsoleLog).toHaveBeenCalledTimes(1);
+            expect(repos).toEqual(MOCK_GET_REPOS_API_SDK_RESPONSE.resource);
+        });
+    
+        test('should only call getRepos API SDK response once if length of data fetched is not 100', async () => {
+            (client.gitHub.getRepos as jest.Mock<any>).mockResolvedValue(MOCK_GET_REPOS_API_SDK_RESPONSE);
+    
+            await getReposData('');
+    
+            expect(client.gitHub.getRepos).toHaveBeenCalledTimes(1);
+        });
+    
+        test('should catch a rejected promise call', async () => {
+            (client.gitHub.getRepos as jest.Mock<any>).mockRejectedValue([]);
+    
+            const repos = await getReposData('');
+    
+            expect(spyConsoleError).toHaveBeenCalledTimes(1);
+            expect(repos).toEqual([]);
         });
         
 
