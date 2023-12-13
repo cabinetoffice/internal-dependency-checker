@@ -1,4 +1,4 @@
-import { GitHubTeams, GitHubMembers } from "@co-digital/api-sdk/lib/api-sdk/github/type";
+import { GitHubTeams, GitHubMembers, GitHubRepos } from "@co-digital/api-sdk/lib/api-sdk/github/type";
 import { PER_PAGE } from "../config/index";
 import { ApiResponse } from "@co-digital/api-sdk";
 import { client } from "./api";
@@ -35,6 +35,26 @@ export const getMembersData = async (memberUrl: string, members: GitHubMembers[]
             }
         }
         return members;
+    } catch (error: any) {
+        console.error(`Error: ${error.message}`);
+        return [];
+    }
+
+};
+
+export const getReposData = async (reposUrl: string, repos: GitHubRepos[] = [], page = 1): Promise<GitHubRepos[]> => {
+    try {
+        const url = `${reposUrl}?page=${page}&per_page=${PER_PAGE}`;
+        const resp = await client.gitHub.getRepos(url) as ApiResponse<GitHubRepos[]>;
+        if (resp.resource) {
+            repos = [...repos, ...resp.resource];
+            console.log(`${url}, page ${page}, retrieved ${resp.resource.length}`);
+
+            if (resp.resource.length === PER_PAGE) {
+                return await getReposData(reposUrl, repos, page + 1);
+            }
+        }
+        return repos;
     } catch (error: any) {
         console.error(`Error: ${error.message}`);
         return [];
