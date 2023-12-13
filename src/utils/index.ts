@@ -23,7 +23,7 @@ import {
     MEMBERS_PER_TEAM_KEY,
     REPOS_PER_TEAM_KEY
 } from "../config/index";
-import { GitHubTeams, GitHubMembers } from '@co-digital/api-sdk/lib/api-sdk/github/type';
+import { GitHubTeams, GitHubMembers, GitHubRepos } from '@co-digital/api-sdk/lib/api-sdk/github/type';
 
 // ************************************************************ //
 
@@ -94,6 +94,20 @@ export const setMembersData = (members: GitHubMembers[]) => {
         ORG_DATA.members.details[login] = {
             ...rest,
             repos: [],
+            teams: [],
+        };
+    });
+};
+
+// ************************************************************ //
+
+export const setReposData = (repos: GitHubRepos[]) => {
+    repos.forEach((repo) => {
+        const { name, ...rest } = repo;
+        ORG_DATA.repos.list.push(name);
+        ORG_DATA.repos.details[name] = {
+            ...rest,
+            members: [],
             teams: [],
         };
     });
