@@ -10,7 +10,8 @@ import {
     getOrgData,
     setOrgData,
     setTeamsData,
-    setMembersData
+    setMembersData,
+    setReposData
 } from "../../../src/utils/index";
 
 import {
@@ -47,7 +48,9 @@ import {
     MOCK_ORG_DATA,
     MOCK_PER_TEAM_DATA,
     MOCK_ORG_TEAMS,
-    MOCK_ORG_MEMBERS
+    MOCK_ORG_MEMBERS,
+    MOCK_ORG_REPOS,
+    MOCK_REPOS_REPO_DATA
 } from '../../mock/repos_info';
 import { MemberDetails, RepoDetails } from '../../../src/types/config';
 
@@ -262,6 +265,20 @@ describe("UTILS Index tests suites", () => {
             setMembersData(MOCK_MEMBERS_TEAMS_DATA);
             
             expect(ORG_DATA["members"]).toEqual(MOCK_ORG_MEMBERS["members"]);
+        });
+
+    });
+
+    describe("setReposData(...)", () => {
+
+        beforeEach(() => {
+            ORG_DATA["repos"] = { "list": [], "details": {} };
+        });
+
+        test(`should correctly populate ORG_DATA with teams data`, async () => {
+            setReposData(MOCK_REPOS_REPO_DATA);
+            
+            expect(ORG_DATA["repos"]).toEqual(MOCK_ORG_REPOS["repos"]);
         });
 
     });
