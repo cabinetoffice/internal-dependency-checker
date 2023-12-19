@@ -23,6 +23,7 @@ import {
     MEMBERS_PER_TEAM_KEY,
     REPOS_PER_TEAM_KEY
 } from "../config/index";
+import { log } from './logger';
 
 // ************************************************************ //
 
@@ -45,7 +46,7 @@ export const getInfo = async (what: string, dataKey: string, dataUrl: string, pa
         const data = await jsonData.json();
         const dataLength = data?.length || 0;
 
-        console.log(`${url}, page ${page}, retrieved ${dataLength}`);
+        log.info(`${url}, page ${page}, retrieved ${dataLength}`);
 
         if (dataLength) {
             TMP_DATA[what][dataKey] = TMP_DATA[what][dataKey].concat(mapData(data, MAP_KEYS[what]));
@@ -54,7 +55,7 @@ export const getInfo = async (what: string, dataKey: string, dataUrl: string, pa
             }
         }
     } catch (error: any) {
-        console.error(`Error: ${error.message}`);
+        log.error(`Error: ${error.message}`);
     }
 };
 
@@ -62,7 +63,7 @@ export const getInfo = async (what: string, dataKey: string, dataUrl: string, pa
 
 export const getOrgData = async (org: string, dataKey = "list"): Promise<void> => {
     for (const what of Object.keys(ORG_DATA)) {
-        console.log(`GET ${what} data:`);
+        log.info(`GET ${what} data:`);
         const url = `https://api.github.com/orgs/${org}/${what}`;
         await getInfo(what, dataKey, url);
     }
@@ -162,12 +163,12 @@ export const updateStateFile = (filePath: string, fileName: string, fileExtensio
         } else if (!STATE_DEPENDENCIES[tech]![file_name][key]) {
             STATE_DEPENDENCIES[tech]![file_name][key] = file_path;
         } else if (FILES_BY_EXTENSIONS.indexOf(fileExtension) === -1) {
-            console.error(`file name: ${file_name}, file Path: ${file_path}, key: ${key}`);
+            log.error(`file name: ${file_name}, file Path: ${file_path}, key: ${key}`);
             throw new Error('This should not happen!');
         }
     }
 
-    console.log(`Added ${file_path} to state file.`);
+    log.info(`Added ${file_path} to state file.`);
 };
 
 // ************************************************************ //

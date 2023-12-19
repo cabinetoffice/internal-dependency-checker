@@ -9,11 +9,13 @@ import {
     STATE_FILE_PATH
 } from "../config/index";
 
+import { log } from "../utils/logger";
+
 export const state = async (): Promise<void> => {
     try {
         checkFileExists(REPOS_DIRECTORY_PATH);
         await saveToFile(STATE_FILE_PATH, STATE_DEPENDENCIES);
     } catch (error: any) {
-        console.error(`Error: ${error.message}`);
+        log.error(`Error: ${error.message}`);
     }
 };

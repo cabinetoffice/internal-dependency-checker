@@ -8,6 +8,7 @@ import {
     getTeamsData,
     setOrgData
 } from "../utils/index";
+import { log } from "../utils/logger";
 
 export const main = async (org: string): Promise<void> => {
     try {
@@ -18,6 +19,6 @@ export const main = async (org: string): Promise<void> => {
 
         await saveToFile(REPOS_FILE_PATH, ORG_DATA);
     } catch (error: any) {
-        console.error(`Error: ${error.message}`);
+        log.error(`Error: ${error.message}`);
     }
 };

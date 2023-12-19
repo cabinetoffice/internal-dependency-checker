@@ -7,18 +7,20 @@ import { main } from "./scripts/main";
 import { clone } from "./scripts/clone";
 import { state } from "./scripts/state";
 
+import { log } from "./utils/logger";
+
 export const mainCommand = (argv: any) => {
-    console.log('Start main command!');
+    log.info('Start main command!');
     (argv.ORG && process.env.GITHUB_KEY)
         ? main(argv.ORG as string)
-        : console.error('ORG and/or GITHUB_KEY are missing!');
+        : log.error('ORG and/or GITHUB_KEY are missing!');
 };
 export const cloneCommand = () => {
-    console.log('Start clone command!');
+    log.info('Start clone command!');
     clone();
 };
 export const stateCommand = () => {
-    console.log('Start state command!');
+    log.info('Start state command!');
     state();
 };
 
