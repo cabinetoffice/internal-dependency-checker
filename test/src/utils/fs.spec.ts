@@ -1,7 +1,13 @@
 jest.mock('../../../src/utils/exec');
 jest.mock('../../../src/utils/index');
+jest.mock('../../../src/utils/logger', () => ({
+    log: {
+        info: jest.fn(),
+        error: jest.fn()
+    }
+}));
 
-import { describe, expect, test, jest, afterEach, beforeEach } from '@jest/globals';
+import { describe, expect, test, jest, afterEach } from '@jest/globals';
 import fs from 'node:fs';
 
 import { exec_command } from "../../../src/utils/exec";
@@ -14,8 +20,10 @@ import {
 import { MOCK_REPOS_DATA } from '../../mock/repos_info';
 import { REPOS_KEY } from '../../../src/types/config';
 
-const spyConsoleLog = jest.spyOn(console, 'log');
-const spyConsoleError = jest.spyOn(console, 'error');
+import { log } from '../../../src/utils/logger';
+
+const mockLogError = log.error as jest.Mock;
+const mockLogInfo = log.info as jest.Mock;
 
 const spyWriteFileCall = jest.spyOn(fs.promises, 'writeFile');
 const spyReadFileCall = jest.spyOn(fs.promises, 'readFile');
@@ -26,11 +34,6 @@ const mockSetTimeOutCall = setTimeOut as jest.Mock;
 const mockUpdateStateFileCall = updateStateFile as jest.Mock;
 
 describe("UTILS fs tests suites", () => {
-
-    beforeEach(() => {
-        spyConsoleLog.mockImplementation(() => {/**/});
-        spyConsoleError.mockImplementation(() => {/**/});
-    });
 
     afterEach(() => {
         jest.resetAllMocks();
@@ -45,9 +48,9 @@ describe("UTILS fs tests suites", () => {
 
             await saveToFile(fileName, {});
 
-            expect(spyConsoleLog).toHaveBeenCalledTimes(1);
-            expect(spyConsoleLog).toHaveBeenCalledWith(`Saved data to ${fileName}.`);
-            expect(spyConsoleError).toHaveBeenCalledTimes(0);
+            expect(mockLogInfo).toHaveBeenCalledTimes(1);
+            expect(mockLogInfo).toHaveBeenCalledWith(`Saved data to ${fileName}.`);
+            expect(mockLogError).toHaveBeenCalledTimes(0);
         });
 
         test('should call writeFile and catch error', async () => {
@@ -57,9 +60,9 @@ describe("UTILS fs tests suites", () => {
 
             await saveToFile(fileName, {});
 
-            expect(spyConsoleLog).toHaveBeenCalledTimes(0);
-            expect(spyConsoleError).toHaveBeenCalledTimes(1);
-            expect(spyConsoleError).toHaveBeenCalledWith(`Error: ${errMsg}`);
+            expect(mockLogInfo).toHaveBeenCalledTimes(0);
+            expect(mockLogError).toHaveBeenCalledTimes(1);
+            expect(mockLogError).toHaveBeenCalledWith(`Error: ${errMsg}`);
         });
     });
 
@@ -100,8 +103,8 @@ describe("UTILS fs tests suites", () => {
 
             expect(spyReaddirSyncCall).toHaveBeenCalledTimes(1);
 
-            expect(spyConsoleError).toHaveBeenCalledTimes(1);
-            expect(spyConsoleError).toHaveBeenCalledWith(`Error: ${errMsg}`);
+            expect(mockLogError).toHaveBeenCalledTimes(1);
+            expect(mockLogError).toHaveBeenCalledWith(`Error: ${errMsg}`);
         });
     });
 
@@ -142,7 +145,7 @@ describe("UTILS fs tests suites", () => {
             expect(mockSetTimeOutCall).toHaveBeenCalledTimes(0);
             expect(mockExecCommandCall).toHaveBeenCalledTimes(0);
 
-            expect(spyConsoleError).toHaveBeenCalledWith(`Error: ${errMsg}`);
+            expect(mockLogError).toHaveBeenCalledWith(`Error: ${errMsg}`);
         });
     });
 });

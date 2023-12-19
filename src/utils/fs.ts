@@ -17,6 +17,8 @@ import {
 import { exec_command } from "./exec";
 import { updateStateFile, setTimeOut } from "./index";
 
+import { log } from './logger';
+
 // ************************************************************ //
 
 export const cloneRepos = async (): Promise<void> => {
@@ -39,7 +41,7 @@ export const cloneRepos = async (): Promise<void> => {
             await setTimeOut();
         }
     } catch (error: any) {
-        console.error(`Error: ${error.message}`);
+        log.error(`Error: ${error.message}`);
     }
 };
 
@@ -48,9 +50,9 @@ export const cloneRepos = async (): Promise<void> => {
 export const saveToFile = async (fileName: string, data: any): Promise<void> => {
     try {
         await writeFile(fileName, JSON.stringify(data));
-        console.log(`Saved data to ${fileName}.`);
+        log.info(`Saved data to ${fileName}.`);
     } catch (error: any) {
-        console.error(`Error: ${error.message}`);
+        log.error(`Error: ${error.message}`);
     }
 };
 
@@ -73,6 +75,6 @@ export const checkFileExists = (directoryPath: string): void => {
             }
         }
     } catch (error: any) {
-        console.error(`Error: ${error.message}`);
+        log.error(`Error: ${error.message}`);
     }
 };
