@@ -1,3 +1,10 @@
+jest.mock('../../../src/utils/logger', () => ({
+    log: {
+        info: jest.fn(),
+        error: jest.fn()
+    }
+}));
+
 import { describe, expect, test, jest, afterEach, beforeEach } from '@jest/globals';
 
 import {
@@ -46,19 +53,16 @@ import {
 } from '../../mock/repos_info';
 import { MemberDetails, RepoDetails } from '../../../src/types/config';
 
-const spyConsoleLog = jest.spyOn(console, 'log');
-const spyConsoleError = jest.spyOn(console, 'error');
+import { log } from '../../../src/utils/logger';
+
+const mockLogError = log.error as jest.Mock;
+const mockLogInfo = log.info as jest.Mock;
 
 const spyFetchCall = jest.spyOn(global, 'fetch');
 const spySetTimeoutCall = jest.spyOn(global, 'setTimeout');
 
 /* eslint-disable */
 describe("UTILS Index tests suites", () => {
-
-    beforeEach(() => {
-        spyConsoleLog.mockImplementation(() => {/**/});
-        spyConsoleError.mockImplementation(() => {/**/});
-    });
 
     afterEach(() => {
         jest.resetAllMocks();
@@ -95,8 +99,8 @@ describe("UTILS Index tests suites", () => {
             (`should update STATE_DEPENDENCIES object based on filePath: $filePath and fileName: $fileName`,
                 ({ filePath, fileName, fileExtension, expected }) => {
                     updateStateFile(filePath, fileName, fileExtension);
-                    expect(spyConsoleLog).toHaveBeenCalledTimes(1);
-                    expect(spyConsoleError).toHaveBeenCalledTimes(0);
+                    expect(mockLogInfo).toHaveBeenCalledTimes(1);
+                    expect(mockLogError).toHaveBeenCalledTimes(0);
                     expect(STATE_DEPENDENCIES).toEqual(expected);
                 });
 
@@ -111,15 +115,15 @@ describe("UTILS Index tests suites", () => {
             }).toThrow(Error);
 
             const errMsg = "file name: repos__org1__repo1, file Path: repos/org1/repo1/package-lock.json, key: file2";
-            expect(spyConsoleError).toHaveBeenCalledTimes(1);
-            expect(spyConsoleError).toHaveBeenCalledWith(errMsg);
+            expect(mockLogError).toHaveBeenCalledTimes(1);
+            expect(mockLogError).toHaveBeenCalledWith(errMsg);
 
             expect(() => {
                 updateStateFile(filePath, fileName, fileExtension);
             }).toThrow('This should not happen!');
 
-            expect(spyConsoleLog).toHaveBeenCalledTimes(0);
-            expect(spyConsoleError).toHaveBeenCalledTimes(2);
+            expect(mockLogInfo).toHaveBeenCalledTimes(0);
+            expect(mockLogError).toHaveBeenCalledTimes(2);
         });
     });
 
@@ -176,8 +180,8 @@ describe("UTILS Index tests suites", () => {
             expect(spyFetchCall).toHaveBeenCalledWith(`${MOCK_REPO_URL}?page=1&per_page=100`, MOCK_HEADERS);
             expect(spyFetchCall).toHaveBeenCalledTimes(1);
 
-            expect(spyConsoleLog).toHaveBeenCalledTimes(1);
-            expect(spyConsoleError).toHaveBeenCalledTimes(0);
+            expect(mockLogInfo).toHaveBeenCalledTimes(1);
+            expect(mockLogError).toHaveBeenCalledTimes(0);
         });
 
         test('should return correct list', async () => {
@@ -195,9 +199,9 @@ describe("UTILS Index tests suites", () => {
 
             expect(spyFetchCall).toHaveBeenCalledTimes(1);
 
-            expect(spyConsoleLog).toHaveBeenCalledTimes(1);
-            expect(spyConsoleLog).toHaveBeenCalledWith(`${MOCK_REPO_URL}?page=1&per_page=100, page 1, retrieved ${lengthList}`);
-            expect(spyConsoleError).toHaveBeenCalledTimes(0);
+            expect(mockLogInfo).toHaveBeenCalledTimes(1);
+            expect(mockLogInfo).toHaveBeenCalledWith(`${MOCK_REPO_URL}?page=1&per_page=100, page 1, retrieved ${lengthList}`);
+            expect(mockLogError).toHaveBeenCalledTimes(0);
         });
 
         test('should catch the promise reject call', async () => {
@@ -206,8 +210,8 @@ describe("UTILS Index tests suites", () => {
             await getInfo(MOCK_WHAT, "list", MOCK_REPO_URL);
 
             expect(spyFetchCall).toHaveBeenCalledTimes(1);
-            expect(spyConsoleLog).toHaveBeenCalledTimes(0);
-            expect(spyConsoleError).toHaveBeenCalledTimes(1);
+            expect(mockLogInfo).toHaveBeenCalledTimes(0);
+            expect(mockLogError).toHaveBeenCalledTimes(1);
         });
     });
 
@@ -219,16 +223,16 @@ describe("UTILS Index tests suites", () => {
 
             await getOrgData(MOCK_ORGANIZATION);
 
-            expect(spyConsoleLog).toHaveBeenCalledTimes(6);
+            expect(mockLogInfo).toHaveBeenCalledTimes(6);
 
-            expect(spyConsoleLog).toHaveBeenCalledWith(`GET repos data:`);
-            expect(spyConsoleLog).toHaveBeenCalledWith(`https://api.github.com/orgs/${MOCK_ORGANIZATION}/repos?page=1&per_page=100, page 1, retrieved 0`);
+            expect(mockLogInfo).toHaveBeenCalledWith(`GET repos data:`);
+            expect(mockLogInfo).toHaveBeenCalledWith(`https://api.github.com/orgs/${MOCK_ORGANIZATION}/repos?page=1&per_page=100, page 1, retrieved 0`);
 
-            expect(spyConsoleLog).toHaveBeenCalledWith(`GET members data:`);
-            expect(spyConsoleLog).toHaveBeenCalledWith(`https://api.github.com/orgs/${MOCK_ORGANIZATION}/members?page=1&per_page=100, page 1, retrieved 0`);
+            expect(mockLogInfo).toHaveBeenCalledWith(`GET members data:`);
+            expect(mockLogInfo).toHaveBeenCalledWith(`https://api.github.com/orgs/${MOCK_ORGANIZATION}/members?page=1&per_page=100, page 1, retrieved 0`);
 
-            expect(spyConsoleLog).toHaveBeenCalledWith(`GET teams data:`);
-            expect(spyConsoleLog).toHaveBeenCalledWith(`https://api.github.com/orgs/${MOCK_ORGANIZATION}/teams?page=1&per_page=100, page 1, retrieved 0`);
+            expect(mockLogInfo).toHaveBeenCalledWith(`GET teams data:`);
+            expect(mockLogInfo).toHaveBeenCalledWith(`https://api.github.com/orgs/${MOCK_ORGANIZATION}/teams?page=1&per_page=100, page 1, retrieved 0`);
 
         });
 
