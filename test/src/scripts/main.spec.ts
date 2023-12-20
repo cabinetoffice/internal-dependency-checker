@@ -6,7 +6,7 @@ import { describe, expect, test, jest, afterEach, beforeEach } from '@jest/globa
 
 import { main } from "../../../src/scripts/main";
 import { saveToFile } from "../../../src/utils/fs";
-import { getOrgData, getPerTeamData, setOrgData, setTeamsData, setMembersData, setReposData } from "../../../src/utils/index";
+import { getPerTeamData, setOrgData, setTeamsData, setMembersData, setReposData } from "../../../src/utils/index";
 
 import { getTeamsData, getMembersData, getReposData } from '../../../src/service/github';
 
@@ -15,7 +15,6 @@ import { REPOS_FILE_PATH } from '../../../src/config';
 
 const spyConsoleError = jest.spyOn(console, 'error');
 
-const mockGetOrgData = getOrgData as jest.Mock;
 const mockGetTeamsData = (getTeamsData as jest.Mock<any>).mockResolvedValue(MOCK_REPOS_TEAMS_DATA);
 const mockSetTeamsData = setTeamsData as jest.Mock;
 const mockGetPerTeamData = getPerTeamData as jest.Mock;

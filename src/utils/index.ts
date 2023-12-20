@@ -61,17 +61,6 @@ export const getInfo = async (what: string, dataKey: string, dataUrl: string, pa
 
 // ************************************************************ //
 
-export const getOrgData = async (org: string, dataKey = "list"): Promise<void> => {
-    // loop through each of teams, members and repos and use getInfo to extract the data
-    for (const what of ['repos']) {
-        console.log(`GET ${what} data:`);
-        const url = `https://api.github.com/orgs/${org}/${what}`;
-        await getInfo(what, dataKey, url);
-    }
-};
-
-// ************************************************************ //
-
 export const setTeamsData = (teams: GitHubTeams[]) => {
     teams.forEach((team) => {
         // eslint-disable-next-line @typescript-eslint/no-unused-vars

@@ -7,7 +7,6 @@ import {
     getPerTeamData,
     mapData,
     getInfo,
-    getOrgData,
     setOrgData,
     setTeamsData,
     setMembersData,
@@ -36,7 +35,6 @@ import {
     MOCK_HEADERS,
     MOCK_REPO_URL,
     MOCK_REPOS_DATA,
-    MOCK_ORGANIZATION,
     MOCK_REPOS_TEAMS_DATA,
     MOCK_REPOS_TEAMS_NAME,
     MOCK_MEMBERS_TEAMS_DATA,
@@ -217,24 +215,6 @@ describe("UTILS Index tests suites", () => {
             expect(spyConsoleLog).toHaveBeenCalledTimes(0);
             expect(spyConsoleError).toHaveBeenCalledTimes(1);
         });
-    });
-
-    // ************************************************************ //
-
-    describe("getOrgData(...)", () => {
-
-        test(`should fetch repos data`, async () => {
-
-            await getOrgData(MOCK_ORGANIZATION);
-
-            expect(spyConsoleLog).toHaveBeenCalledTimes(2);
-
-            expect(spyConsoleLog).toHaveBeenCalledWith(`GET repos data:`);
-            expect(spyConsoleLog).toHaveBeenCalledWith(`https://api.github.com/orgs/${MOCK_ORGANIZATION}/repos?page=1&per_page=100, page 1, retrieved 0`);
-
-
-        });
-
     });
 
     // ************************************************************ //
