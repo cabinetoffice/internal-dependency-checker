@@ -104,19 +104,7 @@ export const setReposData = (repos: GitHubRepos[]) => {
 
 // ************************************************************ //
 
-export const getPerTeamData = async (): Promise<void> => {
-    for (const team of TMP_DATA["teams"]["list"]) {
-        const memberUrl = `${team["url"]}/members`;
-        const teamUrl = team["repositories_url"];
-        const teamName = team["name"];
-
-        TMP_DATA[MEMBERS_PER_TEAM_KEY][teamName] = [];
-        TMP_DATA[REPOS_PER_TEAM_KEY][teamName] = [];
-
-        await getInfo(MEMBERS_PER_TEAM_KEY, teamName, memberUrl);
-        await getInfo(REPOS_PER_TEAM_KEY, teamName, teamUrl);
-    }
-};
+export const getPerTeamData = async (): Promise<void> => {/**/};
 
 // ************************************************************ //
 

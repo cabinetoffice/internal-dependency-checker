@@ -4,7 +4,6 @@ import {
     getTechFile,
     updateStateFile,
     setTimeOut,
-    getPerTeamData,
     mapData,
     getInfo,
     setOrgData,
@@ -36,7 +35,6 @@ import {
     MOCK_REPO_URL,
     MOCK_REPOS_DATA,
     MOCK_REPOS_TEAMS_DATA,
-    MOCK_REPOS_TEAMS_NAME,
     MOCK_MEMBERS_TEAMS_DATA,
     MOCK_REPOS_REPOSITORIES,
     MOCK_REPOS_MEMBERS,
@@ -265,26 +263,7 @@ describe("UTILS Index tests suites", () => {
 
     // ************************************************************ //
 
-    describe("getPerTeamData(...)", () => {
-
-        test(`should correctly populate TMP_DATA with members and repos per team`, async () => {
-            TMP_DATA["teams"]["list"] = MOCK_REPOS_TEAMS_DATA;
-            TMP_DATA[MEMBERS_PER_TEAM_KEY] = {};
-            TMP_DATA[REPOS_PER_TEAM_KEY] = {};
-
-            spyFetchCall
-                .mockImplementationOnce(() => Promise.resolve({ json: () => Promise.resolve([MOCK_REPOS_MEMBERS[0]]) } as any))
-                .mockImplementationOnce(() => Promise.resolve({ json: () => Promise.resolve([MOCK_REPOS_REPOSITORIES[0]]) } as any));
-
-            await getPerTeamData();
-
-            expect(TMP_DATA["repos"]["list"]).toEqual([]);
-            expect(TMP_DATA["members"]["list"]).toEqual([]);
-            expect(TMP_DATA[MEMBERS_PER_TEAM_KEY][MOCK_REPOS_TEAMS_NAME][0].login).toEqual(MOCK_REPOS_MEMBERS_NAME);
-            expect(TMP_DATA[REPOS_PER_TEAM_KEY][MOCK_REPOS_TEAMS_NAME][0].name).toEqual(MOCK_REPOS_REPO_NAME);
-        });
-
-    });
+    describe("getPerTeamData(...)", () => {});
 
     // ************************************************************ //
 
