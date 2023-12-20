@@ -1,4 +1,4 @@
-import { GitHubTeams, GitHubMembers, GitHubRepos } from "@co-digital/api-sdk/lib/api-sdk/github/type";
+import { GitHubTeams, GitHubMembers, GitHubRepos, GitHubMembersPerTeam } from "@co-digital/api-sdk/lib/api-sdk/github/type";
 import { MEMBERS_PER_TEAM_KEY, REPOS_PER_TEAM_KEY } from "../../src/config";
 import { WhatEnum } from "../../src/types/config";
 
@@ -112,6 +112,12 @@ export const MOCK_JSON_FETCH_RESPONSE = [
     }
 ];
 
+// ************************************************************ //
+
+/* GITHUB API-SDK RESPONSE MOCKS */
+
+/* .getTeams() RESPONSE MOCKS */
+
 export const MOCK_REPOS_TEAMS_NAME = "cool-team-name";
 export const MOCK_REPOS_TEAMS_DESCRIPTION = "Teams Description";
 
@@ -131,6 +137,66 @@ export const MOCK_GET_TEAMS_API_SDK_RESPONSE = {
 
 export const MOCK_REPOS_TEAMS_DATA: GitHubTeams[] = MOCK_GET_TEAMS_API_SDK_RESPONSE.resource;
 
+/* .getMembers() RESPONSE MOCKS */
+
+export const MOCK_REPOS_MEMBERS_NAME = "cool-member";
+
+export const MOCK_GET_MEMBERS_API_SDK_RESPONSE = {
+    httpStatusCode: 200,
+    resource: [
+        {
+            "login": MOCK_REPOS_MEMBERS_NAME,
+            "url": `https://api.github.com/users/${MOCK_REPOS_MEMBERS_NAME}`,
+            "html_url": `https://github.com/${MOCK_REPOS_MEMBERS_NAME}`,
+            "repos_url": `https://api.github.com/users/${MOCK_REPOS_MEMBERS_NAME}/repos`
+        }
+    ],
+};
+
+export const MOCK_MEMBERS_TEAMS_DATA: GitHubMembers[] = MOCK_GET_MEMBERS_API_SDK_RESPONSE.resource;
+
+/* .getRepos() RESPONSE MOCKS */
+
+export const MOCK_REPO_NAME = "cool-repo-name";
+export const MOCK_REPO_DESCRIPTION = "Repos Description";
+
+export const MOCK_GET_REPOS_API_SDK_RESPONSE = {
+    httpStatusCode: 200,
+    resource: [
+        {
+            "name": `${MOCK_REPO_NAME}`,
+            "description": `${MOCK_REPO_DESCRIPTION}`,
+            "full_name": `${MOCK_ORGANIZATION}/${MOCK_REPO_NAME}`,
+            "visibility": 'public',
+            "url": `https://api.github.com/repos/${MOCK_ORGANIZATION}/${MOCK_REPO_NAME}`,
+            "html_url": `https://github.com/${MOCK_ORGANIZATION}/${MOCK_REPO_NAME}`,
+            "created_at": '2023-07-10T08:41:07Z',
+            "archived": false,
+        },
+    ],
+};
+
+export const MOCK_REPOS_REPO_DATA: GitHubRepos[] = MOCK_GET_REPOS_API_SDK_RESPONSE.resource;
+
+/* .getMembersPerTeam() RESPONSE MOCKS */
+
+export const MOCK_GET_MEMBERS_PER_TEAM_API_SDK_RESPONSE = {
+    httpStatusCode: 200,
+    resource: [
+        {
+            "login": MOCK_REPOS_MEMBERS_NAME,
+        },
+    ],
+};
+
+export const MOCK_GET_MEMBERS_PER_TEAM_DATA: GitHubMembersPerTeam[] = MOCK_GET_MEMBERS_PER_TEAM_API_SDK_RESPONSE.resource;
+
+// ************************************************************ //
+
+/* ORG DATA MOCKS */
+
+/* ORG DATA TEAMS */
+
 export const MOCK_ORG_TEAMS = {
     "teams": {
         "details": {
@@ -149,21 +215,7 @@ export const MOCK_ORG_TEAMS = {
     }
 };
 
-export const MOCK_REPOS_MEMBERS_NAME = "cool-member";
-
-export const MOCK_GET_MEMBERS_API_SDK_RESPONSE = {
-    httpStatusCode: 200,
-    resource: [
-        {
-            "login": MOCK_REPOS_MEMBERS_NAME,
-            "url": `https://api.github.com/users/${MOCK_REPOS_MEMBERS_NAME}`,
-            "html_url": `https://github.com/${MOCK_REPOS_MEMBERS_NAME}`,
-            "repos_url": `https://api.github.com/users/${MOCK_REPOS_MEMBERS_NAME}/repos`
-        }
-    ],
-};
-
-export const MOCK_MEMBERS_TEAMS_DATA: GitHubMembers[] = MOCK_GET_MEMBERS_API_SDK_RESPONSE.resource;
+/* ORG DATA MEMBERS */
 
 export const MOCK_ORG_MEMBERS = {
     "members": {
@@ -180,27 +232,8 @@ export const MOCK_ORG_MEMBERS = {
     }
 };
 
-export const MOCK_REPO_NAME = "cool-repo-name";
-export const MOCK_REPO_DESCRIPTION = "Repos Description";
+/* ORG DATA REPOS */
 
-export const MOCK_GET_REPOS_API_SDK_RESPONSE = {
-    httpStatusCode: 200,
-    resource: [
-      {
-        "name": `${MOCK_REPO_NAME}`,
-        "description": `${MOCK_REPO_DESCRIPTION}`,
-        "full_name": `${MOCK_ORGANIZATION}/${MOCK_REPO_NAME}`,
-        "visibility": 'public',
-        "url": `https://api.github.com/repos/${MOCK_ORGANIZATION}/${MOCK_REPO_NAME}`,
-        "html_url": `https://github.com/${MOCK_ORGANIZATION}/${MOCK_REPO_NAME}`,
-        "created_at": '2023-07-10T08:41:07Z',
-        "archived": false,
-      },
-    ],
-}
-
-export const MOCK_REPOS_REPO_DATA: GitHubRepos[] = MOCK_GET_REPOS_API_SDK_RESPONSE.resource;
-  
 export const MOCK_ORG_REPOS = {
     "repos": {
         "details": {
@@ -219,7 +252,9 @@ export const MOCK_ORG_REPOS = {
         "list": [MOCK_REPO_NAME]
     }
 };
-    
+
+// ************************************************************ //
+
 export const MOCK_REPOS_MEMBERS = {
     "0": {
         "login": MOCK_REPOS_MEMBERS_NAME,
