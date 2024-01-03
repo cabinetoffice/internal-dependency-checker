@@ -9,7 +9,8 @@ import {
     MemberPerTeam,
     RepoPerTeam,
     TechFile,
-    KeyEnum
+    KeyEnum,
+    PerTeamData
 } from '../types/config';
 import {
     FILES_BY_EXTENSIONS,
@@ -24,6 +25,7 @@ import {
     REPOS_PER_TEAM_KEY
 } from "../config/index";
 import { GitHubTeams, GitHubMembers, GitHubRepos } from '@co-digital/api-sdk/lib/api-sdk/github/type';
+import { getMembersPerTeamData } from '../service/github';
 
 // ************************************************************ //
 
@@ -104,7 +106,28 @@ export const setReposData = (repos: GitHubRepos[]) => {
 
 // ************************************************************ //
 
-export const getPerTeamData = async (): Promise<void> => {/**/};
+export const getPerTeamData = async (): Promise<PerTeamData> => {
+    const perTeamData: PerTeamData = {};
+    for (const team of ORG_DATA.teams.list) {
+        const teamUrl = ORG_DATA.teams.details[team].url;
+        const membersPerTeamUrl = `${teamUrl}/members`;
+
+        const membersPerTeamData = await getMembersPerTeamData(membersPerTeamUrl);
+        const members = membersPerTeamData.map(members => members.login);
+
+        perTeamData[team] = { members: members };
+    }
+    return perTeamData;
+};
+
+// ************************************************************ //
+
+export const setPerTeamData = (perTeamData: PerTeamData) => {
+    for (const team of ORG_DATA.teams.list) {
+        const orgDataTeam = ORG_DATA.teams.details[team] as TeamDetails;
+        orgDataTeam.members = perTeamData[team].members;
+    }
+};
 
 // ************************************************************ //
 

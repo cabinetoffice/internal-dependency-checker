@@ -1,3 +1,5 @@
+jest.mock('../../../src/service/github');
+
 import { describe, expect, test, jest, afterEach, beforeEach } from '@jest/globals';
 
 import {
@@ -9,7 +11,9 @@ import {
     setOrgData,
     setTeamsData,
     setMembersData,
-    setReposData
+    setReposData,
+    getPerTeamData,
+    setPerTeamData
 } from "../../../src/utils/index";
 
 import {
@@ -46,9 +50,16 @@ import {
     MOCK_ORG_TEAMS,
     MOCK_ORG_MEMBERS,
     MOCK_ORG_REPOS,
-    MOCK_REPOS_REPO_DATA
+    MOCK_REPOS_REPO_DATA,
+    MOCK_GET_MEMBERS_PER_TEAM_DATA,
+    GET_PER_TEAM_DATA_MOCK,
+    MOCK_REPOS_TEAMS_NAME
 } from '../../mock/repos_info';
-import { MemberDetails, RepoDetails } from '../../../src/types/config';
+
+import { MemberDetails, RepoDetails, TeamDetails } from '../../../src/types/config';
+import { getMembersPerTeamData } from '../../../src/service/github';
+
+const mockGetMembersPerTeam = getMembersPerTeamData as jest.Mock<any>;
 
 const spyConsoleLog = jest.spyOn(console, 'log');
 const spyConsoleError = jest.spyOn(console, 'error');
@@ -263,7 +274,40 @@ describe("UTILS Index tests suites", () => {
 
     // ************************************************************ //
 
-    describe("getPerTeamData(...)", () => {});
+    describe("getPerTeamData(...)", () => {
+
+        beforeEach(() => {
+            ORG_DATA["teams"]["list"] = MOCK_ORG_TEAMS["teams"]['list'];
+            ORG_DATA["teams"]["details"] = MOCK_ORG_TEAMS["teams"]["details"];
+        });
+
+        test('should return all members per teams ', async () => {
+            mockGetMembersPerTeam.mockResolvedValue(MOCK_GET_MEMBERS_PER_TEAM_DATA);
+
+            const perTeamData = await getPerTeamData();
+
+            expect(perTeamData).toEqual(GET_PER_TEAM_DATA_MOCK);
+
+        });
+    });
+
+    // ************************************************************ //
+
+    describe("getPerTeamData(...)", () => {
+
+        beforeEach(() => {
+            ORG_DATA["teams"]["list"] = MOCK_ORG_TEAMS["teams"]['list'];
+            ORG_DATA["teams"]["details"] = MOCK_ORG_TEAMS["teams"]["details"];
+        });
+
+        test('should assign members from perTeamData to ORG_DATA teams', async () => {
+            setPerTeamData(GET_PER_TEAM_DATA_MOCK);
+
+            const orgDataTeam = ORG_DATA.teams.details[MOCK_REPOS_TEAMS_NAME] as TeamDetails;
+
+            expect(orgDataTeam.members).toEqual(GET_PER_TEAM_DATA_MOCK[MOCK_REPOS_TEAMS_NAME].members);
+        });
+    });
 
     // ************************************************************ //
 

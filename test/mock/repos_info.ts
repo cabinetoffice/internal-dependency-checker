@@ -191,6 +191,10 @@ export const MOCK_GET_MEMBERS_PER_TEAM_API_SDK_RESPONSE = {
 
 export const MOCK_GET_MEMBERS_PER_TEAM_DATA: GitHubMembersPerTeam[] = MOCK_GET_MEMBERS_PER_TEAM_API_SDK_RESPONSE.resource;
 
+/* .getPerTeamData() MOCKS */
+
+export const GET_PER_TEAM_DATA_MOCK = { [MOCK_REPOS_TEAMS_NAME]: { members: [MOCK_REPOS_MEMBERS_NAME] } };
+
 // ************************************************************ //
 
 /* ORG DATA MOCKS */
