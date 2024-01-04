@@ -4,20 +4,22 @@ jest.mock("@co-digital/api-sdk", () => ({
             getTeams: jest.fn(),
             getMembers: jest.fn(),
             getRepos: jest.fn(),
-            getMembersPerTeam: jest.fn()
+            getMembersPerTeam: jest.fn(),
+            getReposPerTeam: jest.fn()
         },
     })),
 }));
 
 import { jest, describe, beforeEach, test, expect } from '@jest/globals';
-import { getTeamsData, getMembersData, getReposData, getMembersPerTeamData } from "../../../src/service/github";
-import { MOCK_GET_TEAMS_API_SDK_RESPONSE, MOCK_GET_MEMBERS_API_SDK_RESPONSE, MOCK_GET_REPOS_API_SDK_RESPONSE, MOCK_GET_MEMBERS_PER_TEAM_API_SDK_RESPONSE } from "../../mock/repos_info";
+import { getTeamsData, getMembersData, getReposData, getMembersPerTeamData, getReposPerTeamData } from "../../../src/service/github";
+import { MOCK_GET_TEAMS_API_SDK_RESPONSE, MOCK_GET_MEMBERS_API_SDK_RESPONSE, MOCK_GET_REPOS_API_SDK_RESPONSE, MOCK_GET_MEMBERS_PER_TEAM_API_SDK_RESPONSE, MOCK_GET_REPOS_PER_TEAM_API_SDK_RESPONSE } from "../../mock/repos_info";
 import { client } from "../../../src/service/api";
 
 const mockGetTeams = client.gitHub.getTeams as jest.Mock<any>;
 const mockGetMembers = client.gitHub.getMembers as jest.Mock<any>;
 const mockGetRepos = client.gitHub.getRepos as jest.Mock<any>;
 const mockGetMembersPerTeam = client.gitHub.getMembersPerTeam as jest.Mock<any>;
+const mockGetReposPerTeam = client.gitHub.getReposPerTeam as jest.Mock<any>;
 
 const spyConsoleError = jest.spyOn(console, 'error');
 const spyConsoleLog = jest.spyOn(console, 'log');
@@ -180,7 +182,45 @@ describe("github service test suite", () => {
             expect(spyConsoleError).toHaveBeenCalledTimes(1);
             expect(membersPerTeam).toEqual([]);
         });
-        
+
+    });
+
+    describe("getReposPerTeam tests", () => {
+        test('should return value should be empty if no data fetched', async () => {
+            mockGetReposPerTeam.mockResolvedValue({});
+
+            const reposPerTeam = await getReposPerTeamData('');
+
+            expect(spyConsoleLog).toHaveBeenCalledTimes(0);
+            expect(reposPerTeam).toEqual([]);
+        });
+
+        test('should return resource from getReposPerTeam API SDK response if data fetched', async () => {
+            mockGetReposPerTeam.mockResolvedValue(MOCK_GET_REPOS_PER_TEAM_API_SDK_RESPONSE);
+
+            const reposPerTeam = await getReposPerTeamData('');
+
+            expect(spyConsoleLog).toHaveBeenCalledTimes(1);
+            expect(reposPerTeam).toEqual(MOCK_GET_REPOS_PER_TEAM_API_SDK_RESPONSE.resource);
+        });
+
+        test('should only call getReposPerTeam API SDK response once if length of data fetched is not 100', async () => {
+            mockGetReposPerTeam.mockResolvedValue(MOCK_GET_REPOS_PER_TEAM_API_SDK_RESPONSE);
+
+            await getReposPerTeamData('');
+
+            expect(client.gitHub.getReposPerTeam).toHaveBeenCalledTimes(1);
+        });
+
+        test('should catch a rejected promise call', async () => {
+            mockGetReposPerTeam.mockRejectedValue([]);
+
+            const reposPerTeam = await getReposPerTeamData('');
+
+            expect(spyConsoleError).toHaveBeenCalledTimes(1);
+            expect(reposPerTeam).toEqual([]);
+        });
+
     });
 
 });
