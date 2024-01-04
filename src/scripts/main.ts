@@ -5,6 +5,7 @@ import {
 } from "../config/index";
 import {
     getPerTeamData,
+    setPerTeamData,
     setOrgData,
     setTeamsData,
     setMembersData,
@@ -23,7 +24,9 @@ export const main = async (org: string): Promise<void> => {
         setMembersData(members);
         setReposData(repos);
 
-        await getPerTeamData();
+        const perTeamData = await getPerTeamData();
+
+        setPerTeamData(perTeamData);
 
         setOrgData();
 

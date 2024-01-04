@@ -58,6 +58,12 @@ export interface ReposPerTeam {
   [team_name: string]: RepoPerTeam[]
 }
 
+export interface PerTeamData {
+  [team_name: string]: {
+    members: string[]
+  }
+}
+
 export enum TechEnum {
   python = "python",
   java = "java",

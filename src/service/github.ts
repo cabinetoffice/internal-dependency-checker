@@ -1,4 +1,4 @@
-import { GitHubTeams, GitHubMembers, GitHubRepos } from "@co-digital/api-sdk/lib/api-sdk/github/type";
+import { GitHubTeams, GitHubMembers, GitHubRepos, GitHubMembersPerTeam } from "@co-digital/api-sdk/lib/api-sdk/github/type";
 import { PER_PAGE } from "../config/index";
 import { ApiResponse } from "@co-digital/api-sdk";
 import { client } from "./api";
@@ -39,7 +39,6 @@ export const getMembersData = async (memberUrl: string, members: GitHubMembers[]
         console.error(`Error: ${error.message}`);
         return [];
     }
-
 };
 
 export const getReposData = async (reposUrl: string, repos: GitHubRepos[] = [], page = 1): Promise<GitHubRepos[]> => {
@@ -59,5 +58,23 @@ export const getReposData = async (reposUrl: string, repos: GitHubRepos[] = [], 
         console.error(`Error: ${error.message}`);
         return [];
     }
+};
 
+export const getMembersPerTeamData = async (membersPerTeamUrl: string, membersPerTeam: GitHubMembersPerTeam[] = [], page = 1): Promise<GitHubMembersPerTeam[]> => {
+    try {
+        const url = `${membersPerTeamUrl}?page=${page}&per_page=${PER_PAGE}`;
+        const resp = await client.gitHub.getMembersPerTeam(url) as ApiResponse<GitHubMembersPerTeam[]>;
+        if (resp.resource) {
+            membersPerTeam = [...membersPerTeam, ...resp.resource];
+            console.log(`${url}, page ${page}, retrieved ${resp.resource.length}`);
+
+            if (resp.resource.length === PER_PAGE) {
+                return await getMembersPerTeamData(membersPerTeamUrl, membersPerTeam, page + 1);
+            }
+        }
+        return membersPerTeam;
+    } catch (error: any) {
+        console.error(`Error: ${error.message}`);
+        return [];
+    }
 };

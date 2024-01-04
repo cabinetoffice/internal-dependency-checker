@@ -9,7 +9,8 @@ import {
     MemberPerTeam,
     RepoPerTeam,
     TechFile,
-    KeyEnum
+    KeyEnum,
+    PerTeamData
 } from '../types/config';
 import {
     FILES_BY_EXTENSIONS,
@@ -24,6 +25,7 @@ import {
     REPOS_PER_TEAM_KEY
 } from "../config/index";
 import { GitHubTeams, GitHubMembers, GitHubRepos } from '@co-digital/api-sdk/lib/api-sdk/github/type';
+import { getMembersPerTeamData } from '../service/github';
 
 // ************************************************************ //
 
@@ -56,17 +58,6 @@ export const getInfo = async (what: string, dataKey: string, dataUrl: string, pa
         }
     } catch (error: any) {
         console.error(`Error: ${error.message}`);
-    }
-};
-
-// ************************************************************ //
-
-export const getOrgData = async (org: string, dataKey = "list"): Promise<void> => {
-    // loop through each of teams, members and repos and use getInfo to extract the data
-    for (const what of ['repos']) {
-        console.log(`GET ${what} data:`);
-        const url = `https://api.github.com/orgs/${org}/${what}`;
-        await getInfo(what, dataKey, url);
     }
 };
 
@@ -115,17 +106,26 @@ export const setReposData = (repos: GitHubRepos[]) => {
 
 // ************************************************************ //
 
-export const getPerTeamData = async (): Promise<void> => {
-    for (const team of TMP_DATA["teams"]["list"]) {
-        const memberUrl = `${team["url"]}/members`;
-        const teamUrl = team["repositories_url"];
-        const teamName = team["name"];
+export const getPerTeamData = async (): Promise<PerTeamData> => {
+    const perTeamData: PerTeamData = {};
+    for (const team of ORG_DATA.teams.list) {
+        const teamUrl = ORG_DATA.teams.details[team].url;
+        const membersPerTeamUrl = `${teamUrl}/members`;
 
-        TMP_DATA[MEMBERS_PER_TEAM_KEY][teamName] = [];
-        TMP_DATA[REPOS_PER_TEAM_KEY][teamName] = [];
+        const membersPerTeamData = await getMembersPerTeamData(membersPerTeamUrl);
+        const members = membersPerTeamData.map(members => members.login);
 
-        await getInfo(MEMBERS_PER_TEAM_KEY, teamName, memberUrl);
-        await getInfo(REPOS_PER_TEAM_KEY, teamName, teamUrl);
+        perTeamData[team] = { members: members };
+    }
+    return perTeamData;
+};
+
+// ************************************************************ //
+
+export const setPerTeamData = (perTeamData: PerTeamData) => {
+    for (const team of ORG_DATA.teams.list) {
+        const orgDataTeam = ORG_DATA.teams.details[team] as TeamDetails;
+        orgDataTeam.members = perTeamData[team].members;
     }
 };
 
