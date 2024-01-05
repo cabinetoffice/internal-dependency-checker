@@ -1,4 +1,4 @@
-import { GitHubTeams, GitHubMembers, GitHubRepos, GitHubMembersPerTeam } from "@co-digital/api-sdk/lib/api-sdk/github/type";
+import { GitHubTeams, GitHubMembers, GitHubRepos, GitHubMembersPerTeam, GitHubReposPerTeam } from "@co-digital/api-sdk/lib/api-sdk/github/type";
 import { MEMBERS_PER_TEAM_KEY, REPOS_PER_TEAM_KEY } from "../../src/config";
 import { WhatEnum } from "../../src/types/config";
 
@@ -191,9 +191,22 @@ export const MOCK_GET_MEMBERS_PER_TEAM_API_SDK_RESPONSE = {
 
 export const MOCK_GET_MEMBERS_PER_TEAM_DATA: GitHubMembersPerTeam[] = MOCK_GET_MEMBERS_PER_TEAM_API_SDK_RESPONSE.resource;
 
+/* .getReposPerTeam() RESPONSE MOCKS */
+
+export const MOCK_GET_REPOS_PER_TEAM_API_SDK_RESPONSE = {
+    httpStatusCode: 200,
+    resource: [
+        {
+            "name": MOCK_REPO_NAME,
+        },
+    ],
+};
+
+export const MOCK_GET_REPOS_PER_TEAM_DATA: GitHubReposPerTeam[] = MOCK_GET_REPOS_PER_TEAM_API_SDK_RESPONSE.resource;
+
 /* .getPerTeamData() MOCKS */
 
-export const GET_PER_TEAM_DATA_MOCK = { [MOCK_REPOS_TEAMS_NAME]: { members: [MOCK_REPOS_MEMBERS_NAME] } };
+export const GET_PER_TEAM_DATA_MOCK = { [MOCK_REPOS_TEAMS_NAME]: { members: [MOCK_REPOS_MEMBERS_NAME], repos: [MOCK_REPO_NAME] } };
 
 // ************************************************************ //
 

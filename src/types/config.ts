@@ -61,6 +61,7 @@ export interface ReposPerTeam {
 export interface PerTeamData {
   [team_name: string]: {
     members: string[]
+    repos: string[]
   }
 }
 

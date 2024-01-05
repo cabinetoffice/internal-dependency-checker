@@ -53,13 +53,15 @@ import {
     MOCK_REPOS_REPO_DATA,
     MOCK_GET_MEMBERS_PER_TEAM_DATA,
     GET_PER_TEAM_DATA_MOCK,
-    MOCK_REPOS_TEAMS_NAME
+    MOCK_REPOS_TEAMS_NAME,
+    MOCK_GET_REPOS_PER_TEAM_DATA
 } from '../../mock/repos_info';
 
 import { MemberDetails, RepoDetails, TeamDetails } from '../../../src/types/config';
-import { getMembersPerTeamData } from '../../../src/service/github';
+import { getMembersPerTeamData, getReposPerTeamData } from '../../../src/service/github';
 
 const mockGetMembersPerTeam = getMembersPerTeamData as jest.Mock<any>;
+const mockGetReposPerTeam = getReposPerTeamData as jest.Mock<any>;
 
 const spyConsoleLog = jest.spyOn(console, 'log');
 const spyConsoleError = jest.spyOn(console, 'error');
@@ -283,6 +285,7 @@ describe("UTILS Index tests suites", () => {
 
         test('should return all members per teams ', async () => {
             mockGetMembersPerTeam.mockResolvedValue(MOCK_GET_MEMBERS_PER_TEAM_DATA);
+            mockGetReposPerTeam.mockResolvedValue(MOCK_GET_REPOS_PER_TEAM_DATA)
 
             const perTeamData = await getPerTeamData();
 
@@ -306,6 +309,7 @@ describe("UTILS Index tests suites", () => {
             const orgDataTeam = ORG_DATA.teams.details[MOCK_REPOS_TEAMS_NAME] as TeamDetails;
 
             expect(orgDataTeam.members).toEqual(GET_PER_TEAM_DATA_MOCK[MOCK_REPOS_TEAMS_NAME].members);
+            expect(orgDataTeam.repos).toEqual(GET_PER_TEAM_DATA_MOCK[MOCK_REPOS_TEAMS_NAME].repos);
         });
     });
 

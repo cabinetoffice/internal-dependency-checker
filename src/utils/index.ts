@@ -25,7 +25,7 @@ import {
     REPOS_PER_TEAM_KEY
 } from "../config/index";
 import { GitHubTeams, GitHubMembers, GitHubRepos } from '@co-digital/api-sdk/lib/api-sdk/github/type';
-import { getMembersPerTeamData } from '../service/github';
+import { getMembersPerTeamData, getReposPerTeamData } from '../service/github';
 
 // ************************************************************ //
 
@@ -111,11 +111,15 @@ export const getPerTeamData = async (): Promise<PerTeamData> => {
     for (const team of ORG_DATA.teams.list) {
         const teamUrl = ORG_DATA.teams.details[team].url;
         const membersPerTeamUrl = `${teamUrl}/members`;
+        const reposPerTeamUrl = `${teamUrl}/repos`;
 
         const membersPerTeamData = await getMembersPerTeamData(membersPerTeamUrl);
         const members = membersPerTeamData.map(members => members.login);
 
-        perTeamData[team] = { members: members };
+        const reposPerTeamData = await getReposPerTeamData(reposPerTeamUrl);
+        const repos = reposPerTeamData.map(repos => repos.name);
+
+        perTeamData[team] = { members: members, repos: repos };
     }
     return perTeamData;
 };
@@ -126,6 +130,7 @@ export const setPerTeamData = (perTeamData: PerTeamData) => {
     for (const team of ORG_DATA.teams.list) {
         const orgDataTeam = ORG_DATA.teams.details[team] as TeamDetails;
         orgDataTeam.members = perTeamData[team].members;
+        orgDataTeam.repos = perTeamData[team].repos;
     }
 };
 
