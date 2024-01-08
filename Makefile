@@ -1,10 +1,13 @@
-.PHONY: build start clone state docker-up docker-build start-elasticsearch test coverage
+.PHONY: clean build start clone state docker-up docker-build start-elasticsearch test coverage
 
 NODE_VERSION := >=20.8.0
 PREFIX := idc
 TIMESTAMP := $(shell date +"%Y-%m-%d_%H-%M-%S")
 
 DOCKER_COMPOSE_OUT_FILE_NAME := ./infrastructure/output/$(PREFIX)__docker__compose__output__$(TIMESTAMP).log
+
+clean:
+	rm -rf ./dist ./coverage
 
 build:
 	$(info Node version: $(NODE_VERSION))
