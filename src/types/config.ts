@@ -1,9 +1,9 @@
 import {
-  GitHubTeams,
-  GitHubMembers,
-  GitHubRepos,
-  GitHubMembersPerTeam,
-  GitHubReposPerTeam
+    GitHubTeams,
+    GitHubMembers,
+    GitHubRepos,
+    GitHubMembersPerTeam,
+    GitHubReposPerTeam
 } from "@co-digital/api-sdk/lib/api-sdk/github/type";
 
 import { REPOS_KEY } from "../config";
@@ -37,7 +37,7 @@ export type GitOrgData = {
   details: {
     [key_name: string]: RepoDetails | MemberDetails | TeamDetails
   }
-}
+};
 
 export type OrgData = {
   [key in WhatEnum]: GitOrgData
