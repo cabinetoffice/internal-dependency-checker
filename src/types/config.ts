@@ -5,8 +5,11 @@ import {
     GitHubMembersPerTeam,
     GitHubReposPerTeam
 } from "@co-digital/api-sdk/lib/api-sdk/github/type";
-
-import { REPOS_KEY } from "../config";
+import {
+    TEAMS_KEY,
+    REPOS_KEY,
+    MEMBERS_KEY
+} from "../config";
 
 export type GITHUB_METHODS_TYPE = "getRepos" | "getMembers" | "getTeams" | "getMembersPerTeam" | "getReposPerTeam";
 export type GITHUB_TYPES = GitHubRepos | GitHubMembers | GitHubTeams | GitHubMembersPerTeam | GitHubReposPerTeam;
@@ -27,9 +30,9 @@ export interface TeamDetails extends GitHubTeams {
 }
 
 export enum WhatEnum {
-  repos = "repos",
-  members = "members",
-  teams = "teams"
+  repos = REPOS_KEY,
+  members = MEMBERS_KEY,
+  teams = TEAMS_KEY
 }
 
 export type GitOrgData = {
@@ -42,14 +45,6 @@ export type GitOrgData = {
 export type OrgData = {
   [key in WhatEnum]: GitOrgData
 };
-
-export interface MembersPerTeam {
-  [team_name: string]: GitHubMembersPerTeam[]
-}
-
-export interface ReposPerTeam {
-  [team_name: string]: GitHubReposPerTeam[]
-}
 
 export enum TechEnum {
   python = "python",
