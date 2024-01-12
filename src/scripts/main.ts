@@ -33,6 +33,6 @@ export const main = async (org: string): Promise<void> => {
 
         await saveToFile(REPOS_FILE_PATH, data);
     } catch (error: any) {
-        console.error(`Error: ${error}`);
+        console.error(`Error: ${error.message}`);
     }
 };

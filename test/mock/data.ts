@@ -1,4 +1,4 @@
-export const mockTechData = [
+export const MOCK_TECH_DATA = [
     {
         fileName: "requirements.txt",
         tech: "python",
@@ -71,7 +71,7 @@ export const mockTechData = [
     },
 ];
 
-export const mockFileExtensionTechData = [
+export const MOCK_FILE_EXT_TECH_DATA = [
     {
         fileExtension: '.tf',
         tech: "terraform",
@@ -83,3 +83,55 @@ export const mockFileExtensionTechData = [
         key: 'file1'
     }
 ];
+
+export const MOCK_REPOS_DATA = {
+    "repos": {
+        "list": ["repo1", "repo2", "repo3", "repo4"],
+        "details": {
+            "repo1": {
+                "full_name": "org1/repo1",
+                "visibility": "public",
+                "html_url": "https://github.com/org1/repo1",
+                "url": "https://api.github.com/org1/repo1",
+                "description": "Best repo1",
+                "created_at": "2015-12-10T11:48:11Z",
+                "archived": false,
+                "members": [],
+                "teams": []
+            },
+            "repo2": {
+                "full_name": "org1/repo2",
+                "visibility": "public",
+                "html_url": "https://github.com/org1/repo2",
+                "url": "https://api.github.com/org1/repo2",
+                "description": "Best repo2",
+                "created_at": "2015-12-10T11:48:11Z",
+                "archived": false,
+                "members": [],
+                "teams": []
+            },
+            "repo3": {
+                "full_name": "org1/repo3",
+                "visibility": "public",
+                "html_url": "https://github.com/org1/repo3",
+                "url": "https://api.github.com/org1/repo3",
+                "description": "Best repo3",
+                "created_at": "2015-12-10T11:48:11Z",
+                "archived": false,
+                "members": [],
+                "teams": []
+            },
+            "repo4": {
+                "full_name": "org1/repo4",
+                "visibility": "public",
+                "html_url": "https://github.com/org1/repo4",
+                "url": "https://api.github.com/org1/repo4",
+                "description": "Best repo4",
+                "created_at": "2015-12-10T11:48:11Z",
+                "archived": false,
+                "members": [],
+                "teams": []
+            },
+        }
+    }
+};

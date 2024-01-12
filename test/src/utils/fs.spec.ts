@@ -11,8 +11,8 @@ import {
     checkFileExists,
     cloneRepos
 } from "../../../src/utils/fs";
-import { MOCK_REPOS_DATA } from '../../mock/repos_info';
-import { REPOS_KEY } from '../../../src/types/config';
+import { REPOS_KEY } from '../../../src/config';
+import { MOCK_REPOS_DATA } from '../../mock/data';
 
 const spyConsoleLog = jest.spyOn(console, 'log');
 const spyConsoleError = jest.spyOn(console, 'error');
