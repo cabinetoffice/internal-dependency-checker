@@ -31,6 +31,7 @@
   },
   "dependencies": {
     "@co-digital/api-sdk": "^1.0.4",
+    "@co-digital/logging": "^1.0.2",
     "yargs": "^17.7.2"
   }
 }

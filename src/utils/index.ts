@@ -25,6 +25,7 @@ import {
     MEMBERS_KEY
 } from "../config/index";
 import { getData } from "../service/github";
+import { log } from './logger';
 
 // ************************************************************ //
 
@@ -124,12 +125,12 @@ export const updateStateFile = (filePath: string, fileName: string, fileExtensio
         } else if (!STATE_DEPENDENCIES[tech]![file_name][key]) {
             STATE_DEPENDENCIES[tech]![file_name][key] = file_path;
         } else if (FILES_BY_EXTENSIONS.indexOf(fileExtension) === -1) {
-            console.error(`file name: ${file_name}, file Path: ${file_path}, key: ${key}`);
+            log.error(`file name: ${file_name}, file Path: ${file_path}, key: ${key}`);
             throw new Error('This should not happen!');
         }
     }
 
-    console.log(`Added ${file_path} to state file.`);
+    log.info(`Added ${file_path} to state file.`);
 };
 
 // ************************************************************ //
