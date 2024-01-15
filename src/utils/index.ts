@@ -1,31 +1,30 @@
 import {
+    GitHubTeams,
+    GitHubMembers,
+    GitHubRepos,
+    GitHubMembersPerTeam,
+    GitHubReposPerTeam
+} from "@co-digital/api-sdk/lib/api-sdk/github/type";
+import {
     TechEnum,
     DependencyObject,
     RepoDetails,
     MemberDetails,
-    TeamDetails,
-    ReposPerTeam,
-    MembersPerTeam,
-    MemberPerTeam,
-    RepoPerTeam,
     TechFile,
     KeyEnum,
-    PerTeamData
+    OrgData,
+    GitOrgData,
+    TeamDetails
 } from '../types/config';
 import {
     FILES_BY_EXTENSIONS,
     STATE_DEPENDENCIES,
-    PER_PAGE,
-    ORG_DATA,
-    HEADERS,
     CLONE_TIMEOUT,
-    TMP_DATA,
-    MAP_KEYS,
-    MEMBERS_PER_TEAM_KEY,
-    REPOS_PER_TEAM_KEY
+    TEAMS_KEY,
+    REPOS_KEY,
+    MEMBERS_KEY
 } from "../config/index";
-import { GitHubTeams, GitHubMembers, GitHubRepos } from '@co-digital/api-sdk/lib/api-sdk/github/type';
-import { getMembersPerTeamData, getReposPerTeamData } from '../service/github';
+import { getData } from "../service/github";
 
 // ************************************************************ //
 
@@ -35,157 +34,70 @@ export const setTimeOut = async (): Promise<void> => {
 
 // ************************************************************ //
 
-export const mapData = (data: any[] = [], keys: string[]) => data.map( (d: any) =>
-    keys.reduce((o, key) => ({ ...o, [key]: d[key] }), {})
-);
+export const setTeamsData = async (teams: GitHubTeams[]): Promise<GitOrgData> => {
+    const teamsObj = { "list": [], "details": {} } as GitOrgData;
+    for (const team of teams) {
+        const { name, ...rest } = team;
 
-// ************************************************************ //
+        const repos = (await getData("getReposPerTeam", `${rest.url}/repos`) as GitHubReposPerTeam[])
+            .map(repos => repos.name);
+        const members = (await getData("getMembersPerTeam", `${rest.url}/members`) as GitHubMembersPerTeam[])
+            .map(members => members.login);
 
-export const getInfo = async (what: string, dataKey: string, dataUrl: string, page = 1): Promise<void> => {
-    const url = `${dataUrl}?page=${page}&per_page=${PER_PAGE}`;
-    try {
-        const jsonData = await fetch(url, HEADERS);
-        const data = await jsonData.json();
-        const dataLength = data?.length || 0;
-
-        console.log(`${url}, page ${page}, retrieved ${dataLength}`);
-
-        if (dataLength) {
-            TMP_DATA[what][dataKey] = TMP_DATA[what][dataKey].concat(mapData(data, MAP_KEYS[what]));
-            if (dataLength === PER_PAGE) {
-                await getInfo(what, dataKey, dataUrl, page + 1);
-            }
-        }
-    } catch (error: any) {
-        console.error(`Error: ${error.message}`);
+        teamsObj.list.push(name);
+        teamsObj.details[name] = { ...rest, name, repos, members };
     }
+    return teamsObj;
 };
 
 // ************************************************************ //
 
-export const setTeamsData = (teams: GitHubTeams[]) => {
-    teams.forEach((team) => {
-        // eslint-disable-next-line @typescript-eslint/no-unused-vars
-        const { name, members_url, ...rest } = team;
-        ORG_DATA.teams.list.push(name);
-        ORG_DATA.teams.details[name] = {
-            ...rest,
-            repos: [],
-            members: [],
-        };
-    });
-};
-
-// ************************************************************ //
-
-export const setMembersData = (members: GitHubMembers[]) => {
+export const setMembersData = (members: GitHubMembers[]): GitOrgData => {
+    const membersObj = { "list": [], "details": {} } as GitOrgData;
     members.forEach((member) => {
         const { login, ...rest } = member;
-        ORG_DATA.members.list.push(login);
-        ORG_DATA.members.details[login] = {
-            ...rest,
-            repos: [],
-            teams: [],
-        };
+        membersObj.list.push(login);
+        membersObj.details[login] = { ...rest, login, repos: [], teams: [] } as MemberDetails;
     });
+    return membersObj;
 };
 
 // ************************************************************ //
 
-export const setReposData = (repos: GitHubRepos[]) => {
+export const setReposData = (repos: GitHubRepos[]): GitOrgData => {
+    const reposObj = { "list": [], "details": {} } as GitOrgData;
     repos.forEach((repo) => {
         const { name, ...rest } = repo;
-        ORG_DATA.repos.list.push(name);
-        ORG_DATA.repos.details[name] = {
-            ...rest,
-            members: [],
-            teams: [],
-        };
+        reposObj.list.push(name);
+        reposObj.details[name] = { ...rest, name, members: [], teams: [] } as RepoDetails;
     });
+    return reposObj;
 };
 
 // ************************************************************ //
 
-export const getPerTeamData = async (): Promise<PerTeamData> => {
-    const perTeamData: PerTeamData = {};
-    for (const team of ORG_DATA.teams.list) {
-        const teamUrl = ORG_DATA.teams.details[team].url;
-        const membersPerTeamUrl = `${teamUrl}/members`;
-        const reposPerTeamUrl = `${teamUrl}/repos`;
+export const setTeamsMembersReposInnerData = (data: OrgData): void => {
+    const teams = data[TEAMS_KEY];
+    teams.list.forEach(team => {
 
-        const membersPerTeamData = await getMembersPerTeamData(membersPerTeamUrl);
-        const members = membersPerTeamData.map(members => members.login);
+        const teamDetails = teams.details[team] as TeamDetails;
+        const members = teamDetails[MEMBERS_KEY];
+        const repos = teamDetails[REPOS_KEY];
 
-        const reposPerTeamData = await getReposPerTeamData(reposPerTeamUrl);
-        const repos = reposPerTeamData.map(repos => repos.name);
-
-        perTeamData[team] = { members: members, repos: repos };
-    }
-    return perTeamData;
-};
-
-// ************************************************************ //
-
-export const setPerTeamData = (perTeamData: PerTeamData) => {
-    for (const team of ORG_DATA.teams.list) {
-        const orgDataTeam = ORG_DATA.teams.details[team] as TeamDetails;
-        orgDataTeam.members = perTeamData[team].members;
-        orgDataTeam.repos = perTeamData[team].repos;
-    }
-};
-
-// ************************************************************ //
-
-export const setOrgData = (): void => {
-
-    TMP_DATA["repos"]["list"].forEach((repo: any) => {
-        const { name, ...rest } = repo;
-        ORG_DATA["repos"]["list"].push(name);
-        ORG_DATA["repos"]["details"][name] = { ...rest, members: [], teams: [] };
-    });
-    TMP_DATA["members"]["list"].forEach((member: any) => {
-        const { login, ...rest } = member;
-        ORG_DATA["members"]["list"].push(login);
-        ORG_DATA["members"]["details"][login] = { ...rest, repos: [], teams: [] };
-    });
-    TMP_DATA["teams"]["list"].forEach((team: any) => {
-        const { name, ...rest } = team;
-        ORG_DATA["teams"]["list"].push(name);
-        ORG_DATA["teams"]["details"][name] = {
-            ...rest,
-            repos: TMP_DATA[REPOS_PER_TEAM_KEY][name].map((r: RepoPerTeam) => r.name),
-            members: TMP_DATA[MEMBERS_PER_TEAM_KEY][name].map((m: MemberPerTeam) => m.login)
-        } as TeamDetails;
-    });
-
-    for (const [team, members] of Object.entries(TMP_DATA[MEMBERS_PER_TEAM_KEY] as MembersPerTeam)) {
         members.forEach((member) => {
-            const memberName = member.login;
-            const data = ORG_DATA["members"]["details"][memberName] as MemberDetails;
-            data["teams"].push(team);
+            const memberDetails = data[MEMBERS_KEY].details[member] as MemberDetails;
+            memberDetails[TEAMS_KEY].push(team);
             // Concat repos list and remove duplication
-            data["repos"] = [
-                ...new Set([
-                    ...data["repos"],
-                    ...TMP_DATA[REPOS_PER_TEAM_KEY][team].map((r: RepoPerTeam) => r.name)
-                ])
-            ];
+            memberDetails[REPOS_KEY] = [...new Set([...memberDetails[REPOS_KEY], ...repos])];
         });
-    }
-    for (const [team, repos] of Object.entries(TMP_DATA[REPOS_PER_TEAM_KEY] as ReposPerTeam)) {
+
         repos.forEach((repo) => {
-            const repoName = repo.name;
-            const data = ORG_DATA["repos"]["details"][repoName] as RepoDetails;
-            data["teams"].push(team);
+            const repoDetails = data[REPOS_KEY].details[repo] as RepoDetails;
+            repoDetails[TEAMS_KEY].push(team);
             // Concat members list and remove duplication
-            data["members"] = [
-                ...new Set([
-                    ...data["members"],
-                    ...TMP_DATA[MEMBERS_PER_TEAM_KEY][team].map((m: MemberPerTeam) => m.login)
-                ])
-            ];
+            repoDetails[MEMBERS_KEY] = [...new Set([...repoDetails[MEMBERS_KEY], ...members])];
         });
-    }
+    });
 };
 
 // ************************************************************ //

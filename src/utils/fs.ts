@@ -2,7 +2,7 @@ import { writeFile, readFile } from 'node:fs/promises';
 import fs from 'node:fs';
 import path from 'node:path';
 
-import { OrgData, REPOS_KEY, RepoDetails } from '../types/config';
+import { OrgData, RepoDetails } from '../types/config';
 
 import {
     REPOS_DIRECTORY_PATH,
@@ -11,7 +11,8 @@ import {
     FILES_BY_EXTENSIONS,
     EXCLUDE_SUBDIRECTORY,
     REPOS_SUB_DIRECTORY_PATH,
-    REPOS_LIST
+    REPOS_LIST,
+    REPOS_KEY
 } from "../config/index";
 
 import { exec_command } from "./exec";
