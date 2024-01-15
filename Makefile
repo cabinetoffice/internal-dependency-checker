@@ -17,15 +17,15 @@ build:
 	chmod u+x ./dist/cli.js
 
 start:
-	./dist/cli.js main ${ORG}
+	LOG_LEVEL=info ./dist/cli.js main ${ORG}
 	$(info === repositories info file created)
 
 clone:
-	./dist/cli.js clone
+	LOG_LEVEL=info ./dist/cli.js clone
 	$(info === repositories cloned)
 
 state:
-	./dist/cli.js state
+	LOG_LEVEL=info ./dist/cli.js state
 	$(info === state file created)
 
 docker-build:

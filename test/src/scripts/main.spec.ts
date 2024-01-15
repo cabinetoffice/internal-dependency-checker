@@ -1,8 +1,13 @@
 jest.mock('../../../src/utils/index');
 jest.mock('../../../src/utils/fs');
 jest.mock('../../../src/service/github');
+jest.mock('../../../src/utils/logger', () => ({
+    log: {
+        error: jest.fn()
+    }
+}));
 
-import { describe, expect, test, jest, afterEach, beforeEach } from '@jest/globals';
+import { describe, expect, test, jest, afterEach } from '@jest/globals';
 
 import { REPOS_FILE_PATH } from '../../../src/config';
 import {
@@ -23,7 +28,9 @@ import { getData } from '../../../src/service/github';
 import { saveToFile } from "../../../src/utils/fs";
 import { main } from "../../../src/scripts/main";
 
-const spyConsoleError = jest.spyOn(console, 'error');
+import { log } from '../../../src/utils/logger';
+
+const mockLogError = log.error as jest.Mock;
 
 const mockSetTeamsData = setTeamsData as jest.Mock;
 const mockSetMembersData = setMembersData as jest.Mock;
@@ -35,10 +42,6 @@ const mockSaveToFile = saveToFile as jest.Mock;
 const mockSetTeamsMembersReposInnerData = setTeamsMembersReposInnerData as jest.Mock;
 
 describe("Main tests suites", () => {
-
-    beforeEach(() => {
-        spyConsoleError.mockImplementation(() => {/**/});
-    });
 
     afterEach(() => {
         jest.resetAllMocks();
@@ -69,7 +72,7 @@ describe("Main tests suites", () => {
         expect(mockSaveToFile).toHaveBeenCalledTimes(1);
         expect(mockSaveToFile).toHaveBeenCalledWith(REPOS_FILE_PATH, MOCK_ORG_DATA);
 
-        expect(spyConsoleError).toHaveBeenCalledTimes(0);
+        expect(mockLogError).toHaveBeenCalledTimes(0);
     });
 
     test("should call the saveToFile function and catch the saving data to file error", async () => {
@@ -79,7 +82,7 @@ describe("Main tests suites", () => {
         await main(MOCK_ORGANIZATION);
 
         expect(mockSaveToFile).toHaveBeenCalledTimes(1);
-        expect(spyConsoleError).toHaveBeenCalledTimes(1);
-        expect(spyConsoleError).toHaveBeenCalledWith(`Error: ${errMsg}`);
+        expect(mockLogError).toHaveBeenCalledTimes(1);
+        expect(mockLogError).toHaveBeenCalledWith(`Error: ${errMsg}`);
     });
 });

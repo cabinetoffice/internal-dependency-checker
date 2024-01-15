@@ -1,4 +1,10 @@
 jest.mock('../../../src/service/github');
+jest.mock('../../../src/utils/logger', () => ({
+    log: {
+        info: jest.fn(),
+        error: jest.fn()
+    }
+}));
 
 import { describe, expect, test, jest, afterEach, beforeEach } from '@jest/globals';
 
@@ -41,8 +47,10 @@ import {
 
 import { getData } from '../../../src/service/github';
 
-const spyConsoleLog = jest.spyOn(console, 'log');
-const spyConsoleError = jest.spyOn(console, 'error');
+import { log } from '../../../src/utils/logger';
+
+const mockLogError = log.error as jest.Mock;
+const mockLogInfo = log.info as jest.Mock;
 
 const spySetTimeoutCall = jest.spyOn(global, 'setTimeout');
 
@@ -50,11 +58,6 @@ const mockGetData = getData as jest.Mock;
 
 /* eslint-disable */
 describe("UTILS Index tests suites", () => {
-
-    beforeEach(() => {
-        spyConsoleLog.mockImplementation(() => {/**/});
-        spyConsoleError.mockImplementation(() => {/**/});
-    });
 
     afterEach(() => {
         jest.resetAllMocks();
@@ -91,8 +94,8 @@ describe("UTILS Index tests suites", () => {
             (`should update STATE_DEPENDENCIES object based on filePath: $filePath and fileName: $fileName`,
                 ({ filePath, fileName, fileExtension, expected }) => {
                     updateStateFile(filePath, fileName, fileExtension);
-                    expect(spyConsoleLog).toHaveBeenCalledTimes(1);
-                    expect(spyConsoleError).toHaveBeenCalledTimes(0);
+                    expect(mockLogInfo).toHaveBeenCalledTimes(1);
+                    expect(mockLogError).toHaveBeenCalledTimes(0);
                     expect(STATE_DEPENDENCIES).toEqual(expected);
                 });
 
@@ -107,15 +110,15 @@ describe("UTILS Index tests suites", () => {
             }).toThrow(Error);
 
             const errMsg = "file name: repos__org1__repo1, file Path: repos/org1/repo1/package-lock.json, key: file2";
-            expect(spyConsoleError).toHaveBeenCalledTimes(1);
-            expect(spyConsoleError).toHaveBeenCalledWith(errMsg);
+            expect(mockLogError).toHaveBeenCalledTimes(1);
+            expect(mockLogError).toHaveBeenCalledWith(errMsg);
 
             expect(() => {
                 updateStateFile(filePath, fileName, fileExtension);
             }).toThrow('This should not happen!');
 
-            expect(spyConsoleLog).toHaveBeenCalledTimes(0);
-            expect(spyConsoleError).toHaveBeenCalledTimes(2);
+            expect(mockLogInfo).toHaveBeenCalledTimes(0);
+            expect(mockLogError).toHaveBeenCalledTimes(2);
         });
     });
 

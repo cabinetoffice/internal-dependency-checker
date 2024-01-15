@@ -3,6 +3,7 @@ import {
     StateDependencies
 } from '../types/config';
 
+export const APPLICATION_NAME = 'Internal Dependency Checker';
 export const GITHUB_KEY = process.env.GITHUB_KEY;
 
 export const PER_PAGE = 100;

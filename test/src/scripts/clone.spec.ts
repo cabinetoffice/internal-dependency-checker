@@ -1,23 +1,26 @@
 jest.mock('../../../src/utils/fs');
+jest.mock('../../../src/utils/logger', () => ({
+    log: {
+        info: jest.fn(),
+        error: jest.fn()
+    }
+}));
 
-import { describe, expect, test, jest, afterEach, beforeEach } from '@jest/globals';
+import { describe, expect, test, jest, afterEach } from '@jest/globals';
 
 import { clone } from "../../../src/scripts/clone";
 import { cloneRepos, saveToFile } from "../../../src/utils/fs";
 import { REPOS_LIST_FILE_PATH } from '../../../src/config';
 
-const spyConsoleLog = jest.spyOn(console, 'log');
-const spyConsoleError = jest.spyOn(console, 'error');
+import { log } from '../../../src/utils/logger';
+
+const mockLogError = log.error as jest.Mock;
+const mockLogInfo = log.info as jest.Mock;
 
 const mockCloneReposCall = cloneRepos as jest.Mock;
 const mockSaveToFile = saveToFile as jest.Mock;
 
 describe("Clone tests suites", () => {
-
-    beforeEach(() => {
-        spyConsoleLog.mockImplementation(() => {/**/});
-        spyConsoleError.mockImplementation(() => {/**/});
-    });
 
     afterEach(() => {
         jest.resetAllMocks();
@@ -31,9 +34,9 @@ describe("Clone tests suites", () => {
         expect(mockSaveToFile).toHaveBeenCalledTimes(1);
         expect(mockSaveToFile).toHaveBeenCalledWith(REPOS_LIST_FILE_PATH, expect.anything());
 
-        expect(spyConsoleLog).toHaveBeenCalledTimes(1);
-        expect(spyConsoleLog).toHaveBeenCalledWith("This script will likely take a few hours to complete.");
-        expect(spyConsoleError).toHaveBeenCalledTimes(0);
+        expect(mockLogInfo).toHaveBeenCalledTimes(1);
+        expect(mockLogInfo).toHaveBeenCalledWith("This script will likely take a few hours to complete.");
+        expect(mockLogError).toHaveBeenCalledTimes(0);
     });
 
     test("should call the cloneRepos function and catch the parsing error", async () => {
@@ -45,9 +48,9 @@ describe("Clone tests suites", () => {
         expect(mockCloneReposCall).toHaveBeenCalledTimes(1);
 
         expect(mockSaveToFile).toHaveBeenCalledTimes(0);
-        expect(spyConsoleLog).toHaveBeenCalledTimes(1);
-        expect(spyConsoleError).toHaveBeenCalledTimes(1);
-        expect(spyConsoleError).toHaveBeenCalledWith(`Error: ${errMsg}`);
+        expect(mockLogError).toHaveBeenCalledTimes(1);
+        expect(mockLogError).toHaveBeenCalledTimes(1);
+        expect(mockLogError).toHaveBeenCalledWith(`Error: ${errMsg}`);
     });
 
 });

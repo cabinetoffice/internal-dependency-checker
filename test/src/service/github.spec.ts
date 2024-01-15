@@ -9,8 +9,14 @@ jest.mock("@co-digital/api-sdk", () => ({
         },
     })),
 }));
+jest.mock('../../../src/utils/logger', () => ({
+    log: {
+        info: jest.fn(),
+        error: jest.fn()
+    }
+}));
 
-import { jest, describe, beforeEach, afterEach, test, expect } from '@jest/globals';
+import { jest, describe, afterEach, test, expect } from '@jest/globals';
 
 import {
     MOCK_GET_TEAMS_API_SDK_RESPONSE,
@@ -22,6 +28,7 @@ import {
 
 import { getData } from "../../../src/service/github";
 import { client } from "../../../src/service/api";
+import { log } from "../../../src/utils/logger";
 
 const mockGetTeams = client.gitHub.getTeams as jest.Mock<any>;
 const mockGetMembers = client.gitHub.getMembers as jest.Mock<any>;
@@ -29,15 +36,10 @@ const mockGetRepos = client.gitHub.getRepos as jest.Mock<any>;
 const mockGetMembersPerTeam = client.gitHub.getMembersPerTeam as jest.Mock<any>;
 const mockGetReposPerTeam = client.gitHub.getReposPerTeam as jest.Mock<any>;
 
-const spyConsoleError = jest.spyOn(console, 'error');
-const spyConsoleLog = jest.spyOn(console, 'log');
+const mockLogError = log.error as jest.Mock;
+const mockLogInfo = log.info as jest.Mock;
 
 describe("github service test suite", () => {
-
-    beforeEach(() => {
-        spyConsoleLog.mockImplementation(() => {/**/});
-        spyConsoleError.mockImplementation(() => {/**/});
-    });
 
     afterEach(() => {
         jest.resetAllMocks();
@@ -49,7 +51,7 @@ describe("github service test suite", () => {
 
             const teams = await getData('getTeams', "");
 
-            expect(spyConsoleLog).toHaveBeenCalledTimes(0);
+            expect(mockLogInfo).toHaveBeenCalledTimes(0);
             expect(teams).toEqual([]);
         });
 
@@ -58,7 +60,7 @@ describe("github service test suite", () => {
 
             const teams = await getData('getTeams', "");
 
-            expect(spyConsoleLog).toHaveBeenCalledTimes(1);
+            expect(mockLogInfo).toHaveBeenCalledTimes(1);
             expect(teams).toEqual(MOCK_GET_TEAMS_API_SDK_RESPONSE.resource);
         });
 
@@ -75,7 +77,7 @@ describe("github service test suite", () => {
 
             const teams = await getData('getTeams', "");
 
-            expect(spyConsoleError).toHaveBeenCalledTimes(1);
+            expect(mockLogError).toHaveBeenCalledTimes(1);
             expect(teams).toEqual([]);
         });
 
@@ -87,7 +89,7 @@ describe("github service test suite", () => {
 
             const members = await getData('getMembers', "");
 
-            expect(spyConsoleLog).toHaveBeenCalledTimes(0);
+            expect(mockLogInfo).toHaveBeenCalledTimes(0);
             expect(members).toEqual([]);
         });
 
@@ -96,7 +98,7 @@ describe("github service test suite", () => {
 
             const members = await getData('getMembers', "");
 
-            expect(spyConsoleLog).toHaveBeenCalledTimes(1);
+            expect(mockLogInfo).toHaveBeenCalledTimes(1);
             expect(members).toEqual(MOCK_GET_MEMBERS_API_SDK_RESPONSE.resource);
         });
 
@@ -113,7 +115,7 @@ describe("github service test suite", () => {
 
             const members = await getData('getMembers', "");
 
-            expect(spyConsoleError).toHaveBeenCalledTimes(1);
+            expect(mockLogError).toHaveBeenCalledTimes(1);
             expect(members).toEqual([]);
         });
 
@@ -125,7 +127,7 @@ describe("github service test suite", () => {
 
             const repos = await getData('getRepos', "");
 
-            expect(spyConsoleLog).toHaveBeenCalledTimes(0);
+            expect(mockLogInfo).toHaveBeenCalledTimes(0);
             expect(repos).toEqual([]);
         });
 
@@ -134,7 +136,7 @@ describe("github service test suite", () => {
 
             const repos = await getData('getRepos', "");
 
-            expect(spyConsoleLog).toHaveBeenCalledTimes(1);
+            expect(mockLogInfo).toHaveBeenCalledTimes(1);
             expect(repos).toEqual(MOCK_GET_REPOS_API_SDK_RESPONSE.resource);
         });
 
@@ -161,7 +163,7 @@ describe("github service test suite", () => {
 
             const repos = await getData('getRepos', "");
 
-            expect(spyConsoleError).toHaveBeenCalledTimes(1);
+            expect(mockLogError).toHaveBeenCalledTimes(1);
             expect(repos).toEqual([]);
         });
     });
@@ -172,7 +174,7 @@ describe("github service test suite", () => {
 
             const membersPerTeam = await getData('getMembersPerTeam', "");
 
-            expect(spyConsoleLog).toHaveBeenCalledTimes(0);
+            expect(mockLogInfo).toHaveBeenCalledTimes(0);
             expect(membersPerTeam).toEqual([]);
         });
 
@@ -181,7 +183,7 @@ describe("github service test suite", () => {
 
             const membersPerTeam = await getData('getMembersPerTeam', "");
 
-            expect(spyConsoleLog).toHaveBeenCalledTimes(1);
+            expect(mockLogInfo).toHaveBeenCalledTimes(1);
             expect(membersPerTeam).toEqual(MOCK_GET_MEMBERS_PER_TEAM_API_SDK_RESPONSE.resource);
         });
 
@@ -198,7 +200,7 @@ describe("github service test suite", () => {
 
             const membersPerTeam = await getData('getMembersPerTeam', "");
 
-            expect(spyConsoleError).toHaveBeenCalledTimes(1);
+            expect(mockLogError).toHaveBeenCalledTimes(1);
             expect(membersPerTeam).toEqual([]);
         });
 
@@ -210,7 +212,7 @@ describe("github service test suite", () => {
 
             const reposPerTeam = await getData('getReposPerTeam', "");
 
-            expect(spyConsoleLog).toHaveBeenCalledTimes(0);
+            expect(mockLogInfo).toHaveBeenCalledTimes(0);
             expect(reposPerTeam).toEqual([]);
         });
 
@@ -219,7 +221,7 @@ describe("github service test suite", () => {
 
             const reposPerTeam = await getData('getReposPerTeam', "");
 
-            expect(spyConsoleLog).toHaveBeenCalledTimes(1);
+            expect(mockLogInfo).toHaveBeenCalledTimes(1);
             expect(reposPerTeam).toEqual(MOCK_GET_REPOS_PER_TEAM_API_SDK_RESPONSE.resource);
         });
 
@@ -236,7 +238,7 @@ describe("github service test suite", () => {
 
             const reposPerTeam = await getData('getReposPerTeam', "");
 
-            expect(spyConsoleError).toHaveBeenCalledTimes(1);
+            expect(mockLogError).toHaveBeenCalledTimes(1);
             expect(reposPerTeam).toEqual([]);
         });
 
