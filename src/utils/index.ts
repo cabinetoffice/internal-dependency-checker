@@ -36,7 +36,7 @@ export const setTimeOut = async (): Promise<void> => {
 // ************************************************************ //
 
 export const setTeamsData = async (teams: GitHubTeams[]): Promise<GitOrgData> => {
-    const obj = { "list": [], "details": {} } as GitOrgData;
+    const teamsObj = { "list": [], "details": {} } as GitOrgData;
     for (const team of teams) {
         const { name, ...rest } = team;
 
@@ -45,34 +45,34 @@ export const setTeamsData = async (teams: GitHubTeams[]): Promise<GitOrgData> =>
         const members = (await getData("getMembersPerTeam", `${rest.url}/members`) as GitHubMembersPerTeam[])
             .map(members => members.login);
 
-        obj.list.push(name);
-        obj.details[name] = { ...rest, name, repos, members };
+        teamsObj.list.push(name);
+        teamsObj.details[name] = { ...rest, name, repos, members };
     }
-    return obj;
+    return teamsObj;
 };
 
 // ************************************************************ //
 
 export const setMembersData = (members: GitHubMembers[]): GitOrgData => {
-    const obj = { "list": [], "details": {} } as GitOrgData;
+    const membersObj = { "list": [], "details": {} } as GitOrgData;
     members.forEach((member) => {
         const { login, ...rest } = member;
-        obj.list.push(login);
-        obj.details[login] = { ...rest, login, repos: [], teams: [] } as MemberDetails;
+        membersObj.list.push(login);
+        membersObj.details[login] = { ...rest, login, repos: [], teams: [] } as MemberDetails;
     });
-    return obj;
+    return membersObj;
 };
 
 // ************************************************************ //
 
 export const setReposData = (repos: GitHubRepos[]): GitOrgData => {
-    const obj = { "list": [], "details": {} } as GitOrgData;
+    const reposObj = { "list": [], "details": {} } as GitOrgData;
     repos.forEach((repo) => {
         const { name, ...rest } = repo;
-        obj.list.push(name);
-        obj.details[name] = { ...rest, name, members: [], teams: [] } as RepoDetails;
+        reposObj.list.push(name);
+        reposObj.details[name] = { ...rest, name, members: [], teams: [] } as RepoDetails;
     });
-    return obj;
+    return reposObj;
 };
 
 // ************************************************************ //

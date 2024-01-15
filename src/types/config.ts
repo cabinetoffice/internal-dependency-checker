@@ -1,9 +1,7 @@
 import {
     GitHubTeams,
     GitHubMembers,
-    GitHubRepos,
-    GitHubMembersPerTeam,
-    GitHubReposPerTeam
+    GitHubRepos
 } from "@co-digital/api-sdk/lib/api-sdk/github/type";
 import {
     TEAMS_KEY,
@@ -12,7 +10,6 @@ import {
 } from "../config";
 
 export type GITHUB_METHODS_TYPE = "getRepos" | "getMembers" | "getTeams" | "getMembersPerTeam" | "getReposPerTeam";
-export type GITHUB_TYPES = GitHubRepos | GitHubMembers | GitHubTeams | GitHubMembersPerTeam | GitHubReposPerTeam;
 
 export interface RepoDetails extends GitHubRepos {
   members: string[];
