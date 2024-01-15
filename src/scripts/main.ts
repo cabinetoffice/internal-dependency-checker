@@ -23,15 +23,15 @@ import {
 
 export const main = async (org: string): Promise<void> => {
     try {
-        const data = { } as OrgData;
+        const orgData = { } as OrgData;
 
-        data[REPOS_KEY] = setReposData(await getData("getRepos", `${GIT_BASE_URL}/${org}/repos`) as GitHubRepos[]);
-        data[MEMBERS_KEY] = setMembersData(await getData("getMembers", `${GIT_BASE_URL}/${org}/members`) as GitHubMembers[]);
-        data[TEAMS_KEY] = await setTeamsData(await getData("getTeams", `${GIT_BASE_URL}/${org}/teams`) as GitHubTeams[]);
+        orgData[REPOS_KEY] = setReposData(await getData<GitHubRepos>("getRepos", `${GIT_BASE_URL}/${org}/repos`));
+        orgData[MEMBERS_KEY] = setMembersData(await getData<GitHubMembers>("getMembers", `${GIT_BASE_URL}/${org}/members`));
+        orgData[TEAMS_KEY] = await setTeamsData(await getData<GitHubTeams>("getTeams", `${GIT_BASE_URL}/${org}/teams`));
 
-        setTeamsMembersReposInnerData(data);
+        setTeamsMembersReposInnerData(orgData);
 
-        await saveToFile(REPOS_FILE_PATH, data);
+        await saveToFile(REPOS_FILE_PATH, orgData);
     } catch (error: any) {
         console.error(`Error: ${error.message}`);
     }
