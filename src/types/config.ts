@@ -1,62 +1,47 @@
-export const REPOS_KEY = "repos";
+import {
+    GitHubTeams,
+    GitHubMembers,
+    GitHubRepos
+} from "@co-digital/api-sdk/lib/api-sdk/github/type";
+import {
+    TEAMS_KEY,
+    REPOS_KEY,
+    MEMBERS_KEY
+} from "../config";
 
-export interface RepoDetails {
-  description: string;
-  full_name: string;
-  visibility: string;
-  url: string;
-  html_url: string;
-  created_at: string;
-  archived: boolean;
+export type GITHUB_METHODS_TYPE = "getRepos" | "getMembers" | "getTeams" | "getMembersPerTeam" | "getReposPerTeam";
+
+export interface RepoDetails extends GitHubRepos {
   members: string[];
   teams: string[];
 }
 
-export interface MemberDetails {
-  url: string;
-  html_url: string;
+export interface MemberDetails extends GitHubMembers {
   repos: string[];
   teams: string[];
 }
 
-export interface TeamDetails {
-  description: string;
-  url: string;
-  html_url: string;
+export interface TeamDetails extends GitHubTeams {
   repos: string[];
   members: string[];
 }
 
 export enum WhatEnum {
-  repos = "repos",
-  members = "members",
-  teams = "teams"
+  repos = REPOS_KEY,
+  members = MEMBERS_KEY,
+  teams = TEAMS_KEY
 }
 
-export type OrgData = {
-  [key in WhatEnum]: {
-    list: string[];
-    details: {
-      [key_name: string]: RepoDetails | MemberDetails | TeamDetails
-    }
-  };
+export type GitOrgData = {
+  list: string[];
+  details: {
+    [key_name: string]: RepoDetails | MemberDetails | TeamDetails
+  }
 };
 
-export interface MemberPerTeam {
-  login: string;
-}
-
-export interface MembersPerTeam {
-  [team_name: string]: MemberPerTeam[]
-}
-
-export interface RepoPerTeam {
-  name: string;
-}
-
-export interface ReposPerTeam {
-  [team_name: string]: RepoPerTeam[]
-}
+export type OrgData = {
+  [key in WhatEnum]: GitOrgData
+};
 
 export enum TechEnum {
   python = "python",
